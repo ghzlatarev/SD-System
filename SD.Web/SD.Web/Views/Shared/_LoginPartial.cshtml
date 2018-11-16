@@ -1,0 +1,32 @@
+<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+    <div class="photo">
+        <img src="~/images/banner1.svg" alt="Profile Photo">
+    </div>
+    <b class="caret d-none d-lg-block d-xl-block"></b>
+
+</a>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <ul class="dropdown-menu dropdown-navbar">
+        <li class="nav-link">
+            <a asp-area="Identity" asp-controller="Manage" asp-action="Index" class="nav-item dropdown-item">Profile</a>
+        </li>
+        <li class="dropdown-divider"></li>
+        <li class="nav-link">
+            <a asp-area="Identity" asp-controller="Account" asp-action="Logout" class="nav-item dropdown-item">Log out</a>
+        </li>
+    </ul>
+}
+else
+{
+    <ul class="dropdown-menu dropdown-navbar">
+        <li class="nav-link">
+            <a asp-area="Identity" asp-controller="Account" asp-action="Register" class="nav-item dropdown-item">Register</a>
+        </li>
+        <li class="dropdown-divider"></li>
+        <li class="nav-link">
+            <a asp-area="Identity" asp-controller="Account" asp-action="Login" class="nav-item dropdown-item">Sign in</a>
+        </li>
+    </ul>
+}

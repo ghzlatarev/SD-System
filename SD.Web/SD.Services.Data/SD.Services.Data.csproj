@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="X.PagedList" Version="7.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SD.Data.Models\SD.Data.Models.csproj" />
+    <ProjectReference Include="..\SD.Data\SD.Data.csproj" />
+  </ItemGroup>
+
+</Project>

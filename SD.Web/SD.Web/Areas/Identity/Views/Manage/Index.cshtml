@@ -1,0 +1,142 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Profile";
+}
+@await Html.PartialAsync("_StatusMessage", Model.StatusMessage)
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="title">Edit Profile</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="row">
+                        <div class="col-md-5 pr-md-1">
+                            <div class="form-group">
+                                <label asp-for="Email"></label>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="example@email.com" value="@Model.Email" maxlength="40" minlength="6" required>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 px-md-1">
+                            <div class="form-group">
+                                <label asp-for="Username"></label>
+                                <input asp-for="Username" type="text" class="form-control" placeholder="Username" value="@Model.Username" maxlength="40" minlength="6" required>
+                                <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 pl-md-1">
+                            <div class="form-group">
+                                <label asp-for="PhoneNumber"></label>
+                                <input asp-for="PhoneNumber" type="tel" class="form-control" placeholder="Phone Number" value="@Model.PhoneNumber" maxlength="20" minlength="6">
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 pr-md-1">
+                            <div class="form-group">
+                                <label asp-for="FirstName"></label>
+                                <input asp-for="FirstName" type="text" class="form-control" placeholder="First Name" value="@Model.FirstName" maxlength="25" minlength="3">
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 pl-md-1">
+                            <div class="form-group">
+                                <label asp-for="LastName"></label>
+                                <input asp-for="LastName" type="text" class="form-control" placeholder="Last Name" value="@Model.LastName" maxlength="25" minlength="3">
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>About Me</label>
+                                <textarea asp-for="Story" rows="4" cols="80" class="form-control" placeholder="Here can be your description" value="@Model.Story" maxlength="250" minlength="3"></textarea>
+                                <span asp-validation-for="Story" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer" data-color="blue">
+                        <button type="submit" class="btn btn-fill">Save</button>
+
+                        <a asp-area="Identity" asp-controller="Manage" asp-action="ChangePassword" class="btn btn-fill">Change password</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card card-user">
+            <div class="card-body">
+                <p class="card-text">
+                    <div class="author">
+                        <a href="javascript:void(0)">
+                            @{
+                                if (Model.AvatarImage != null)
+                                {
+                                    var base64 = Convert.ToBase64String(Model.AvatarImage);
+                                    var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                                    <img src="@imgSrc" class="avatar" alt="Default avatar" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/default-profile.png" class="avatar" alt="Default avatar" />
+                                }
+                            }
+                            <h5 class="title">@Model.Username</h5>
+                        </a>
+                        <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#upload-modal">Change profile picture</button>
+                    </div>
+                </p>
+                <div class="card-description">
+                    @Model.Story
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="button-container">
+                    <button href="javascript:void(0)" class="btn btn-icon btn-round btn-facebook">
+                        <i class="fab fa-facebook"></i>
+                    </button>
+                    <button href="javascript:void(0)" class="btn btn-icon btn-round btn-twitter">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button href="javascript:void(0)" class="btn btn-icon btn-round btn-google">
+                        <i class="fab fa-google-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*upload modal*@
+    <div id="upload-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form asp-area="Identity" asp-controller="Manage" asp-action="Avatar" method="post" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <label class="avatar-upload-label">
+                            Drag or click to upload..
+                            <input type="file" name="AvatarImage" />
+                        </label>
+                        <img class="img-rounded avatar-img-preview hidden" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="remove-img" class="btn btn-danger">Discard</button>
+                        <button type="submit" class="btn btn-success">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="~/js/upload.js"></script>
+}
