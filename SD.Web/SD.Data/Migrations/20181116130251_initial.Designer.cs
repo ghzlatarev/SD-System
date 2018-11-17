@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SD.Data.Context;
 
 namespace SD.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20181116130251_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,100 +129,6 @@ namespace SD.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("SD.Data.Models.DomainModels.ApiDataSource", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("ApiInterval");
-
-                    b.Property<DateTime?>("CreatedOn");
-
-                    b.Property<DateTime?>("DeletedOn");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(300);
-
-                    b.Property<bool>("GotOutOfRange")
-                        .HasMaxLength(18);
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<int>("LastValueApi");
-
-                    b.Property<int>("MeasureType");
-
-                    b.Property<DateTime?>("ModifiedOn");
-
-                    b.Property<int>("RangeMax");
-
-                    b.Property<int>("RangeMin");
-
-                    b.Property<Guid?>("SensorId");
-
-                    b.Property<string>("Tag")
-                        .HasMaxLength(50);
-
-                    b.Property<DateTime>("TimeStamp");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SensorId");
-
-                    b.ToTable("ApiDataSourses");
-                });
-
-            modelBuilder.Entity("SD.Data.Models.DomainModels.Sensor", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AlarmMax");
-
-                    b.Property<int>("AlarmMin");
-
-                    b.Property<bool>("AlarmTriggered");
-
-                    b.Property<Guid>("ApiDataSourceId");
-
-                    b.Property<string>("Coordinates")
-                        .HasMaxLength(18);
-
-                    b.Property<DateTime?>("CreatedOn");
-
-                    b.Property<DateTime?>("DeletedOn");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(300);
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<int>("LastValueUser");
-
-                    b.Property<DateTime?>("ModifiedOn");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(35);
-
-                    b.Property<DateTime>("TimeStamp");
-
-                    b.Property<Guid>("UserId");
-
-                    b.Property<string>("UserId1");
-
-                    b.Property<int>("UserInterval");
-
-                    b.Property<bool>("isPublic");
-
-                    b.Property<int>("type");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("Sensors");
                 });
 
             modelBuilder.Entity("SD.Data.Models.Identity.ApplicationUser", b =>
@@ -345,20 +253,6 @@ namespace SD.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SD.Data.Models.DomainModels.ApiDataSource", b =>
-                {
-                    b.HasOne("SD.Data.Models.DomainModels.Sensor")
-                        .WithMany("ApiDataSource")
-                        .HasForeignKey("SensorId");
-                });
-
-            modelBuilder.Entity("SD.Data.Models.DomainModels.Sensor", b =>
-                {
-                    b.HasOne("SD.Data.Models.Identity.ApplicationUser", "User")
-                        .WithMany("Sensors")
-                        .HasForeignKey("UserId1");
                 });
 #pragma warning restore 612, 618
         }

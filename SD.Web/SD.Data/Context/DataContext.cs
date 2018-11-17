@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SD.Data.Context.Configurations.Identity;
 using SD.Data.Models.Contracts;
 using SD.Data.Models.Identity;
+using SD.Data.Models.DomainModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,6 +38,9 @@ namespace SD.Data.Context
 
             return await base.SaveChangesAsync();
         }
+
+        public DbSet<Sensor> Sensors { get; set; }
+        public DbSet<ApiDataSource> ApiDataSourses { get; set; }
 
         public override DbSet<TEntity> Set<TEntity>()
         {
