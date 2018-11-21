@@ -31,7 +31,7 @@ namespace SD.Services.Data.Services
             foreach (var id in allSensorIds)
             {
                 SensorData newSensorData = await this.apiClient
-               .GetSensorData<SensorData>("sensorId?=" + id);
+                .GetSensorData<SensorData>("sensorId?=" + id);
                 newSensorData.SensorId = id;
 
                 IList<SensorData> oldSensorData = await this.dataContext.SensorData.ToListAsync();

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using SD.Data.Models.Contracts;
+using SD.Data.Models.DomainModels;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SD.Data.Models.Identity
@@ -29,5 +31,6 @@ namespace SD.Data.Models.Identity
         public string Story { get; set; }
 
         public bool GDPR { get; set; }
+        public IEnumerable<Sensor> Sensors { get; set; }
     }
 }

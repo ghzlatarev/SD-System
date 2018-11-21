@@ -6,6 +6,7 @@ using SD.Data.Context.Configurations.Identity;
 using SD.Data.Models;
 using SD.Data.Models.Contracts;
 using SD.Data.Models.Identity;
+using SD.Data.Models.DomainModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace SD.Data.Context
         public virtual DbSet<Sensor> Sensors { get; set; }
 
         public virtual DbSet<SensorData> SensorData { get; set; }
+
+        public virtual DbSet<UserSensor> UserSensors { get; set; }
 
         public override int SaveChanges()
         {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SD.Data.Migrations
 {
-    public partial class update1 : Migration
+    public partial class updatedb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,27 +54,6 @@ namespace SD.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Sensors",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    CreatedOn = table.Column<DateTime>(nullable: true),
-                    ModifiedOn = table.Column<DateTime>(nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    DeletedOn = table.Column<DateTime>(nullable: true),
-                    SensorId = table.Column<Guid>(nullable: false),
-                    Tag = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    MinPollingIntervalInSeconds = table.Column<int>(nullable: false),
-                    MeasureType = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Sensors", x => x.Id);
-                    table.UniqueConstraint("AK_Sensors_SensorId", x => x.SensorId);
                 });
 
             migrationBuilder.CreateTable(
@@ -184,6 +163,76 @@ namespace SD.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserSensors",
+                columns: table => new
+                {
+                    CreatedOn = table.Column<DateTime>(nullable: true),
+                    ModifiedOn = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(maxLength: 35, nullable: true),
+                    Description = table.Column<string>(maxLength: 300, nullable: true),
+                    type = table.Column<int>(nullable: false),
+                    UserInterval = table.Column<int>(nullable: false),
+                    LastValueUser = table.Column<int>(nullable: false),
+                    TimeStamp = table.Column<DateTime>(nullable: false),
+                    Coordinates = table.Column<string>(maxLength: 18, nullable: true),
+                    isPublic = table.Column<bool>(nullable: false),
+                    AlarmTriggered = table.Column<bool>(nullable: false),
+                    AlarmMin = table.Column<int>(nullable: false),
+                    AlarmMax = table.Column<int>(nullable: false),
+                    ApiDataSourceId = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<Guid>(nullable: false),
+                    UserId1 = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserSensors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserSensors_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sensors",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedOn = table.Column<DateTime>(nullable: true),
+                    ModifiedOn = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    SensorId = table.Column<Guid>(nullable: false),
+                    Tag = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    MinPollingIntervalInSeconds = table.Column<int>(nullable: false),
+                    MeasureType = table.Column<string>(nullable: true),
+                    ApplicationUserId = table.Column<string>(nullable: true),
+                    UserSensorId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sensors", x => x.Id);
+                    table.UniqueConstraint("AK_Sensors_SensorId", x => x.SensorId);
+                    table.ForeignKey(
+                        name: "FK_Sensors_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Sensors_UserSensors_UserSensorId",
+                        column: x => x.UserSensorId,
+                        principalTable: "UserSensors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Sensor Data",
                 columns: table => new
                 {
@@ -264,8 +313,28 @@ namespace SD.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Sensor Data_SensorId",
                 table: "Sensor Data",
+                column: "SensorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sensors_ApplicationUserId",
+                table: "Sensors",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sensors_SensorId",
+                table: "Sensors",
                 column: "SensorId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sensors_UserSensorId",
+                table: "Sensors",
+                column: "UserSensorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserSensors_UserId1",
+                table: "UserSensors",
+                column: "UserId1");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -292,10 +361,13 @@ namespace SD.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Sensors");
 
             migrationBuilder.DropTable(
-                name: "Sensors");
+                name: "UserSensors");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

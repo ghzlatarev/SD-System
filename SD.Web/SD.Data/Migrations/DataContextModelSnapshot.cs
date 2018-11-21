@@ -129,6 +129,57 @@ namespace SD.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("SD.Data.Models.DomainModels.UserSensor", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AlarmMax");
+
+                    b.Property<int>("AlarmMin");
+
+                    b.Property<bool>("AlarmTriggered");
+
+                    b.Property<Guid>("ApiDataSourceId");
+
+                    b.Property<string>("Coordinates")
+                        .HasMaxLength(18);
+
+                    b.Property<DateTime?>("CreatedOn");
+
+                    b.Property<DateTime?>("DeletedOn");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(300);
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<int>("LastValueUser");
+
+                    b.Property<DateTime?>("ModifiedOn");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(35);
+
+                    b.Property<DateTime>("TimeStamp");
+
+                    b.Property<Guid>("UserId");
+
+                    b.Property<string>("UserId1");
+
+                    b.Property<int>("UserInterval");
+
+                    b.Property<bool>("isPublic");
+
+                    b.Property<int>("type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("UserSensors");
+                });
+
             modelBuilder.Entity("SD.Data.Models.Identity.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -213,6 +264,8 @@ namespace SD.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ApplicationUserId");
+
                     b.Property<DateTime?>("CreatedOn");
 
                     b.Property<DateTime?>("DeletedOn");
@@ -231,10 +284,16 @@ namespace SD.Data.Migrations
 
                     b.Property<string>("Tag");
 
+                    b.Property<Guid?>("UserSensorId");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("SensorId")
                         .IsUnique();
+
+                    b.HasIndex("UserSensorId");
 
                     b.ToTable("Sensors");
                 });
@@ -310,6 +369,24 @@ namespace SD.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SD.Data.Models.DomainModels.UserSensor", b =>
+                {
+                    b.HasOne("SD.Data.Models.Identity.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1");
+                });
+
+            modelBuilder.Entity("SD.Data.Models.Sensor", b =>
+                {
+                    b.HasOne("SD.Data.Models.Identity.ApplicationUser")
+                        .WithMany("Sensors")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("SD.Data.Models.DomainModels.UserSensor")
+                        .WithMany("Sensors")
+                        .HasForeignKey("UserSensorId");
                 });
 
             modelBuilder.Entity("SD.Data.Models.SensorData", b =>

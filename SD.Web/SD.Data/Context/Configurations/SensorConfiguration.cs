@@ -11,11 +11,6 @@ namespace SD.Data.Context.Configurations
             builder.ToTable("Sensors");
 
             builder.HasIndex(s => s.SensorId).IsUnique(true);
-
-            //builder.HasMany(s => s.SensorDatas)
-            //    .WithOne(sd => sd.Sensor)
-            //    .HasForeignKey(sd => sd.SensorId)
-            //    .HasPrincipalKey(s => s.SensorId);
         }
     }
 }
