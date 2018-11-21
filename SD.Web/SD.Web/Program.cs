@@ -23,6 +23,7 @@ namespace SD.Web
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseDefaultServiceProvider(options => options.ValidateScopes = false)
                 .Build();
 
         private static async Task SeedData(IWebHost host)

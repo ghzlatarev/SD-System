@@ -15,6 +15,9 @@ using SD.Web.Utilities.Extensions;
 using SD.Services.External;
 using SD.Services.Data.Services.Contracts;
 using SD.Services.Data.Services;
+using Quartz.Spi;
+using Quartz;
+using Quartz.Impl;
 
 namespace SD.Web
 {
@@ -40,9 +43,43 @@ namespace SD.Web
             RegisterServicesData(services);
 
             RegisterInfrastructure(services);
+
+
+
+
+            services.Add(new ServiceDescriptor(typeof(IJob), typeof(ScheduledJob), ServiceLifetime.Transient));
+            services.AddSingleton<IJobFactory, ScheduledJobFactory>();
+            services.AddSingleton<IJobDetail>(provider =>
+            {
+                return JobBuilder.Create<ScheduledJob>()
+                  .WithIdentity("Sample.job", "group1")
+                  .Build();
+            });
+
+            services.AddSingleton<ITrigger>(provider =>
+            {
+                return TriggerBuilder.Create()
+                .WithIdentity($"Sample.trigger", "group1")
+                .StartNow()
+                .WithSimpleSchedule
+                 (s =>
+                    s.WithInterval(TimeSpan.FromSeconds(10))
+                    .RepeatForever()
+                 )
+                 .Build();
+            });
+
+            services.AddSingleton<IScheduler>(provider =>
+            {
+                var schedulerFactory = new StdSchedulerFactory();
+                var scheduler = schedulerFactory.GetScheduler().Result;
+                scheduler.JobFactory = provider.GetService<IJobFactory>();
+                scheduler.Start();
+                return scheduler;
+            });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IScheduler scheduler)
         {
             if (env.IsDevelopment())
             {
@@ -55,6 +92,8 @@ namespace SD.Web
                 app.UseNotFoundExceptionHandler();
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            scheduler.ScheduleJob(app.ApplicationServices.GetService<IJobDetail>(), app.ApplicationServices.GetService<ITrigger>());
 
             app.UseStaticFiles();
 

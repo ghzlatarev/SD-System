@@ -22,7 +22,7 @@ namespace SD.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            await this.service.GetSensorsData();
+            //await this.service.GetSensorsData();
             return View();
         }
 
