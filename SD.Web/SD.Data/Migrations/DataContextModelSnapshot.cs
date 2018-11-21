@@ -208,6 +208,65 @@ namespace SD.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("SD.Data.Models.Sensor", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("CreatedOn");
+
+                    b.Property<DateTime?>("DeletedOn");
+
+                    b.Property<string>("Description");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<string>("MeasureType");
+
+                    b.Property<int>("MinPollingIntervalInSeconds");
+
+                    b.Property<DateTime?>("ModifiedOn");
+
+                    b.Property<Guid>("SensorId");
+
+                    b.Property<string>("Tag");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SensorId")
+                        .IsUnique();
+
+                    b.ToTable("Sensors");
+                });
+
+            modelBuilder.Entity("SD.Data.Models.SensorData", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("CreatedOn");
+
+                    b.Property<DateTime?>("DeletedOn");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<DateTime?>("ModifiedOn");
+
+                    b.Property<Guid>("SensorId");
+
+                    b.Property<DateTime?>("TimeStamp");
+
+                    b.Property<string>("Value");
+
+                    b.Property<string>("ValueType");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SensorId");
+
+                    b.ToTable("Sensor Data");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
@@ -250,6 +309,15 @@ namespace SD.Data.Migrations
                     b.HasOne("SD.Data.Models.Identity.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SD.Data.Models.SensorData", b =>
+                {
+                    b.HasOne("SD.Data.Models.Sensor", "Sensor")
+                        .WithMany("SensorData")
+                        .HasForeignKey("SensorId")
+                        .HasPrincipalKey("SensorId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

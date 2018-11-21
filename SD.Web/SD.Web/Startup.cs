@@ -12,6 +12,9 @@ using SD.Services.Data.Services.Identity;
 using System.Net.Http;
 using SD.Data.Context;
 using SD.Web.Utilities.Extensions;
+using SD.Services.External;
+using SD.Services.Data.Services.Contracts;
+using SD.Services.Data.Services;
 
 namespace SD.Web
 {
@@ -132,6 +135,7 @@ namespace SD.Web
         private void RegisterServicesExternal(IServiceCollection services)
         {
             services.AddScoped<HttpClient>();
+            services.AddScoped<IApiClient, ApiClient>();
         }
 
         private void RegisterServicesData(IServiceCollection services)
@@ -140,6 +144,9 @@ namespace SD.Web
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<UserManager<ApplicationUser>, UserManager<ApplicationUser>>();
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
+
+            services.AddScoped<ISensorService, SensorService>();
+            services.AddScoped<ISensorDataService, SensorDataService>();
         }
 
         private void RegisterInfrastructure(IServiceCollection services)

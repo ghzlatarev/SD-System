@@ -5,13 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="X.PagedList" Version="7.6.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SD.Data.Models\SD.Data.Models.csproj" />
-    <ProjectReference Include="..\SD.Data\SD.Data.csproj" />
-    <ProjectReference Include="..\SD.Services.External\SD.Services.External.csproj" />
   </ItemGroup>
 
 </Project>

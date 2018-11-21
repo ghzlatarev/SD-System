@@ -10,8 +10,8 @@ using SD.Data.Context;
 namespace SD.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20181113184134_initial migration")]
-    partial class initialmigration
+    [Migration("20181120221223_update2")]
+    partial class update2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -138,16 +138,10 @@ namespace SD.Data.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
-                    b.Property<string>("Address");
-
                     b.Property<byte[]>("AvatarImage");
-
-                    b.Property<string>("City");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
-
-                    b.Property<string>("Country");
 
                     b.Property<DateTime?>("CreatedOn");
 
@@ -160,6 +154,8 @@ namespace SD.Data.Migrations
 
                     b.Property<string>("FirstName")
                         .HasMaxLength(25);
+
+                    b.Property<bool>("GDPR");
 
                     b.Property<bool>("IsDeleted");
 
@@ -183,8 +179,6 @@ namespace SD.Data.Migrations
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<int>("PostalCode");
 
                     b.Property<string>("SecurityStamp");
 
@@ -214,6 +208,66 @@ namespace SD.Data.Migrations
                         .HasFilter("[UserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("SD.Data.Models.Sensor", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("CreatedOn");
+
+                    b.Property<DateTime?>("DeletedOn");
+
+                    b.Property<string>("Description");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<string>("MeasureType");
+
+                    b.Property<int>("MinPollingIntervalInSeconds");
+
+                    b.Property<DateTime?>("ModifiedOn");
+
+                    b.Property<Guid>("SensorId");
+
+                    b.Property<string>("Tag");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SensorId")
+                        .IsUnique();
+
+                    b.ToTable("Sensors");
+                });
+
+            modelBuilder.Entity("SD.Data.Models.SensorData", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("CreatedOn");
+
+                    b.Property<DateTime?>("DeletedOn");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<DateTime?>("ModifiedOn");
+
+                    b.Property<Guid>("SensorId");
+
+                    b.Property<DateTime?>("TimeStamp");
+
+                    b.Property<string>("Value");
+
+                    b.Property<string>("ValueType");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SensorId")
+                        .IsUnique();
+
+                    b.ToTable("Sensor Data");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -258,6 +312,15 @@ namespace SD.Data.Migrations
                     b.HasOne("SD.Data.Models.Identity.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SD.Data.Models.SensorData", b =>
+                {
+                    b.HasOne("SD.Data.Models.Sensor", "Sensor")
+                        .WithMany("SensorData")
+                        .HasForeignKey("SensorId")
+                        .HasPrincipalKey("SensorId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

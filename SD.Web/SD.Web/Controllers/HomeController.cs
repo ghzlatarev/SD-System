@@ -4,23 +4,40 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using SD.Services.Data.Services;
+using SD.Services.Data.Services.Contracts;
 using SD.Web.Models;
 
 namespace SD.Web.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly ISensorDataService service;
+
+        public HomeController(ISensorDataService service)
         {
+            this.service = service;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            await this.service.GetSensorsData();
             return View();
         }
 
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
+        //private readonly ISensorService service;
 
-            return View();
-        }
+        //public HomeController(ISensorService service)
+        //{
+        //    this.service = service;
+        //}
+
+        //public async Task<IActionResult> Index()
+        //{
+        //    await this.service.RebaseSensorsAsync();
+        //    return View();
+        //}
 
         public IActionResult Contact()
         {

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using SD.Data.Context.Configurations;
 using SD.Data.Context.Configurations.Identity;
+using SD.Data.Models;
 using SD.Data.Models.Contracts;
 using SD.Data.Models.Identity;
 using System;
@@ -15,6 +17,10 @@ namespace SD.Data.Context
         public DataContext() { }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+
+        public virtual DbSet<Sensor> Sensors { get; set; }
+
+        public virtual DbSet<SensorData> SensorData { get; set; }
 
         public override int SaveChanges()
         {
@@ -52,6 +58,10 @@ namespace SD.Data.Context
         {
             // Identity model configuration
             modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
+
+            //API model configurations
+            modelBuilder.ApplyConfiguration(new SensorConfiguration());
+            modelBuilder.ApplyConfiguration(new SensorDataConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
