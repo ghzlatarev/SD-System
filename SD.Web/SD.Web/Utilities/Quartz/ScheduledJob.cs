@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 using SD.Services.Data.Services.Contracts;
 
-namespace SD.Web
+namespace SD.Web.Utilities.Quartz
 {
     public class ScheduledJob : IJob
     {
@@ -25,8 +25,6 @@ namespace SD.Web
 
         public async Task Execute(IJobExecutionContext context)
         {
-            //this.logger.LogWarning($"Hello from scheduled task {DateTime.Now.ToLongTimeString()}");
-
             await sensorDataService.GetSensorsData();
 
             await Task.CompletedTask;

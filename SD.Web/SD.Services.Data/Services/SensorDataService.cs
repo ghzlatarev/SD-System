@@ -27,23 +27,25 @@ namespace SD.Services.Data.Services
         {
             IList<Sensor> allSensors = await this.dataContext.Sensors.ToListAsync();
             IList<Guid> allSensorIds = allSensors.Select(s => s.SensorId).ToList();
+            IList<SensorData> deleteList = new List<SensorData>();
 
             foreach (var id in allSensorIds)
             {
                 SensorData newSensorData = await this.apiClient
-                .GetSensorData<SensorData>("sensorId?=" + id);
+                .GetSensorData("sensorId?=" + id);
                 newSensorData.SensorId = id;
 
-                IList<SensorData> oldSensorData = await this.dataContext.SensorData.ToListAsync();
+                IList<SensorData> oldSensorData = await this.dataContext.SensorData.Where(oSD => oSD.SensorId.Equals(id)).ToListAsync();
 
                 if (oldSensorData.Count >= 5)
                 {
-                    this.dataContext.SensorData.Remove(oldSensorData[0]);
+                    deleteList.Add(oldSensorData[0]);
                 }
 
                 await this.dataContext.SensorData.AddAsync(newSensorData);
             }
 
+            this.dataContext.SensorData.RemoveRange(deleteList);
             await this.dataContext.SaveChangesAsync(false);
         }
     }

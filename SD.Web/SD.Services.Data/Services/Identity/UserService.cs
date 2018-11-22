@@ -20,6 +20,19 @@ namespace SD.Services.Data.Services.Identity
             this.dataContext = dataContext;
         }
 
+        public async Task<IPagedList<ApplicationUser>> FilterUsersAsync(string filter = "", int pageNumber = 1, int pageSize = 10)
+        {
+            Validator.ValidateNull(filter, "Filter cannot be null!");
+
+            Validator.ValidateMinRange(pageNumber, 1, "Page number cannot be less then 1!");
+            Validator.ValidateMinRange(pageSize, 0, "Page size cannot be less then 0!");
+
+            var query = this.dataContext.Users
+                .Where(u => u.UserName.Contains(filter) || u.Email.Contains(filter));
+
+            return await query.ToPagedListAsync(pageNumber, pageSize);
+        }
+
         public async Task SaveAvatarImageAsync(Stream stream, string userId)
         {
             Validator.ValidateNull(stream, "Image stream cannot be null!");

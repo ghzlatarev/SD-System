@@ -1,0 +1,39 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+<h2>Users Administration</h2>
+
+<div class="card card-plain">
+    <div class="card-body">
+        <div class="table-responsive">
+            @await Html.PartialAsync("_UserTablePartial", Model.Table)
+        </div>
+    </div>
+</div>
+
+@section Search {
+    <li class="search-bar input-group">
+        <button class="btn btn-link" id="search-button" data-toggle="modal" data-target="#searchModal">
+            <i class="tim-icons icon-zoom-split"></i>
+            <span class="d-lg-none d-md-block">Search</span>
+        </button>
+    </li>
+
+    <div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <form asp-area="Administration" asp-controller="User" asp-action="Filter"
+                          asp-route-pageNumber="1" asp-route-pageSize="10"
+                          method="get" data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#tablePartial">
+                        <input type="text" class="form-control" name="searchTerm" placeholder="SEARCH" autocomplete="off">
+                    </form>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="tim-icons icon-simple-remove"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

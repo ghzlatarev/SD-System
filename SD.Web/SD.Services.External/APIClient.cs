@@ -20,24 +20,22 @@ namespace SD.Services.External
             this.client.DefaultRequestHeaders.Add("auth-token", "8e4c46fe-5e1d-4382-b7fc-19541f7bf3b0");
         }
 
-        public async Task<IEnumerable<T>> GetEntities<T>(string target)
-            where T : BaseEntity
+        public async Task<IEnumerable<Sensor>> GetEntities(string target)
         {
             var response = await client.GetAsync(target)
                 .ConfigureAwait(false);
             
-            var entities = JsonConvert.DeserializeObject<IEnumerable<T>>(await response.Content.ReadAsStringAsync());
+            var entities = JsonConvert.DeserializeObject<IEnumerable<Sensor>>(await response.Content.ReadAsStringAsync());
 
             return entities;
         }
 
-        public async Task<T> GetSensorData<T>(string target)
-            where T : BaseEntity
+        public async Task<SensorData> GetSensorData(string target)
         {
             var response = await client.GetAsync(target)
                 .ConfigureAwait(false);
 
-            var entity = JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
+            var entity = JsonConvert.DeserializeObject<SensorData>(await response.Content.ReadAsStringAsync());
 
             return entity;
         }

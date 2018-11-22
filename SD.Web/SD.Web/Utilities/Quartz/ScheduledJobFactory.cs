@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Quartz;
 using Quartz.Spi;
 
-namespace SD.Web
+namespace SD.Web.Utilities.Quartz
 {
     public class ScheduledJobFactory : IJobFactory
     {
@@ -26,6 +26,5 @@ namespace SD.Web
                 disposable.Dispose();
             }
         }
-
     }
 }

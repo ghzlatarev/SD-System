@@ -18,6 +18,7 @@ using SD.Services.Data.Services;
 using Quartz.Spi;
 using Quartz;
 using Quartz.Impl;
+using SD.Web.Utilities.Quartz;
 
 namespace SD.Web
 {
@@ -44,39 +45,7 @@ namespace SD.Web
 
             RegisterInfrastructure(services);
 
-
-
-
-            services.Add(new ServiceDescriptor(typeof(IJob), typeof(ScheduledJob), ServiceLifetime.Transient));
-            services.AddSingleton<IJobFactory, ScheduledJobFactory>();
-            services.AddSingleton<IJobDetail>(provider =>
-            {
-                return JobBuilder.Create<ScheduledJob>()
-                  .WithIdentity("Sample.job", "group1")
-                  .Build();
-            });
-
-            services.AddSingleton<ITrigger>(provider =>
-            {
-                return TriggerBuilder.Create()
-                .WithIdentity($"Sample.trigger", "group1")
-                .StartNow()
-                .WithSimpleSchedule
-                 (s =>
-                    s.WithInterval(TimeSpan.FromSeconds(10))
-                    .RepeatForever()
-                 )
-                 .Build();
-            });
-
-            services.AddSingleton<IScheduler>(provider =>
-            {
-                var schedulerFactory = new StdSchedulerFactory();
-                var scheduler = schedulerFactory.GetScheduler().Result;
-                scheduler.JobFactory = provider.GetService<IJobFactory>();
-                scheduler.Start();
-                return scheduler;
-            });
+            RegisterQuartzServices(services);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IScheduler scheduler)
@@ -186,6 +155,41 @@ namespace SD.Web
 
             services.AddScoped<ISensorService, SensorService>();
             services.AddScoped<ISensorDataService, SensorDataService>();
+        }
+
+        private void RegisterQuartzServices(IServiceCollection services)
+        {
+            //Quartz
+            services.Add(new ServiceDescriptor(typeof(IJob), typeof(ScheduledJob), ServiceLifetime.Transient));
+            services.AddSingleton<IJobFactory, ScheduledJobFactory>();
+            services.AddSingleton<IJobDetail>(provider =>
+            {
+                return JobBuilder.Create<ScheduledJob>()
+                  .WithIdentity("Sensors.job", "group1")
+                  .Build();
+            });
+
+            services.AddSingleton<ITrigger>(provider =>
+            {
+                return TriggerBuilder.Create()
+                .WithIdentity($"Sensors.trigger", "group1")
+                .StartNow()
+                .WithSimpleSchedule
+                 (s =>
+                    s.WithInterval(TimeSpan.FromSeconds(30))
+                    .RepeatForever()
+                 )
+                 .Build();
+            });
+
+            services.AddSingleton<IScheduler>(provider =>
+            {
+                var schedulerFactory = new StdSchedulerFactory();
+                var scheduler = schedulerFactory.GetScheduler().Result;
+                scheduler.JobFactory = provider.GetService<IJobFactory>();
+                scheduler.Start();
+                return scheduler;
+            });
         }
 
         private void RegisterInfrastructure(IServiceCollection services)

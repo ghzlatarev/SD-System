@@ -18,8 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\" />
-    <Folder Include="Utilities\" />
+    <Folder Include="Areas\Administration\Views\" />
   </ItemGroup>
 
   <ItemGroup>

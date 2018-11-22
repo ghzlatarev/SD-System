@@ -1,0 +1,69 @@
+﻿@model PaginationViewModel
+
+<div class="pagination-holder black clearfix center">
+    <ul id="dark-pagination" class="pagination dark-theme simple-pagination">
+        @if (Model.HasPreviousPage)
+        {
+            <li>
+                <a asp-area="@Model.AreaRoute" asp-controller="@Model.ControllerRoute" asp-action="@Model.ActionRoute"
+                   asp-route-pageNumber="1" asp-route-searchTerm="@(Model.SearchTerm)"
+                   asp-route-pageSize="@(Model.PageSize)"
+                   data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#tablePartial"
+                   class="page-link">First</a>
+            </li>
+            <li>
+                <a asp-area="@Model.AreaRoute" asp-controller="@Model.ControllerRoute" asp-action="@Model.ActionRoute"
+                   asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-searchTerm="@(Model.SearchTerm)"
+                   asp-route-pageSize="@(Model.PageSize)"
+                   data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#tablePartial"
+                   class="page-link">Prev</a>
+            </li>
+        }
+        else
+        {
+            <li><a class="page-link current">First</a></li>
+            <li><a class="page-link current">Prev</a></li>
+        }
+
+        @for (int i = (Model.PageNumber <= 5 ? 1 : Model.PageNumber - 5); i <= (Model.PageNumber >= Model.PageCount - 5 ? Model.PageCount : Model.PageNumber + 5); i++)
+        {
+            if (Model.PageNumber == i)
+            {
+                <li><a class="page-link current">@i</a></li>
+            }
+            else
+            {
+                <li>
+                    <a asp-area="@Model.AreaRoute" asp-controller="@Model.ControllerRoute" asp-action="@Model.ActionRoute"
+                       asp-route-pageNumber="@i" asp-route-searchTerm="@(Model.SearchTerm)"
+                       asp-route-pageSize="@(Model.PageSize)"
+                       data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#tablePartial"
+                       class="page-link">@i</a>
+                </li>
+            }
+        }
+
+        @if (Model.HasNextPage)
+        {
+            <li>
+                <a asp-area="@Model.AreaRoute" asp-controller="@Model.ControllerRoute" asp-action="@Model.ActionRoute"
+                   asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-searchTerm="@(Model.SearchTerm)"
+                   asp-route-pageSize="@(Model.PageSize)"
+                   data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#tablePartial"
+                   class="page-link">Next</a>
+            </li>
+            <li>
+                <a asp-area="@Model.AreaRoute" asp-controller="@Model.ControllerRoute" asp-action="@Model.ActionRoute"
+                   asp-route-pageNumber="@Model.PageCount" asp-route-searchTerm="@(Model.SearchTerm)"
+                   asp-route-pageSize="@(Model.PageSize)"
+                   data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#tablePartial"
+                   class="page-link">Last</a>
+            </li>
+        }
+        else
+        {
+            <li><a class="page-link current">Next</a></li>
+            <li><a class="page-link current">Last</a></li>
+        }
+    </ul>
+</div>
