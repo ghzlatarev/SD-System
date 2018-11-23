@@ -33,12 +33,13 @@ namespace SD.Web.Configurations
         {
             if (!await userManager.Users.AnyAsync(u => u.UserName == "Administrator"))
             {
-                ApplicationUser newUser = new ApplicationUser()
-                {
-                    UserName = Environment.GetEnvironmentVariable("SD_SuperAdminUserNameCredentials"),
-                    Email = Environment.GetEnvironmentVariable("SD_SuperAdminEmailCredentials"),
-                    CreatedOn = DateTime.UtcNow.AddHours(2),
-                    IsDeleted = false
+				ApplicationUser newUser = new ApplicationUser()
+				{
+					UserName = Environment.GetEnvironmentVariable("SD_SuperAdminUserNameCredentials"),
+					Email = Environment.GetEnvironmentVariable("SD_SuperAdminEmailCredentials"),
+					CreatedOn = DateTime.UtcNow.AddHours(2),
+					IsDeleted = false,
+					IsAdmin = true
                 };
 
                 if ((await userManager.CreateAsync(newUser, Environment.GetEnvironmentVariable("SD_SuperAdminPasswordCredentials"))).Succeeded)

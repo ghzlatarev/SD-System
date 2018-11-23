@@ -48,88 +48,58 @@ namespace SD.Web.Areas.Admin.Controllers
             return PartialView("_UserTablePartial", model.Table);
         }
 
-        //[HttpGet("users/disable/{id}")]
-        //public async Task<IActionResult> Disable(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        throw new ApplicationException($"Passed ID parameter is absent.");
-        //    }
+		[HttpGet("users/promote/{id}")]
+		public async Task<IActionResult> Promote(string id)
+		{
+			const string adminRole = "Administrator";
 
-        //    var user = await _userService.DisableUser(id);
-        //    if (user == null)
-        //    {
-        //        throw new ApplicationException($"Unable to find user with ID '{id}'.");
-        //    }
+			if (!await _roleManager.RoleExistsAsync(adminRole))
+			{
+				throw new ApplicationException(string.Format("User promotion unsuccessful , {0} role does not exists.", adminRole));
+			}
 
-        //    var model = new UserTableViewModel(user);
+			var user = await _userManager.FindByIdAsync(id);
+			var addRoleResult = await _userManager.AddToRoleAsync(user, adminRole);
+			
+			if (addRoleResult.Succeeded == true)
+			{
+				await this._userService.UpdateRole(user);
+			}
+			else
+			{
+				throw new ApplicationException(string.Format("User promotion operation was unsuccessful."));
+			}
 
-        //    return PartialView("_UserTableRowPartial", model);
-        //}
+			var model = new UserTableViewModel(user);
 
-        //[HttpGet("users/restore/{id}")]
-        //public async Task<IActionResult> Restore(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        throw new ApplicationException($"Passed ID parameter is absent.");
-        //    }
+			return PartialView("_UserTableRowPartial", model);
+		}
 
-        //    var user = await _userService.RestoreUser(id);
-        //    if (user == null)
-        //    {
-        //        throw new ApplicationException($"Unable to find user with ID '{id}'.");
-        //    }
+		[HttpGet("users/demote/{id}")]
+		public async Task<IActionResult> Demote(string id)
+		{
+			const string adminRole = "Administrator";
 
-        //    var model = new UserTableViewModel(user);
+			if (!await _roleManager.RoleExistsAsync(adminRole))
+			{
+				throw new ApplicationException(string.Format("User demotion unsuccessful , {0} role does not exists.", adminRole));
+			}
 
-        //    return PartialView("_UserTableRowPartial", model);
-        //}
+			var user = await _userManager.FindByIdAsync(id);
+			var removeRoleResult = await _userManager.RemoveFromRoleAsync(user, adminRole);
 
-        //[HttpGet("users/promote/{id}")]
-        //public async Task<IActionResult> Promote(string id)
-        //{
-        //    const string adminRole = "Administrator";
+			if (removeRoleResult.Succeeded == true)
+			{
+				await this._userService.UpdateRole(user);
+			}
+			else
+			{
+				throw new ApplicationException(string.Format("User demotion operation was unsuccessful."));
+			}
 
-        //    if (!await _roleManager.RoleExistsAsync(adminRole))
-        //    {
-        //        throw new ApplicationException(string.Format("User promotion unsuccessful , {0} role does not exists.", adminRole));
-        //    }
+			var model = new UserTableViewModel(user);
 
-        //    var user = await _userManager.FindByIdAsync(id);
-
-        //    var addRoleResult = await _userManager.AddToRoleAsync(user, adminRole);
-        //    if (!addRoleResult.Succeeded)
-        //    {
-        //        throw new ApplicationException(string.Format("User promotion operation was unsuccessful."));
-        //    }
-
-        //    var model = new UserRoleViewModel(user, await _userManager.IsInRoleAsync(user, adminRole));
-
-        //    return PartialView("_UserRolePartial", model);
-        //}
-
-        //[HttpGet("users/demote/{id}")]
-        //public async Task<IActionResult> Demote(string id)
-        //{
-        //    const string adminRole = "Administrator";
-
-        //    if (!await _roleManager.RoleExistsAsync(adminRole))
-        //    {
-        //        throw new ApplicationException(string.Format("User demotion unsuccessful , {0} role does not exists.", adminRole));
-        //    }
-
-        //    var user = await _userManager.FindByIdAsync(id);
-
-        //    var removeRoleResult = await _userManager.RemoveFromRoleAsync(user, adminRole);
-        //    if (!removeRoleResult.Succeeded)
-        //    {
-        //        throw new ApplicationException(string.Format("User demotion operation was unsuccessful."));
-        //    }
-
-        //    var model = new UserRoleViewModel(user, await _userManager.IsInRoleAsync(user, adminRole));
-
-        //    return PartialView("_UserRolePartial", model);
-        //}
-    }
+			return PartialView("_UserTableRowPartial", model);
+		}
+	}
 }

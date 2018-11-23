@@ -10,6 +10,9 @@ namespace SD.Services.Data.Services.Identity.Contracts
         Task SaveAvatarImageAsync(Stream stream, string userId);
 
         Task<IPagedList<ApplicationUser>> FilterUsersAsync(string filter = "", int pageNumber = 1, int pageSize = 10);
-    }
+
+		Task UpdateRole(ApplicationUser user);
+
+	}
 }
 

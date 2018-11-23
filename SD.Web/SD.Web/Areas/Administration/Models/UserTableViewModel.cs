@@ -11,9 +11,10 @@ namespace SD.Web.Areas.Administration.Models
             this.Email = user.Email;
             this.PhoneNumber = user.PhoneNumber;
             this.IsDeleted = user.IsDeleted;
-        }
+			this.IsAdmin = user.IsAdmin;
+		}
 
-        public string Id { get; set; }
+		public string Id { get; set; }
 
         public string Username { get; set; }
 
@@ -23,6 +24,6 @@ namespace SD.Web.Areas.Administration.Models
 
         public bool IsDeleted { get; set; }
 
-        public bool IsAdmin { get; set; }
-    }
+		public bool IsAdmin { get; set; }
+	}
 }

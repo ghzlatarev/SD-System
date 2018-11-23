@@ -20,7 +20,7 @@ namespace SD.Services.Data.Services.Identity
             this.dataContext = dataContext;
         }
 
-        public async Task<IPagedList<ApplicationUser>> FilterUsersAsync(string filter = "", int pageNumber = 1, int pageSize = 10)
+		public async Task<IPagedList<ApplicationUser>> FilterUsersAsync(string filter = "", int pageNumber = 1, int pageSize = 10)
         {
             Validator.ValidateNull(filter, "Filter cannot be null!");
 
@@ -53,5 +53,11 @@ namespace SD.Services.Data.Services.Identity
 
             await this.dataContext.SaveChangesAsync();
         }
-    }
+
+		public async Task UpdateRole(ApplicationUser user)
+		{
+			user.IsAdmin = !user.IsAdmin;
+			await this.dataContext.SaveChangesAsync();
+		}
+	}
 }

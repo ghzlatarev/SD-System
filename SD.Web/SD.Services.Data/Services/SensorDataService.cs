@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SD.Data.Context;
 using SD.Data.Models;
 using SD.Services.Data.Services.Contracts;
-using SD.Services.Data.Utils;
 using SD.Services.External;
 
 namespace SD.Services.Data.Services
@@ -28,6 +26,7 @@ namespace SD.Services.Data.Services
             IList<Sensor> allSensors = await this.dataContext.Sensors.ToListAsync();
             IList<Guid> allSensorIds = allSensors.Select(s => s.SensorId).ToList();
             IList<SensorData> deleteList = new List<SensorData>();
+            IList<SensorData> addList = new List<SensorData>();
 
             foreach (var id in allSensorIds)
             {
@@ -35,17 +34,22 @@ namespace SD.Services.Data.Services
                 .GetSensorData("sensorId?=" + id);
                 newSensorData.SensorId = id;
 
-                IList<SensorData> oldSensorData = await this.dataContext.SensorData.Where(oSD => oSD.SensorId.Equals(id)).ToListAsync();
+                IList<SensorData> oldSensorData = await this.dataContext.SensorData
+                    .Where(oSD => oSD.SensorId.Equals(id))
+                    .OrderBy(oSD => oSD.TimeStamp)
+                    .ToListAsync();
 
                 if (oldSensorData.Count >= 5)
                 {
                     deleteList.Add(oldSensorData[0]);
                 }
 
-                await this.dataContext.SensorData.AddAsync(newSensorData);
+                addList.Add(newSensorData);
             }
 
             this.dataContext.SensorData.RemoveRange(deleteList);
+            await this.dataContext.AddRangeAsync(addList);
+
             await this.dataContext.SaveChangesAsync(false);
         }
     }

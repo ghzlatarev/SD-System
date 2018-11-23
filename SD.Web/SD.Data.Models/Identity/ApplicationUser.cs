@@ -31,6 +31,9 @@ namespace SD.Data.Models.Identity
         public string Story { get; set; }
 
         public bool GDPR { get; set; }
-        public IEnumerable<Sensor> Sensors { get; set; }
+
+		public bool IsAdmin { get; set; }
+
+		public IEnumerable<Sensor> Sensors { get; set; }
     }
 }
