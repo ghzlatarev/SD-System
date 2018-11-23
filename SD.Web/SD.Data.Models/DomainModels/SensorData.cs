@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using SD.Data.Models.Abstract;
 
-namespace SD.Data.Models
+namespace SD.Data.Models.DomainModels
 {
     public class SensorData : BaseEntity
     {

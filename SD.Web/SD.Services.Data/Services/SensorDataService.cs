@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SD.Data.Context;
-using SD.Data.Models;
+using SD.Data.Models.DomainModels;
 using SD.Services.Data.Services.Contracts;
 using SD.Services.External;
 

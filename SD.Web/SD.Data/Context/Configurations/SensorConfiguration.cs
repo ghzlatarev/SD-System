@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SD.Data.Models;
+using SD.Data.Models.DomainModels;
 
 namespace SD.Data.Context.Configurations
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using SD.Data.Models;
+using SD.Data.Models.DomainModels;
 using SD.Data.Models.Abstract;
 
 namespace SD.Services.External

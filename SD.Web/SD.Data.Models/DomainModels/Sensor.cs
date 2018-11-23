@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using SD.Data.Models.Abstract;
 
-namespace SD.Data.Models
+namespace SD.Data.Models.DomainModels
 {
     public class Sensor : BaseEntity
     {
@@ -26,5 +26,8 @@ namespace SD.Data.Models
 
         [JsonIgnore]
         public ICollection<SensorData> SensorData { get; set; }
-    }
+
+		[JsonIgnore]
+		public ICollection<UserSensor> UserSensors { get; set; }
+	}
 }

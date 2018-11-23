@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SD.Data.Context;
-using SD.Data.Models;
+using SD.Data.Models.DomainModels;
 using SD.Services.Data.Services.Contracts;
 using SD.Services.Data.Utils;
 using SD.Services.External;
@@ -25,8 +25,7 @@ namespace SD.Services.Data.Services
 
         public async Task RebaseSensorsAsync()
         {
-            IEnumerable<Sensor> apiSensors = await this.apiClient
-               .GetEntities("all");
+            IEnumerable<Sensor> apiSensors = await this.apiClient.GetEntities("all");
             IList<Sensor> dbSensors = await this.dataContext.Sensors.ToListAsync();
 
             IList<Sensor> addList = apiSensors.Where(apiS => dbSensors.Any(dbS => dbS.SensorId.Equals(apiS.SensorId)) == false).ToList();

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SD.Data.Models;
+using SD.Data.Models.DomainModels;
 
 namespace SD.Data.Context.Configurations
 {
@@ -8,7 +8,7 @@ namespace SD.Data.Context.Configurations
     {
         public void Configure(EntityTypeBuilder<SensorData> builder)
         {
-            builder.ToTable("Sensor Data");
+            builder.ToTable("SensorsData");
 
             builder.HasOne(sd => sd.Sensor)
                 .WithMany(s => s.SensorData)

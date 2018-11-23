@@ -34,6 +34,6 @@ namespace SD.Data.Models.Identity
 
 		public bool IsAdmin { get; set; }
 
-		public IEnumerable<Sensor> Sensors { get; set; }
+		public ICollection<UserSensor> PersonalSensors { get; set; }
     }
 }
