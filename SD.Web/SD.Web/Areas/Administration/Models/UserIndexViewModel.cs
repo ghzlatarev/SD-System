@@ -5,9 +5,9 @@ using X.PagedList;
 
 namespace SD.Web.Areas.Administration.Models
 {
-    public class IndexViewModel
+    public class UserIndexViewModel
     {
-        public IndexViewModel(IPagedList<ApplicationUser> users, string searchTerm = "")
+        public UserIndexViewModel(IPagedList<ApplicationUser> users, string searchTerm = "")
         {
             this.Table = new TableViewModel<UserTableViewModel>()
             {
@@ -20,7 +20,7 @@ namespace SD.Web.Areas.Administration.Models
                     HasNextPage = users.HasNextPage,
                     HasPreviousPage = users.HasPreviousPage,
                     SearchTerm = searchTerm,
-                    AreaRoute = "Admin",
+                    AreaRoute = "Administration",
                     ControllerRoute = "User",
                     ActionRoute = "Filter"
                 }

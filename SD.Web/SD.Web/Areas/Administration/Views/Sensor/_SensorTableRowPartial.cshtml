@@ -1,0 +1,29 @@
+﻿@model SensorTableViewModel
+
+<td>@Model.Name</td>
+<td>@Model.Latitude</td>
+<td>@Model.Longitude</td>
+<td>@(Model.AlarmTriggered)</td>
+<td>@(Model.IsPublic)</td>
+<td>
+	<div class=" dark-theme">
+		<a class="page-link"
+		   asp-area="Administration" asp-controller="Sensor" asp-action="Modify" asp-route-id="@Model.Id">Modify Sensor</a>
+	</div>
+</td>
+@*<td>
+		<div class=" dark-theme">
+			@if (Model.IsAdmin == true)
+			{
+				<a class="page-link"
+				   asp-area="Administration" asp-controller="User" asp-action="Demote" asp-route-id="@Model.Id" method="get"
+				   data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#@Model.Id">Demote</a>
+			}
+			else
+			{
+				<a class="page-link"
+				   asp-area="Administration" asp-controller="User" asp-action="Promote" asp-route-id="@Model.Id"
+				   data-ajax="true" data-ajax-method="get" data-ajax-mode="replace" data-ajax-update="#@Model.Id">Promote</a>
+			}
+		</div>
+	</td>*@

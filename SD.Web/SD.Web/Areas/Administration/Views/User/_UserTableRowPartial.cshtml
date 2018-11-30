@@ -19,3 +19,15 @@
 		}
 	</div>
 </td>
+<td>
+	<div class=" dark-theme">
+		<a class="page-link"
+		   asp-area="Administration" asp-controller="Sensor" asp-action="Index" asp-route-id="@Model.Id">User Sensors</a>
+	</div>
+</td>
+<td>
+	<div class=" dark-theme">
+		<a class="page-link"
+		   asp-area="Administration" asp-controller="Sensor" asp-action="Register" asp-route-userId="@Model.Id">Register new sensor</a>
+	</div>
+</td>

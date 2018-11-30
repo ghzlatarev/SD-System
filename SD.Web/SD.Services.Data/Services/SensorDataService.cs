@@ -21,6 +21,8 @@ namespace SD.Services.Data.Services
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
         }
 
+		//TODO: Handle exception coming from API. Catch and translate to business exception.
+		//TODO: Then throw/bubble up.
         public async Task GetSensorsData()
         {
             IList<Sensor> allSensors = await this.dataContext.Sensors.ToListAsync();

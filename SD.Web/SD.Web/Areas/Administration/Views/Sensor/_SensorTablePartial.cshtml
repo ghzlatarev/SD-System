@@ -1,0 +1,47 @@
+﻿@model TableViewModel<SensorTableViewModel>
+
+<div id="tablePartial">
+	<div>
+		<form asp-area="Administration" asp-controller="Sensor" asp-action="Filter"
+			  asp-route-pageNumber="@Model.Pagination.PageNumber" asp-route-searchTerm="@Model.Pagination.SearchTerm"
+			  method="get" data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#tablePartial">
+			<label>Page size:</label>
+			<input name="pageSize" class="form-control" value="@Model.Pagination.PageSize" type="number" min="1" max="50" style="width:5em;" />
+		</form>
+	</div>
+	<div>
+		<table class="table tablesorter">
+			<thead class="text-primary">
+				<tr>
+					<th>
+						Name
+					</th>
+					<th>
+						Latitude
+					</th>
+					<th>
+						Longitude
+					</th>
+					<th>
+						Alarm Triggered
+					</th>
+					<th>
+						Public
+					</th>
+					<th>
+						Actions
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var sensor in Model.Items)
+				{
+					<tr id="@sensor.Id">
+						@await Html.PartialAsync("_SensorTableRowPartial", sensor)
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+	@await Html.PartialAsync("_PaginationPartial", Model.Pagination)
+</div>

@@ -1,0 +1,97 @@
+﻿@model ModifyViewModel
+@{
+	ViewData["Title"] = "Modify";
+}
+
+<div class="row">
+	<div class="col-md-8">
+		<div class="card">
+			<div class="card-header">
+				<h5 class="title">Modify Sensor</h5>
+			</div>
+			<div class="card-body">
+				<form method="post">
+					<div asp-validation-summary="All" class="text-danger"></div>
+					<div class="row">
+						<div class="col-md-5 pr-md-1">
+							<div class="form-group">
+								<label asp-for="Name"></label>
+								<input asp-for="Name" type="text" class="form-control" placeholder="" value="@Model.Name" maxlength="40" minlength="6" required>
+								<span asp-validation-for="Name" class="text-danger"></span>
+							</div>
+						</div>
+						<div class="col-md-4 pl-md-1">
+							<div class="form-group">
+								<label asp-for="PollingInterval"></label>
+								<input asp-for="PollingInterval" type="number" class="form-control" placeholder="Polling Interval" value="@Model.PollingInterval">
+								<span asp-validation-for="PollingInterval" class="text-danger"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 pr-md-1">
+							<div class="form-group">
+								<label asp-for="Latitude"></label>
+								<input asp-for="Latitude" type="number" class="form-control" placeholder="Latitude" value="@Model.Latitude">
+								<span asp-validation-for="Latitude" class="text-danger"></span>
+							</div>
+						</div>
+						<div class="col-md-6 pl-md-1">
+							<div class="form-group">
+								<label asp-for="Longitude"></label>
+								<input asp-for="Longitude" type="number" class="form-control" placeholder="Longitude" value="@Model.Longitude">
+								<span asp-validation-for="Longitude" class="text-danger"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 pr-md-1">
+							<div class="form-group">
+								<label asp-for="AlarmMin"></label>
+								<input asp-for="AlarmMin" type="number" class="form-control" placeholder="AlarmMin" value="@Model.AlarmMin">
+								<span asp-validation-for="AlarmMin" class="text-danger"></span>
+							</div>
+						</div>
+						<div class="col-md-6 pl-md-1">
+							<div class="form-group">
+								<label asp-for="AlarmMax"></label>
+								<input asp-for="AlarmMax" type="number" class="form-control" placeholder="AlarmMax" value="@Model.AlarmMax">
+								<span asp-validation-for="AlarmMax" class="text-danger"></span>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label asp-for="AlarmTriggered"></label>
+								<input asp-for="AlarmTriggered" type="checkbox" class="form-control" placeholder="" value="@Model.AlarmTriggered">
+								<span asp-validation-for="AlarmTriggered" class="text-danger"></span>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label asp-for="IsPublic"></label>
+								<input asp-for="IsPublic" type="checkbox" class="form-control" placeholder="" value="@Model.IsPublic">
+								<span asp-validation-for="IsPublic" class="text-danger"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-8">
+							<div class="form-group">
+								<label>Descritpion</label>
+								<textarea asp-for="Description" rows="4" cols="80" class="form-control" placeholder="Here can be your description" value="@Model.Description" maxlength="250" minlength="3"></textarea>
+								<span asp-validation-for="Description" class="text-danger"></span>
+							</div>
+						</div>
+					</div>
+					<div class="card-footer" data-color="blue">
+						<button type="submit" class="btn btn-fill">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	@await Html.PartialAsync("_ValidationScriptsPartial")
+}

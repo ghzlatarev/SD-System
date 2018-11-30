@@ -11,6 +11,6 @@ namespace SD.Data.Context.Configurations
             builder.ToTable("Sensors");
 
             builder.HasIndex(s => s.SensorId).IsUnique(true);
-        }
+		}
     }
 }

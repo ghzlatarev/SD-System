@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Administration\Views\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SD.Data.Models\SD.Data.Models.csproj" />
     <ProjectReference Include="..\SD.Data\SD.Data.csproj" />
     <ProjectReference Include="..\SD.Services.Data\SD.Services.Data.csproj" />

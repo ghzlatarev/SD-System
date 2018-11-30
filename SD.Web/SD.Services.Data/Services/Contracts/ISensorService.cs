@@ -8,5 +8,7 @@ namespace SD.Services.Data.Services.Contracts
     public interface ISensorService
     {
         Task RebaseSensorsAsync();
-    }
+
+		Task<IList<Tuple<string, string>>> GetSensorNamesIdsAsync();
+	}
 }

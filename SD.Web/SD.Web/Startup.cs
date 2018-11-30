@@ -155,9 +155,10 @@ namespace SD.Web
 
             services.AddScoped<ISensorService, SensorService>();
             services.AddScoped<ISensorDataService, SensorDataService>();
-        }
+			services.AddScoped<IUserSensorService, UserSensorService>();
+		}
 
-        private void RegisterQuartzServices(IServiceCollection services)
+		private void RegisterQuartzServices(IServiceCollection services)
         {
             //Quartz
             services.Add(new ServiceDescriptor(typeof(IJob), typeof(ScheduledJob), ServiceLifetime.Transient));

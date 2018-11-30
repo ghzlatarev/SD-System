@@ -1,0 +1,81 @@
+﻿@model RegisterViewModel
+@{
+	ViewData["Title"] = "Register";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+	<div class="col-md-8">
+		<form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+			<h4>Register a new sensor.</h4>
+			<hr />
+			<div asp-validation-summary="All" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="Name"></label>
+				<input asp-for="Name" class="form-control" maxlength="40" minlength="6" required />
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Latitude"></label>
+				<input asp-for="Latitude" class="form-control" required />
+				<span asp-validation-for="Latitude" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Longitude"></label>
+				<input asp-for="Longitude" class="form-control" required />
+				<span asp-validation-for="Longitude" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="AlarmMin"></label>
+				<input asp-for="AlarmMin" class="form-control" required />
+				<span asp-validation-for="AlarmMin" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="AlarmMax"></label>
+				<input asp-for="AlarmMax" class="form-control" required />
+				<span asp-validation-for="AlarmMax" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="PollingInterval"></label>
+				<input asp-for="PollingInterval" class="form-control" required />
+				<span asp-validation-for="PollingInterval" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<div class="checkbox">
+					<label asp-for="IsPublic">
+						<input asp-for="IsPublic" class="checkbox-control" required />
+						@Html.DisplayNameFor(us => us.IsPublic)
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="checkbox">
+					<label asp-for="AlarmTriggered">
+						<input asp-for="AlarmTriggered" class="checkbox-control" required />
+						@Html.DisplayNameFor(us => us.AlarmTriggered)
+					</label>
+				</div>
+			</div>
+
+			<div class="form-group">
+				@foreach (var kvp in Model.SensorNamesIds)
+				{
+					<label asp-for="SensorId">@kvp.Item2</label>
+					<input type="radio" asp-for="SensorId" class="form-control" value=@kvp.Item1 />
+				}
+				<span asp-validation-for="SensorId" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label>Description</label>
+				<textarea asp-for="Description" rows="4" cols="80" class="form-control" placeholder="Here can be your description" maxlength="250" minlength="3"></textarea>
+				<span asp-validation-for="Description" class="text-danger"></span>
+			</div>
+			<button type="submit" class="btn btn-default">Register</button>
+		</form>
+	</div>
+	</div>
+
+	@section Scripts {
+		@await Html.PartialAsync("_ValidationScriptsPartial")
+	}

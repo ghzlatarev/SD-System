@@ -31,19 +31,19 @@ namespace SD.Web.Areas.Admin.Controllers
         {
             var users = await _userService.FilterUsersAsync();
 
-            var model = new IndexViewModel(users);
+            var model = new UserIndexViewModel(users);
 
             return View(model);
         }
 
         [HttpGet("users/filter")]
-        public async Task<IActionResult> Filter(string searchTerm, int? pageSize, int? pageNumber)
+        public async Task<IActionResult> Filter(string searchTerm, int? pageNumber, int? pageSize)
         {
             searchTerm = searchTerm ?? string.Empty;
 
             var users = await _userService.FilterUsersAsync(searchTerm, pageNumber ?? 1, pageSize ?? 10);
 
-            var model = new IndexViewModel(users, searchTerm);
+            var model = new UserIndexViewModel(users, searchTerm);
 
             return PartialView("_UserTablePartial", model.Table);
         }
@@ -52,11 +52,6 @@ namespace SD.Web.Areas.Admin.Controllers
 		public async Task<IActionResult> Promote(string id)
 		{
 			const string adminRole = "Administrator";
-
-			if (!await _roleManager.RoleExistsAsync(adminRole))
-			{
-				throw new ApplicationException(string.Format("User promotion unsuccessful , {0} role does not exists.", adminRole));
-			}
 
 			var user = await _userManager.FindByIdAsync(id);
 			var addRoleResult = await _userManager.AddToRoleAsync(user, adminRole);

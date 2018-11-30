@@ -23,6 +23,7 @@ namespace SD.Web.Utilities.Quartz
             this.sensorDataService = sensorDataService;
         }
 
+		//TODO: Write exception from GetSensorsData to ErrorLog
         public async Task Execute(IJobExecutionContext context)
         {
             await sensorDataService.GetSensorsData();

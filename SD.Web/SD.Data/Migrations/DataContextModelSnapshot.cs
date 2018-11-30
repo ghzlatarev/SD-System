@@ -199,9 +199,6 @@ namespace SD.Data.Migrations
 
                     b.Property<bool>("AlarmTriggered");
 
-                    b.Property<string>("Coordinates")
-                        .HasMaxLength(18);
-
                     b.Property<DateTime?>("CreatedOn");
 
                     b.Property<DateTime?>("DeletedOn");
@@ -211,12 +208,20 @@ namespace SD.Data.Migrations
 
                     b.Property<bool>("IsDeleted");
 
+                    b.Property<bool>("IsPublic");
+
                     b.Property<int>("LastValueUser");
+
+                    b.Property<int>("Latitude");
+
+                    b.Property<int>("Longitude");
 
                     b.Property<DateTime?>("ModifiedOn");
 
                     b.Property<string>("Name")
                         .HasMaxLength(35);
+
+                    b.Property<int>("PollingInterval");
 
                     b.Property<Guid>("SensorId");
 
@@ -229,8 +234,6 @@ namespace SD.Data.Migrations
                     b.Property<string>("UserId1");
 
                     b.Property<int>("UserInterval");
-
-                    b.Property<bool>("isPublic");
 
                     b.HasKey("Id");
 

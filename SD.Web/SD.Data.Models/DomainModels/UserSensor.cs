@@ -27,18 +27,26 @@ namespace SD.Data.Models.DomainModels
         [DataType(DataType.DateTime)]
         public DateTime TimeStamp { get; set; }
 
-        [StringLength(18, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 17)]
-        public string Coordinates { get; set; }
+		[Range(0, int.MaxValue)]
+		public int Latitude { get; set; }
 
-        public bool isPublic { get; set; }
+		[Range(0, int.MaxValue)]
+		public int Longitude { get; set; }
+
+		public bool IsPublic { get; set; }
 
         public bool AlarmTriggered { get; set; }
 
-        public int AlarmMin { get; set; }
+		[Range(0, int.MaxValue)]
+		public int AlarmMin { get; set; }
 
-        public int AlarmMax { get; set; }
+		[Range(0, int.MaxValue)]
+		public int AlarmMax { get; set; }
 
-        public Guid UserId { get; set; }
+		[Range(0, int.MaxValue)]
+		public int PollingInterval { get; set; }
+
+		public Guid UserId { get; set; }
 
         public ApplicationUser User { get; set; }
 

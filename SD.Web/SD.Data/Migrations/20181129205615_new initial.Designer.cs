@@ -10,8 +10,8 @@ using SD.Data.Context;
 namespace SD.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20181123214129_updating user sensors table")]
-    partial class updatingusersensorstable
+    [Migration("20181129205615_new initial")]
+    partial class newinitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
