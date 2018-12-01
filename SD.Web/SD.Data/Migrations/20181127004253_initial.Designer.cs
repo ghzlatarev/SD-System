@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SD.Data.Context;
 
 namespace SD.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20181127004253_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,7 +202,7 @@ namespace SD.Data.Migrations
                     b.Property<bool>("AlarmTriggered");
 
                     b.Property<string>("Coordinates")
-                        .HasMaxLength(19);
+                        .HasMaxLength(18);
 
                     b.Property<DateTime?>("CreatedOn");
 
@@ -211,9 +213,7 @@ namespace SD.Data.Migrations
 
                     b.Property<bool>("IsDeleted");
 
-                    b.Property<bool>("IsPublic");
-
-                    b.Property<string>("LastValueUser");
+                    b.Property<int>("LastValueUser");
 
                     b.Property<DateTime?>("ModifiedOn");
 
@@ -231,6 +231,8 @@ namespace SD.Data.Migrations
                     b.Property<string>("UserId1");
 
                     b.Property<int>("UserInterval");
+
+                    b.Property<bool>("isPublic");
 
                     b.HasKey("Id");
 

@@ -34,5 +34,36 @@ namespace SD.Services.Data.Services
 
             await this.dataContext.SaveChangesAsync(false);
         }
+
+        public async Task<UserSensor> AddSensorAsync(Guid userId, string name, string description, int interval, string value, string coordinates, bool isPublic,
+            int alarmMin, int alarmMax, DateTime createdOn, string type, DateTime timeStamp, bool alarmTriggered, Guid id)
+        {
+            var sensor = new UserSensor
+            {
+                UserId = userId,
+                Name = name,
+                Description = description,
+                UserInterval = interval,
+                LastValueUser = value,
+                Coordinates = coordinates,
+                IsPublic = isPublic,
+                AlarmMin = alarmMin,
+                AlarmMax = alarmMax,
+                CreatedOn = createdOn,
+                Type = type,
+                TimeStamp = timeStamp,
+                AlarmTriggered = alarmTriggered,
+                SensorId = id
+            };
+
+            dataContext.UserSensors.Add(sensor);
+            await dataContext.SaveChangesAsync();
+            return sensor;
+        }
+
+        public async Task<IEnumerable<Sensor>> ListSensorsAsync()
+        {
+            return await this.dataContext.Sensors.Where(se => se.IsDeleted == false).ToListAsync();
+        }
     }
 }

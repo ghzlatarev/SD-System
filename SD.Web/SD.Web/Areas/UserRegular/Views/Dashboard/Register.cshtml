@@ -1,0 +1,67 @@
+﻿    @model SD.Web.Areas.UserRegular.Models.SensorRegistrationByUserModel
+    @{
+        ViewData["Title"] = "Register User Sensor";
+    }
+
+    <h2>Register User Sensor </h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-area="userregular" asp-controller="dashboard" asp-action="Register" method="post">
+                <h4>Create a new account.</h4>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name">Name:</label>
+                    <input asp-for="Name" class="form-control" maxlength="40" minlength="6" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UserDescription">Description:</label>
+                    <input asp-for="UserDescription" class="form-control" />
+                    <span asp-validation-for="UserDescription" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UserInterval">Update interval (in seconds):</label>
+                    <input asp-for="UserInterval" class="form-control" />
+                    <span asp-validation-for="UserInterval" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Coordinates">Coordinates:</label>
+                    <input asp-for="Coordinates" class="form-control" required />
+                    <span asp-validation-for="Coordinates" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AlarmMin">Alarm Minimum Value</label>
+                    <input asp-for="AlarmMin" class="form-control" required />
+                    <span asp-validation-for="AlarmMin" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AlarmMax">Alarm Maximum Value</label>
+                    <input asp-for="AlarmMax" class="form-control" required />
+                    <span asp-validation-for="AlarmMax" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AlarmTriggered"></label>
+                    @Html.CheckBoxFor(m => m.AlarmTriggered)
+                </div>
+                <div class="form-group">
+                    <label asp-for="IsPublic"></label>
+                    @Html.CheckBoxFor(m => m.IsPublic)
+                </div>
+                <input class="invisible" asp-for="Description" value="@Model.Description" />
+                <input class="invisible" asp-for="SensorId" value="@Model.SensorId" />
+                <input class="invisible" asp-for="Type" value="@Model.Type" />
+                <input class="invisible" asp-for="Tag" value="@Model.Tag" />
+                <input class="invisible" asp-for="ApiInterval" value="@Model.ApiInterval" />
+                <input class="invisible" asp-for="UserId" value="@Model.UserId" />
+                <input class="invisible" asp-for="Id" value="@Model.Id" />
+
+                <div class="form-group"><button type="submit" class="btn btn-success">Register</button></div>
+            </form>
+        </div>
+    </div>
+
+    @section Scripts {
+        @await Html.PartialAsync("_ValidationScriptsPartial")
+    }

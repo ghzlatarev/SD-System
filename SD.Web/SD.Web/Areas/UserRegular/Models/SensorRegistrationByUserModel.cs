@@ -1,20 +1,23 @@
-﻿using SD.Data.Models.Abstract;
-using SD.Data.Models.Contracts;
-using SD.Data.Models.Identity;
+﻿using SD.Data.Models.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace SD.Data.Models.DomainModels
+namespace SD.Web.Areas.UserRegular.Models
 {
-    public class UserSensor : BaseEntity
+    public class SensorRegistrationByUserModel
     {
+        public SensorAPIViewModel SensorSelected { get; set; }
         [StringLength(35, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
         public string Name { get; set; }
 
         [StringLength(300, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
         public string Description { get; set; }
+
+        [StringLength(300, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
+        public string UserDescription { get; set; }
 
         public string Type { get; set; }
 
@@ -31,6 +34,7 @@ namespace SD.Data.Models.DomainModels
         public string Coordinates { get; set; }
 
         public bool IsPublic { get; set; }
+        public bool TickOff { get; set; }
 
         public bool AlarmTriggered { get; set; }
 
@@ -38,12 +42,15 @@ namespace SD.Data.Models.DomainModels
 
         public int AlarmMax { get; set; }
 
-        public Guid UserId { get; set; } 
+        public Guid UserId { get; set; }
 
-        public ApplicationUser User { get; set; }
+        public Guid SensorId { get; set; }
 
-		public Guid SensorId { get; set; }
+        public Guid Id { get; set; }
 
-        public Sensor Sensor { get; set; }
+        public string Tag { get; set; }
+
+        public int ApiInterval { get; set; }
+
     }
 }
