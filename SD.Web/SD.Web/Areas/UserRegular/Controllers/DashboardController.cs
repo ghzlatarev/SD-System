@@ -25,10 +25,19 @@ namespace SD.Web.Areas.UserRegular.Controllers
             _sensorService = sensorService;
         }
 
-        [HttpGet]
-        public IActionResult Index()
+        [HttpGet("list-sensors")]
+        public async Task<IActionResult> Index(Guid id)
         {
-            return View();
+            var user = HttpContext.User;
+            var userId = new Guid(_userManager.GetUserId(user));
+            var sensors = await _sensorService.ListSensorsForUserAsync(userId);
+
+            var model = new UserSensorsViewModel()
+            {
+                  userSensorViewModels = sensors.Select(se => new UserSensorViewModel(se))
+            };
+
+            return View(model);
         }
 
         [HttpGet("choose-data-source")]
@@ -90,7 +99,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
 
             if (this.ModelState.IsValid)
             {
-                await this._sensorService.AddSensorAsync(model.UserId, model.Name, model.Description, model.UserInterval, model.LastValueUser, model.Coordinates, model.IsPublic,
+                await this._sensorService.AddSensorAsync(model.UserId, model.Name, model.UserDescription, model.UserInterval, model.LastValueUser, model.Coordinates, model.IsPublic,
                     model.AlarmMin, model.AlarmMax, DateTime.Now, model.Type, DateTime.Now, model.AlarmTriggered, model.Id);
             }
             return RedirectToAction(nameof(Index));

@@ -61,9 +61,19 @@ namespace SD.Services.Data.Services
             return sensor;
         }
 
-        public async Task<IEnumerable<Sensor>> ListSensorsAsync()
+        public async Task<IEnumerable<UserSensor>> ListSensorsForUserAsync(Guid userId)
         {
-            return await this.dataContext.Sensors.Where(se => se.IsDeleted == false).ToListAsync();
+            return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.UserId == userId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<UserSensor>> ListPublicSensorsWhichDontBelongToUserAsync(Guid userId)
+        {
+            return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.UserId != userId && se.IsPublic == true).ToListAsync();
+        }
+
+        public async Task<IEnumerable<UserSensor>> ListPublicSensorsAsync(Guid userId)
+        {
+            return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.IsPublic == true).ToListAsync();
         }
     }
 }
