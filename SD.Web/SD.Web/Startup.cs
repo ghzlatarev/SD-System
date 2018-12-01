@@ -177,7 +177,7 @@ namespace SD.Web
                 .StartNow()
                 .WithSimpleSchedule
                  (s =>
-                    s.WithInterval(TimeSpan.FromSeconds(30))
+                    s.WithInterval(TimeSpan.FromSeconds(5))
                     .RepeatForever()
                  )
                  .Build();

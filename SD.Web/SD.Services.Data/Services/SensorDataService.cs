@@ -10,49 +10,58 @@ using SD.Services.External;
 
 namespace SD.Services.Data.Services
 {
-    public class SensorDataService : ISensorDataService
-    {
-        private readonly IApiClient apiClient;
-        private readonly DataContext dataContext;
+	public class SensorDataService : ISensorDataService
+	{
+		private readonly IApiClient apiClient;
+		private readonly DataContext dataContext;
 
-        public SensorDataService(IApiClient aPIClient, DataContext dataContext)
-        {
-            this.apiClient = aPIClient ?? throw new ArgumentNullException(nameof(aPIClient));
-            this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
-        }
+		public SensorDataService(IApiClient aPIClient, DataContext dataContext)
+		{
+			this.apiClient = aPIClient ?? throw new ArgumentNullException(nameof(aPIClient));
+			this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
+		}
 
 		//TODO: Handle exception coming from API. Catch and translate to business exception.
 		//TODO: Then throw/bubble up.
-        public async Task GetSensorsData()
-        {
-            IList<Sensor> allSensors = await this.dataContext.Sensors.ToListAsync();
-            IList<Guid> allSensorIds = allSensors.Select(s => s.SensorId).ToList();
-            IList<SensorData> deleteList = new List<SensorData>();
-            IList<SensorData> addList = new List<SensorData>();
+		public async Task GetSensorsData()
+		{
+			IList<Sensor> allSensors = await this.dataContext.Sensors.ToListAsync();
+			IList<SensorData> deleteList = new List<SensorData>();
+			IList<SensorData> addList = new List<SensorData>();
+			IList<Sensor> updateList = new List<Sensor>();
 
-            foreach (var id in allSensorIds)
-            {
-                SensorData newSensorData = await this.apiClient
-                .GetSensorData("sensorId?=" + id);
-                newSensorData.SensorId = id;
+			foreach (var sensor in allSensors)
+			{
+				var lastTimeStamp = sensor.LastTimeStamp;
+				TimeSpan difference = DateTime.Now.Subtract((DateTime)lastTimeStamp);
+				var pollingInterval = sensor.MinPollingIntervalInSeconds;
 
-                IList<SensorData> oldSensorData = await this.dataContext.SensorData
-                    .Where(oSD => oSD.SensorId.Equals(id))
-                    .OrderBy(oSD => oSD.TimeStamp)
-                    .ToListAsync();
+				if (difference.TotalSeconds > pollingInterval)
+				{
+					SensorData oldSensorData = await this.dataContext.SensorData
+					.Where(oSD => oSD.SensorId.Equals(sensor.SensorId))
+					.OrderByDescending(oSD => oSD.TimeStamp)
+					.FirstAsync();
 
-                if (oldSensorData.Count >= 5)
-                {
-                    deleteList.Add(oldSensorData[0]);
-                }
+					SensorData newSensorData = await this.apiClient
+					.GetSensorData("sensorId?=" + sensor.SensorId);
+					newSensorData.SensorId = sensor.SensorId;
 
-                addList.Add(newSensorData);
-            }
+					sensor.LastTimeStamp = newSensorData.TimeStamp;
+					sensor.LastValue = newSensorData.Value;
+					updateList.Add(sensor);
 
-            this.dataContext.SensorData.RemoveRange(deleteList);
-            await this.dataContext.AddRangeAsync(addList);
+					deleteList.Add(oldSensorData);
 
-            await this.dataContext.SaveChangesAsync(false);
-        }
-    }
+					addList.Add(newSensorData);
+				}
+			}
+
+			this.dataContext.SensorData.RemoveRange(deleteList);
+			await this.dataContext.AddRangeAsync(addList);
+			this.dataContext.UpdateRange(updateList);
+
+			await this.dataContext.SaveChangesAsync(false);
+		}
+	}
 }

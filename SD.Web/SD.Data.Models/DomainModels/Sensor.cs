@@ -24,7 +24,13 @@ namespace SD.Data.Models.DomainModels
         [JsonProperty("measureType")]
         public string MeasureType { get; set; }
 
-        [JsonIgnore]
+		[JsonIgnore]
+		public DateTime? LastTimeStamp { get; set; }
+
+		[JsonIgnore]
+		public string LastValue { get; set; }
+
+		[JsonIgnore]
         public ICollection<SensorData> SensorData { get; set; }
 
 		[JsonIgnore]
