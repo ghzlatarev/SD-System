@@ -20,7 +20,7 @@ namespace SD.Services.External
             this.client.DefaultRequestHeaders.Add("auth-token", "8e4c46fe-5e1d-4382-b7fc-19541f7bf3b0");
         }
 
-        public async Task<IEnumerable<Sensor>> GetEntities(string target)
+        public async Task<IEnumerable<Sensor>> GetApiSensors(string target = "all")
         {
             var response = await client.GetAsync(target)
                 .ConfigureAwait(false);

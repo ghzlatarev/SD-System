@@ -7,7 +7,7 @@ namespace SD.Services.External
 {
     public interface IApiClient
     {
-        Task<IEnumerable<Sensor>> GetEntities(string target);
+        Task<IEnumerable<Sensor>> GetApiSensors(string target = "all");
 
         Task<SensorData> GetSensorData(string target);
     }

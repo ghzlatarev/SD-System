@@ -25,7 +25,7 @@ namespace SD.Services.Data.Services
 
         public async Task RebaseSensorsAsync()
         {
-            IEnumerable<Sensor> apiSensors = await this.apiClient.GetEntities("all");
+            IEnumerable<Sensor> apiSensors = await this.apiClient.GetApiSensors();
             IList<Sensor> dbSensors = await this.dataContext.Sensors.ToListAsync();
 
             IList<Sensor> addList = apiSensors.Where(apiS => dbSensors.Any(dbS => dbS.SensorId.Equals(apiS.SensorId)) == false).ToList();

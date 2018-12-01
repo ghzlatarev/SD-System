@@ -3,7 +3,7 @@ using SD.Data.Models.Identity;
 using SD.Web.Models;
 using X.PagedList;
 
-namespace SD.Web.Areas.Administration.Models
+namespace SD.Web.Areas.Administration.Models.UserViewModels
 {
     public class UserIndexViewModel
     {

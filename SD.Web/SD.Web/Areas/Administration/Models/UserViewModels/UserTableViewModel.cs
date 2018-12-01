@@ -1,6 +1,6 @@
 ﻿using SD.Data.Models.Identity;
 
-namespace SD.Web.Areas.Administration.Models
+namespace SD.Web.Areas.Administration.Models.UserViewModels
 {
     public class UserTableViewModel
     {

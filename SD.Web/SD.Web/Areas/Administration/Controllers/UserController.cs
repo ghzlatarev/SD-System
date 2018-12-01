@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SD.Data.Models.Identity;
 using SD.Services.Data.Services.Identity.Contracts;
-using SD.Web.Areas.Administration.Models;
+using SD.Web.Areas.Administration.Models.UserViewModels;
 
 namespace SD.Web.Areas.Admin.Controllers
 {
