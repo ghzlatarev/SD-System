@@ -55,7 +55,7 @@ namespace SD.Services.Data.Services
 		}
 
 		public async Task<UserSensor> AddUserSensorAsync(string userId, string sensorId, string name, string description, 
-			int latitude, int longitude, int alarmMin, int alarmMax, int pollingInterval, bool alarmTriggered, bool isPublic )
+			int latitude, int longitude, double alarmMin, double alarmMax, int pollingInterval, bool alarmTriggered, bool isPublic )
 		{
 			Validator.ValidateNull(name, "Sensor name cannot be null!");
 

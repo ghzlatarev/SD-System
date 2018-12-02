@@ -61,16 +61,22 @@
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label asp-for="AlarmTriggered"></label>
-								<input asp-for="AlarmTriggered" type="checkbox" class="form-control" placeholder="" value="@Model.AlarmTriggered">
-								<span asp-validation-for="AlarmTriggered" class="text-danger"></span>
+								<div class="checkbox">
+									<label asp-for="AlarmTriggered">
+										<input asp-for="AlarmTriggered" />
+										@Html.DisplayNameFor(m => m.AlarmTriggered)
+									</label>
+								</div>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label asp-for="IsPublic"></label>
-								<input asp-for="IsPublic" type="checkbox" class="form-control" placeholder="" value="@Model.IsPublic">
-								<span asp-validation-for="IsPublic" class="text-danger"></span>
+								<div class="checkbox">
+									<label asp-for="IsPublic">
+										<input asp-for="IsPublic" />
+										@Html.DisplayNameFor(m => m.IsPublic)
+									</label>
+								</div>
 							</div>
 						</div>
 					</div>

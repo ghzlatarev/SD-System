@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using SD.Services.Data.Services;
 using SD.Services.Data.Services.Contracts;
@@ -15,15 +16,15 @@ namespace SD.Web.Controllers
     {
         private readonly ISensorDataService service;
 
-        public HomeController(ISensorDataService service)
+		public HomeController(ISensorDataService service)
         {
             this.service = service;
-        }
+		}
 
         public async Task<IActionResult> Index()
         {
             //await this.service.GetSensorsData();
-            return View();
+			return View();
         }
 
         //private readonly ISensorService service;

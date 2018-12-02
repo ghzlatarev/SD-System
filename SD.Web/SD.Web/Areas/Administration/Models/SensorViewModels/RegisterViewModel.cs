@@ -52,11 +52,11 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 
 		[Required]
 		[Display(Name = "AlarmMin")]
-		public int AlarmMin { get; set; }
+		public double AlarmMin { get; set; }
 
 		[Required]
 		[Display(Name = "AlarmMax")]
-		public int AlarmMax { get; set; }
+		public double AlarmMax { get; set; }
 
 		[Required]
 		[Display(Name = "Sensor ID")]

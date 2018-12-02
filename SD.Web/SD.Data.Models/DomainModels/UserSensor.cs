@@ -38,10 +38,10 @@ namespace SD.Data.Models.DomainModels
         public bool AlarmTriggered { get; set; }
 
 		[Range(0, int.MaxValue)]
-		public int AlarmMin { get; set; }
+		public double AlarmMin { get; set; }
 
 		[Range(0, int.MaxValue)]
-		public int AlarmMax { get; set; }
+		public double AlarmMax { get; set; }
 
 		[Range(0, int.MaxValue)]
 		public int PollingInterval { get; set; }

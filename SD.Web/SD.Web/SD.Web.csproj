@@ -5,6 +5,7 @@
     <UserSecretsId>aspnet-SD.Web-4DD78AAF-DCE4-4A70-9E80-32968A6DB925</UserSecretsId>
     <ApplicationInsightsResourceId>/subscriptions/2db6e1d4-e8de-4b02-a3df-797002753a62/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/SD.Web</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/2db6e1d4-e8de-4b02-a3df-797002753a62/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/SD.Web</ApplicationInsightsAnnotationResourceId>
+    <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>

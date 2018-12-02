@@ -24,9 +24,9 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 
 		public int Longitude { get; set; }
 
-		public int AlarmMax { get; set; }
+		public double AlarmMax { get; set; }
 
-		public int AlarmMin { get; set; }
+		public double AlarmMin { get; set; }
 
 		public bool IsPublic { get; set; }
 

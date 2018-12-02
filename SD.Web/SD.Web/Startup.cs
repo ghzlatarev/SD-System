@@ -37,8 +37,8 @@ namespace SD.Web
         public void ConfigureServices(IServiceCollection services)
         {
             RegisterData(services);
-
-            RegisterAuthentication(services);
+			services.AddScoped<INotificationService, NotificationService>();
+			RegisterAuthentication(services);
             
             RegisterServicesExternal(services);
             RegisterServicesData(services);
@@ -46,7 +46,9 @@ namespace SD.Web
             RegisterInfrastructure(services);
 
             RegisterQuartzServices(services);
-        }
+
+			services.AddSignalR();
+		}
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IScheduler scheduler)
         {
@@ -68,7 +70,12 @@ namespace SD.Web
 
             app.UseAuthentication();
 
-            app.UseMvc(routes =>
+			app.UseSignalR(routes =>
+			{
+				routes.MapHub<NotificationHub>("/notificationHub");
+			});
+
+			app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "internalservererror",
