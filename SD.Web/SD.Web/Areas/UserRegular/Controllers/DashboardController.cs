@@ -34,17 +34,58 @@ namespace SD.Web.Areas.UserRegular.Controllers
 
             var model = new UserSensorsViewModel()
             {
-                  userSensorViewModels = sensors.Select(se => new UserSensorViewModel(se))
+                userSensorViewModels = sensors.Select(se => new UserSensorViewModel(se))
             };
 
             return View(model);
         }
 
+        [HttpPost("list-sensors")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Index(UserSensorViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                //return RedirectToAction("ListSensor", "dashboard", new { id = model.Id });
+                RedirectToAction(nameof(DashboardController.ListSensor), new { id = model.Id });
+            }
+            return View(model);
+        }
+
+        [HttpGet("sensor")]
+        public async Task<IActionResult> ListSensor(Guid id)
+        {
+            var sensor = await _sensorService.ListSensorByIdAsync(id);
+
+            var model = new UserSensorViewModel(sensor)
+            {
+                Name = sensor.Name,
+                Description = sensor.Description,
+                Type = sensor.Type,
+                UserInterval = sensor.UserInterval,
+                LastValueUser = sensor.LastValueUser,
+                TimeStamp = sensor.TimeStamp,
+                Coordinates = sensor.Coordinates,
+                IsPublic = sensor.IsPublic,
+                AlarmTriggered = sensor.AlarmTriggered,
+                AlarmMin = sensor.AlarmMin,
+                AlarmMax = sensor.AlarmMax,
+                UserId = sensor.UserId,
+                User = sensor.User,
+                SensorId = sensor.SensorId,
+                Sensor = sensor.Sensor,
+                Id = sensor.Id
+            };
+
+            return View(model);
+        }
+
+
         [HttpGet("choose-data-source")]
         public async Task<IActionResult> ChooseDataSource(Guid id)
         {
             var sensors = await _sensorDataService.ListSensorsAsync();
-            
+
 
             var model = new DataSourceViewModel()
             {
@@ -62,7 +103,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
             {
                 //var userId = int.Parse(this.userWrapper.GetUserId(this.User));
                 //var sensor = await sensorDataService.
-                
+
                 return RedirectToAction("register", "dashboard", new { id = model.SensorApi.Select(s => s.SensorId) });
             }
 
@@ -85,13 +126,14 @@ namespace SD.Web.Areas.UserRegular.Controllers
                 ApiInterval = sensor.MinPollingIntervalInSeconds,
                 UserId = new Guid(userId),
                 Id = sensor.Id
-                
+
             };
 
             return View(model);
         }
 
         [HttpPost("register-sensor")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(SensorRegistrationByUserModel model)
         {
             var sensor = await _sensorDataService.GetSensorsByIdAsync(model.SensorId);
@@ -105,6 +147,6 @@ namespace SD.Web.Areas.UserRegular.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        
+
     }
 }

@@ -17,5 +17,7 @@ namespace SD.Services.Data.Services.Contracts
         Task<IEnumerable<UserSensor>> ListPublicSensorsWhichDontBelongToUserAsync(Guid userId);
 
         Task<IEnumerable<UserSensor>> ListPublicSensorsAsync(Guid userId);
+
+        Task<UserSensor> ListSensorByIdAsync(Guid sensorId);
     }
 }

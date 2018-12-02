@@ -18,7 +18,7 @@
                     <th>Description</th>
                     <th>Type</th>
                     <th>Value</th>
-                    <th>Submit</th>
+                    <th>Choose</th>
 
                 </tr>
             </thead>
@@ -32,7 +32,7 @@
                         <th>@sensor.LastValueUser</th>
                         <th>
                             <button type="submit" class="btn btn-success">
-                                <a asp-controller="dashboard" asp-action="SensorView" asp-area="userregular" asp-route-id="@sensor.SensorId">Choose</a>
+                                <a asp-controller="dashboard" asp-action="ListSensor" asp-area="userregular" asp-route-id="@sensor.Id">Choose</a>
                             </button>
                         </th>
                     </tr>

@@ -75,5 +75,10 @@ namespace SD.Services.Data.Services
         {
             return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.IsPublic == true).ToListAsync();
         }
+
+        public async Task<UserSensor> ListSensorByIdAsync(Guid sensorId)
+        {
+            return await this.dataContext.UserSensors.FirstOrDefaultAsync(se => se.Id == sensorId);
+        }
     }
 }
