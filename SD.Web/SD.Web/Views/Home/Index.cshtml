@@ -1,1 +1,51 @@
-﻿
+﻿@using SD.Web.Areas.UserRegular.Models
+
+@model UserSensorsViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Public sensors</h2>
+<hr />
+
+<div class="col-lg-8 col-md-4 col-xs-9">
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th>Value</th>
+                    <th>Choose</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sensor in Model.userSensorViewModels)
+                {
+                    <tr>
+                        <th>@sensor.Name</th>
+                        <th>@sensor.Description</th>
+                        <th>@sensor.Type</th>
+                        <th>@sensor.LastValueUser</th>
+                        <th>
+                            <button type="submit" class="btn btn-success">
+                                <a asp-controller="dashboard" asp-action="ListSensor" asp-area="userregular" asp-route-id="@sensor.Id">View Details</a>
+                            </button>
+                        </th>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+</div>
+<div class="clearfix"></div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+

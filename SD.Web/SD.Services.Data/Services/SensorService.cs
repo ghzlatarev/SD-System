@@ -71,7 +71,7 @@ namespace SD.Services.Data.Services
             return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.UserId != userId && se.IsPublic == true).ToListAsync();
         }
 
-        public async Task<IEnumerable<UserSensor>> ListPublicSensorsAsync(Guid userId)
+        public async Task<IEnumerable<UserSensor>> ListPublicSensorsAsync()
         {
             return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.IsPublic == true).ToListAsync();
         }
