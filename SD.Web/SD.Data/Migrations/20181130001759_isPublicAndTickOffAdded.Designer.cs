@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SD.Data.Context;
 
 namespace SD.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20181130001759_isPublicAndTickOffAdded")]
+    partial class isPublicAndTickOffAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,10 +144,6 @@ namespace SD.Data.Migrations
 
                     b.Property<bool>("IsDeleted");
 
-                    b.Property<DateTime?>("LastTimeStamp");
-
-                    b.Property<string>("LastValue");
-
                     b.Property<string>("MeasureType");
 
                     b.Property<int>("MinPollingIntervalInSeconds");
@@ -197,14 +195,14 @@ namespace SD.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("AlarmMax");
+                    b.Property<int>("AlarmMax");
 
-                    b.Property<double>("AlarmMin");
+                    b.Property<int>("AlarmMin");
 
                     b.Property<bool>("AlarmTriggered");
 
                     b.Property<string>("Coordinates")
-                        .HasMaxLength(19);
+                        .HasMaxLength(18);
 
                     b.Property<DateTime?>("CreatedOn");
 
@@ -215,20 +213,18 @@ namespace SD.Data.Migrations
 
                     b.Property<bool>("IsDeleted");
 
+                    b.Property<bool>("IsPublic");
+
                     b.Property<int>("LastValueUser");
-
-                    b.Property<int>("Latitude");
-
-                    b.Property<int>("Longitude");
 
                     b.Property<DateTime?>("ModifiedOn");
 
                     b.Property<string>("Name")
                         .HasMaxLength(35);
 
-                    b.Property<int>("PollingInterval");
-
                     b.Property<Guid>("SensorId");
+
+                    b.Property<bool>("TickOff");
 
                     b.Property<DateTime>("TimeStamp");
 

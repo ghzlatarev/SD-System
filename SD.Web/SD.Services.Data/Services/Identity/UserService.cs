@@ -58,6 +58,7 @@ namespace SD.Services.Data.Services.Identity
 		{
 			user.IsAdmin = !user.IsAdmin;
 			await this.dataContext.SaveChangesAsync();
+            
 		}
 	}
 }

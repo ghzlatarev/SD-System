@@ -70,6 +70,30 @@ namespace SD.Services.Data.Services
 			this.dataContext.SensorData.RemoveRange(deleteList);
 			this.dataContext.UpdateRange(updateList);
 
+            await this.dataContext.SaveChangesAsync(false);
+        }
+
+        public async Task<IEnumerable<SensorData>> ListDataSensorsAsync()
+        {
+            return await this.dataContext.SensorData.ToListAsync();
+        }
+        public async Task<IEnumerable<Sensor>> ListSensorsAsync()
+        {
+            return await this.dataContext.Sensors.Where(se => se.IsDeleted == false).ToListAsync();
+        }
+
+        public async Task<SensorData> GetSensorDataByIdAsync(Guid id)
+        {
+            return await this.dataContext.SensorData.FirstOrDefaultAsync(se => se.SensorId == id);
+        }
+
+        public async Task<Sensor> GetSensorsByIdAsync(Guid id)
+        {
+            return await this.dataContext.Sensors.Include(s => s.SensorData).FirstOrDefaultAsync(se => se.SensorId == id);
+        }
+
+
+    }
 			await this.dataContext.SaveChangesAsync(false);
 		}
 

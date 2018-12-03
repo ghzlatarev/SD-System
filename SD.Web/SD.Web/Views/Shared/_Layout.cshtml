@@ -21,6 +21,50 @@
                         <span class="navbar-toggler-bar navbar-kebab"></span>
                         <span class="navbar-toggler-bar navbar-kebab"></span>
                     </button><div class="collapse navbar-collapse" id="navigation">
+                                 <ul class="navbar-nav ml-auto">
+                                     @RenderSection("Search", required: false)
+                                     @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
+                                     {
+                                         <li class="dropdown nav-item">
+                                             <a href="javascript:void(0)" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                                                 <div class="notification d-none d-lg-block d-xl-block"></div>
+                                                 <i class="tim-icons icon-link-72"></i>
+                                                 <p class="d-lg-none">
+                                                     Administration
+                                                 </p>
+                                             </a>
+                                             <ul class="dropdown-menu dropdown-menu-right dropdown-navbar">
+                                                 <li class="nav-link">
+                                                     <a asp-area="Administration" asp-controller="User" asp-action="Index" class="nav-item dropdown-item">User Administration</a>
+                                                 </li>
+                                             </ul>
+                                         </li>
+                                     }
+                                     @if (User.Identity.IsAuthenticated && User.IsInRole("User"))
+                                     {
+                                         <li class="dropdown nav-item">
+                                             <a href="javascript:void(0)" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                                                 <div class="notification d-none d-lg-block d-xl-block"></div>
+                                                 <i class="tim-icons icon-link-72"></i>
+                                                 <p class="d-lg-none">
+                                                     User
+                                                 </p>
+                                             </a>
+                                             <ul class="dropdown-menu dropdown-menu-right dropdown-navbar">
+                                                 <li class="nav-link">
+                                                     <a asp-area="UserRegular" asp-controller="Dashboard" asp-action="index" class="nav-item dropdown-item">List Sensors</a>
+                                                 </li>
+                                                 <li class="nav-link">
+                                                     <a asp-area="UserRegular" asp-controller="Dashboard" asp-action="ChooseDataSource" class="nav-item dropdown-item">Register sensor</a>
+                                                 </li>
+                                             </ul>
+                                         </li>
+                                     }
+                                     <li class="dropdown nav-item">
+                                         @await Html.PartialAsync("_LoginPartial")
+                                     </li>
+                                     <li class="separator d-lg-none"></li>
+                                 </ul>
                         <ul class="navbar-nav ml-auto">
                             @RenderSection("Search", required: false)
                             @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
