@@ -17,18 +17,18 @@ namespace SD.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ISensorDataService _service;
-        private readonly ISensorService _sensorService;
+        private readonly IUserSensorService _userSensorService;
 
-        public HomeController(ISensorDataService service, ISensorService sensorService)
+        public HomeController(ISensorDataService service, IUserSensorService userSensorService)
         {
             _service = service;
-            _sensorService = sensorService;
+            _userSensorService = userSensorService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(Guid id)
         {
-            var sensors = await _sensorService.ListPublicSensorsAsync();
+            var sensors = await _userSensorService.ListPublicSensorsAsync();
 
             var model = new UserSensorsViewModel()
             {

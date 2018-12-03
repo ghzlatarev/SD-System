@@ -9,7 +9,7 @@ namespace SD.Data.Models.Abstract
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         
         [DataType(DataType.DateTime)]
         public DateTime? CreatedOn { get; set; }

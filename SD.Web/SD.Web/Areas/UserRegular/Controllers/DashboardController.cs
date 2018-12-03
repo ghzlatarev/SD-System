@@ -14,23 +14,25 @@ namespace SD.Web.Areas.UserRegular.Controllers
     [Area("UserRegular")]
     public class DashboardController : Controller
     {
+        private readonly IUserSensorService _userSensorService;
         private readonly ISensorDataService _sensorDataService;
         private readonly ISensorService _sensorService;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public DashboardController(ISensorDataService sensorDataService, UserManager<ApplicationUser> userManager, ISensorService sensorService)
+        public DashboardController(IUserSensorService userSensorService, UserManager<ApplicationUser> userManager, ISensorService sensorService, ISensorDataService sensorDataService)
         {
-            _sensorDataService = sensorDataService;
+            _userSensorService = userSensorService;
             _userManager = userManager;
             _sensorService = sensorService;
+            _sensorDataService = sensorDataService;
         }
 
         [HttpGet("list-sensors")]
         public async Task<IActionResult> Index(Guid id)
         {
             var user = HttpContext.User;
-            var userId = new Guid(_userManager.GetUserId(user));
-            var sensors = await _sensorService.ListSensorsForUserAsync(userId);
+            var userId = _userManager.GetUserId(user);
+            var sensors = await _userSensorService.ListSensorsForUserAsync(userId);
 
             var model = new UserSensorsViewModel()
             {
@@ -53,9 +55,9 @@ namespace SD.Web.Areas.UserRegular.Controllers
         }
 
         [HttpGet("sensor")]
-        public async Task<IActionResult> ListSensor(Guid id)
+        public async Task<IActionResult> ListSensor(string id)
         {
-            var sensor = await _sensorService.ListSensorByIdAsync(id);
+            var sensor = await _userSensorService.ListSensorByIdAsync(id);
 
             var model = new UserSensorViewModel(sensor)
             {
@@ -82,9 +84,9 @@ namespace SD.Web.Areas.UserRegular.Controllers
 
 
         [HttpGet("choose-data-source")]
-        public async Task<IActionResult> ChooseDataSource(Guid id)
+        public async Task<IActionResult> ChooseDataSource(string id)
         {
-            var sensors = await _sensorDataService.ListSensorsAsync();
+            var sensors = await _sensorService.ListSensorsAsync();
 
 
             var model = new DataSourceViewModel()
@@ -111,7 +113,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
         }
 
         [HttpGet("register-sensor")]
-        public async Task<IActionResult> Register(Guid id)
+        public async Task<IActionResult> Register(string id)
         {
             var sensor = await _sensorDataService.GetSensorsByIdAsync(id);
             var user = HttpContext.User;
@@ -124,7 +126,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
                 Type = sensor.MeasureType,
                 Tag = sensor.Tag,
                 ApiInterval = sensor.MinPollingIntervalInSeconds,
-                UserId = new Guid(userId),
+                UserId = userId,
                 Id = sensor.Id
 
             };
@@ -141,8 +143,11 @@ namespace SD.Web.Areas.UserRegular.Controllers
 
             if (this.ModelState.IsValid)
             {
-                await this._sensorService.AddSensorAsync(model.UserId, model.Name, model.UserDescription, model.UserInterval, model.LastValueUser, model.Coordinates, model.IsPublic,
-                    model.AlarmMin, model.AlarmMax, DateTime.Now, model.Type, DateTime.Now, model.AlarmTriggered, model.Id);
+                //TODO: Fix string to guid transforming
+                //TODO: Fix longitude and latitude type. Right now it is int
+                await this._userSensorService.AddUserSensorAsync(model.UserId.ToString(), model.SensorId.ToString(), model.Name, model.Description,
+                    model.Coordinates.Split(',')[0], model.Coordinates.Split(',')[1], model.AlarmMin, model.AlarmMax, model.UserInterval,
+                    model.AlarmTriggered, model.IsPublic);
             }
             return RedirectToAction(nameof(Index));
         }

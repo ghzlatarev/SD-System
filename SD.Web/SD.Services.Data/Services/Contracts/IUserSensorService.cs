@@ -7,17 +7,26 @@ using X.PagedList;
 
 namespace SD.Services.Data.Services.Contracts
 {
-	public interface IUserSensorService
-	{
-		Task<IPagedList<UserSensor>> FilterUserSensorsAsync(string filter = "", int pageNumber = 1, int pageSize = 10);
+    public interface IUserSensorService
+    {
+        Task<IPagedList<UserSensor>> FilterUserSensorsAsync(string filter = "", int pageNumber = 1, int pageSize = 10);
+        
+        Task<IPagedList<UserSensor>> GetSensorsByUserId(string userId, int pageNumber = 1, int pageSize = 10);
 
-		Task<IPagedList<UserSensor>> GetSensorsByUserId(Guid userId, int pageNumber = 1, int pageSize = 10);
+        Task<UserSensor> GetSensorByIdAsync(string id);
+        
+        Task<UserSensor> AddUserSensorAsync(string userId, string sensorId, string name, string description,
+            string latitude, string longitude, double alarmMin, double alarmMax, int pollingInterval, bool alarmTriggered, bool isPublic);
+        
+        Task UpdateUserSensorAsync(UserSensor userSensor);
 
-		Task<UserSensor> AddUserSensorAsync(string userId, string sensorId, string name, string description, int latitude,
-			int longitude, double alarmMin, double alarmMax, int pollingInterval, bool alarmTriggered, bool isPublic);
+        Task<IEnumerable<UserSensor>> ListSensorsForUserAsync(string userId);
 
-		Task<UserSensor> GetSensorByIdAsync(string id);
 
-		Task UpdateUserSensorAsync(UserSensor userSensor);
-	}
+        Task<IEnumerable<UserSensor>> ListPublicSensorsWhichDontBelongToUserAsync(string userId);
+        
+        Task<IEnumerable<UserSensor>> ListPublicSensorsAsync();
+
+        Task<UserSensor> ListSensorByIdAsync(string sensorId);
+    }
 }

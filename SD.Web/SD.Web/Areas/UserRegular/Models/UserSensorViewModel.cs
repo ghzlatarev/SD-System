@@ -31,7 +31,7 @@ namespace SD.Web.Areas.UserRegular.Models
             
         }
 
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         [StringLength(35, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
         public string Name { get; set; }
@@ -57,15 +57,15 @@ namespace SD.Web.Areas.UserRegular.Models
 
         public bool AlarmTriggered { get; set; }
 
-        public int AlarmMin { get; set; }
+        public double AlarmMin { get; set; }
 
-        public int AlarmMax { get; set; }
+        public double AlarmMax { get; set; }
 
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
         public ApplicationUser User { get; set; }
 
-        public Guid SensorId { get; set; }
+        public string SensorId { get; set; }
 
         public Sensor Sensor { get; set; }
     }

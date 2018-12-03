@@ -16,7 +16,7 @@ namespace SD.Data.Models.DomainModels
         public string ValueType { get; set; }
 
         [JsonIgnore]
-        public Guid SensorId { get; set; }
+        public string SensorId { get; set; }
 
         [JsonIgnore]
         public Sensor Sensor { get; set; }

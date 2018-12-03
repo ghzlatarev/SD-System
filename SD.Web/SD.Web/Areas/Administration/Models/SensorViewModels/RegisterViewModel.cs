@@ -36,11 +36,11 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 
 		[Required]
 		[Display(Name = "Latitude")]
-		public int Latitude { get; set; }
+		public string Latitude { get; set; }
 
 		[Required]
 		[Display(Name = "Longitude")]
-		public int Longitude { get; set; }
+		public string Longitude { get; set; }
 
 		[Required]
 		[Display(Name = "IsPublic")]

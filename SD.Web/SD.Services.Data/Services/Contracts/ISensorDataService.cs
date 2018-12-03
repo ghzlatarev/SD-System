@@ -9,9 +9,7 @@ namespace SD.Services.Data.Services.Contracts
     public interface ISensorDataService
     {
         Task GetSensorsData();
-        Task<IEnumerable<SensorData>> ListDataSensorsAsync();
-        Task<IEnumerable<Sensor>> ListSensorsAsync();
-        Task<SensorData> GetSensorDataByIdAsync(Guid id);
-        Task<Sensor> GetSensorsByIdAsync(Guid id);
+        Task<Sensor> GetSensorsByIdAsync(string id);
+
     }
 }

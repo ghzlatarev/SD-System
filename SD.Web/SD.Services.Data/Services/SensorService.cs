@@ -29,56 +29,22 @@ namespace SD.Services.Data.Services
             IList<Sensor> dbSensors = await this.dataContext.Sensors.ToListAsync();
 
             IList<Sensor> addList = apiSensors.Where(apiS => dbSensors.Any(dbS => dbS.SensorId.Equals(apiS.SensorId)) == false).ToList();
-            
+
             await this.dataContext.Sensors.AddRangeAsync(addList);
 
             await this.dataContext.SaveChangesAsync(false);
         }
 
-        public async Task<UserSensor> AddSensorAsync(Guid userId, string name, string description, int interval, string value, string coordinates, bool isPublic,
-            int alarmMin, int alarmMax, DateTime createdOn, string type, DateTime timeStamp, bool alarmTriggered, Guid id)
+        public async Task<IList<Tuple<string, string>>> GetSensorNamesIdsAsync()
         {
-            var sensor = new UserSensor
-            {
-                UserId = userId,
-                Name = name,
-                Description = description,
-                UserInterval = interval,
-                LastValueUser = value,
-                Coordinates = coordinates,
-                IsPublic = isPublic,
-                AlarmMin = alarmMin,
-                AlarmMax = alarmMax,
-                CreatedOn = createdOn,
-                Type = type,
-                TimeStamp = timeStamp,
-                AlarmTriggered = alarmTriggered,
-                SensorId = id
-            };
-
-            dataContext.UserSensors.Add(sensor);
-            await dataContext.SaveChangesAsync();
-            return sensor;
+            var query = this.dataContext.Sensors.Select(s => new Tuple<string, string>(s.Id.ToString(), s.Tag));
+            var allSensorIds = await query.ToListAsync();
+            return allSensorIds;
         }
 
-        public async Task<IEnumerable<UserSensor>> ListSensorsForUserAsync(Guid userId)
+        public async Task<IEnumerable<Sensor>> ListSensorsAsync()
         {
-            return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.UserId == userId).ToListAsync();
-        }
-
-        public async Task<IEnumerable<UserSensor>> ListPublicSensorsWhichDontBelongToUserAsync(Guid userId)
-        {
-            return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.UserId != userId && se.IsPublic == true).ToListAsync();
-        }
-
-        public async Task<IEnumerable<UserSensor>> ListPublicSensorsAsync()
-        {
-            return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.IsPublic == true).ToListAsync();
-        }
-
-        public async Task<UserSensor> ListSensorByIdAsync(Guid sensorId)
-        {
-            return await this.dataContext.UserSensors.FirstOrDefaultAsync(se => se.Id == sensorId);
+            return await this.dataContext.Sensors.Where(se => se.IsDeleted == false).ToListAsync();
         }
     }
 }

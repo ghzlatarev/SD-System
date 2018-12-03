@@ -29,11 +29,13 @@ namespace SD.Data.Models.DomainModels
 
         [StringLength(19, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 18)]
         public string Coordinates { get; set; }
-		[Range(0, int.MaxValue)]
-		public int Latitude { get; set; }
 
-		[Range(0, int.MaxValue)]
-		public int Longitude { get; set; }
+		[MaxLength(9)]
+		public string Latitude { get; set; }
+
+        [MaxLength(9)]
+        public string Longitude { get; set; }
+        
 
         public bool IsPublic { get; set; }
 
@@ -48,11 +50,11 @@ namespace SD.Data.Models.DomainModels
 		[Range(0, int.MaxValue)]
 		public int PollingInterval { get; set; }
 
-        public Guid UserId { get; set; } 
+        public string UserId { get; set; } 
 
         public ApplicationUser User { get; set; }
 
-		public Guid SensorId { get; set; }
+		public string SensorId { get; set; }
 
         public Sensor Sensor { get; set; }
     }

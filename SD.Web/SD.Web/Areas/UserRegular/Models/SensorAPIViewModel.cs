@@ -19,7 +19,7 @@ namespace SD.Web.Areas.UserRegular.Models
             MeasureType = sensor.MeasureType;
         }
 
-        public Guid SensorId { get; set; }
+        public string SensorId { get; set; }
         [MaxLength(50)]
         public string Tag { get; set; }
         [MaxLength(500)]

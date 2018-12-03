@@ -23,6 +23,6 @@ namespace SD.Web.Areas.UserRegular.Models
 
         public string ValueType { get; set; }
 
-        public Guid SensorId { get; set; }
+        public string SensorId { get; set; }
     }
 }

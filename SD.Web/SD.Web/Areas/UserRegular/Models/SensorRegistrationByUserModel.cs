@@ -42,11 +42,11 @@ namespace SD.Web.Areas.UserRegular.Models
 
         public int AlarmMax { get; set; }
 
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
-        public Guid SensorId { get; set; }
+        public string SensorId { get; set; }
 
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public string Tag { get; set; }
 
