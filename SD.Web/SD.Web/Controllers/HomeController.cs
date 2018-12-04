@@ -18,11 +18,13 @@ namespace SD.Web.Controllers
     {
         private readonly ISensorDataService _service;
         private readonly IUserSensorService _userSensorService;
+        private readonly ISensorService _serviceSensor;
 
-        public HomeController(ISensorDataService service, IUserSensorService userSensorService)
+        public HomeController(ISensorDataService service, IUserSensorService userSensorService, ISensorService serviceSensor)
         {
             _service = service;
             _userSensorService = userSensorService;
+            _serviceSensor = serviceSensor;
         }
 
         [HttpGet]
@@ -38,20 +40,12 @@ namespace SD.Web.Controllers
             return View(model);
         }
 
-       
 
-        //private readonly ISensorService service;
-
-        //public HomeController(ISensorService service)
-        //{
-        //    this._service = service;
-        //}
-
-        //public async Task<IActionResult> Index()
-        //{
-        //    await this._service.RebaseSensorsAsync();
-        //    return View();
-        //}
+        public async Task<IActionResult> Index()
+        {
+            await _serviceSensor.RebaseSensorsAsync();
+            return View();
+        }
 
         public IActionResult Contact()
         {

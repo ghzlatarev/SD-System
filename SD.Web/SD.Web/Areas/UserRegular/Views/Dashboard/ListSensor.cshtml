@@ -4,16 +4,108 @@
     ViewData["Title"] = "Sensor";
 }
 
-<h2>@Model.Name</h2>
-<h2>@Model.AlarmMin</h2>
-<h2>@Model.AlarmMax</h2>
-<h2>@Model.AlarmTriggered</h2>
-<h2>@Model.Coordinates</h2>
-<h2>@Model.Description</h2>
-<h2>@Model.Id</h2>
-<h2>@Model.IsPublic</h2>
-<h2>@Model.LastValueUser</h2>
-<h2>@Model.Type</h2>
-<h2>@Model.Name</h2>
-<h2>@Model.Name</h2>
+<h2>Sensor details</h2>
 
+
+<table class="table table-bordered">
+    <tr>
+        <td colspan="2"><label>Value:</label>@Model.LastValueUser</td>
+    </tr>
+    <tr>
+        <td><label>Name: </label></td>
+        <td><span contenteditable="false" class="editable">@Model.Name</span></td>
+    </tr>
+    <tr>
+        <td><label>Description: </label></td>
+        <td><span contenteditable="false" class="editable">@Model.Description</span></td>
+    </tr>
+    <tr>
+        @if (Model.IsPublic)
+        {
+            <td>Public</td>
+        }
+        else
+        {
+            <td>Private</td>
+        }
+        @if (Model.AlarmTriggered)
+        {
+            <td>Alarm On</td>
+        }
+        else
+        {
+            <td>Alarm Off</td>
+        }
+    </tr>
+    <tr>
+        <td colspan="2">@Model.Coordinates</td>
+    </tr>
+
+</table>
+
+<div class="form-row">
+    <button type="reset" class="btn btn-default editButton"><span>Edit Content</span></button>
+</div>
+
+@section Scripts
+    {
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".editButton").on('click', function () {
+                let $values = []
+                let $inputs = $('.editable');
+                console.log($inputs);
+                $inputs.each((i, e) => {
+                    $values.push(e.innerHTML)
+                })
+
+                var value = $('.editable').attr('contenteditable');
+                $('.editable').addClass("input-group-text");
+                
+                $
+                if (value == 'false') {
+                    $('.editButton > span').text("Save");
+                    $('.editable').attr('contenteditable', 'true')
+                    $('.editable').addClass("input-group-text");
+                    console.log($inputs);
+                }
+                else {
+                         $(".editable").attr('contenteditable', 'false');
+                         $('.editable').removeClass("input-group-text");
+                         $('.editButton > span').text("Edit Content");
+
+                        let name = $inputs[0].innerHTML;
+                       let description = $inputs[1].innerHTML;
+
+
+                        $.post("/update-sensor", {
+                             SensorId: '@Model.Id',
+                             Name: name,
+                             Description: description,
+                             Coordinates: '@Model.Coordinates',
+                             IsPublic: '@Model.IsPublic',
+                             AlarmMin: '@Model.AlarmMin',
+                             AlarmMax: '@Model.AlarmMax',
+                             Value: '@Model.LastValueUser',
+                             PullingInterval: '@Model.UserInterval',
+                             TickOff: '@Model.AlarmTriggered',
+                             Timestamp: '@Model.TimeStamp',
+                             Type: '@Model.Type'
+                        },
+                        function () {
+                            console.log("success")
+                        });
+
+                }
+
+            });
+
+
+
+        });
+
+    </script>
+}

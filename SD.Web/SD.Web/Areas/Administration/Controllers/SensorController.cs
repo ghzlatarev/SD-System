@@ -21,12 +21,14 @@ namespace SD.Web.Areas.Administration.Controllers
 		private readonly IUserSensorService _userSensorService;
 		private readonly ISensorService _sensorService;
 		private readonly IMemoryCache _memoryCache;
+        private readonly ISensorDataService _sensorDataService;
 
-		public SensorController(IUserSensorService userSensorService, ISensorService sensorService, IMemoryCache memoryCache)
+        public SensorController(IUserSensorService userSensorService, ISensorService sensorService, IMemoryCache memoryCache, ISensorDataService sensorDataService)
 		{
 			_userSensorService = userSensorService ?? throw new ArgumentNullException(nameof(userSensorService));
 			_sensorService = sensorService ?? throw new ArgumentNullException(nameof(sensorService));
 			_memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+            _sensorDataService = sensorDataService ?? throw new ArgumentNullException(nameof(sensorDataService));
 		}
 
 		[HttpGet("usersensors")]
@@ -86,10 +88,14 @@ namespace SD.Web.Areas.Administration.Controllers
 		public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
 		{
 			ViewData["ReturnUrl"] = returnUrl;
-			if (ModelState.IsValid)
+
+            var sensor = await _sensorDataService.GetSensorsByIdAsync(model.SensorId);
+            model.LastValueUser = sensor.SensorData.Last(s => s.SensorId == model.SensorId).Value;
+
+            if (ModelState.IsValid)
 			{
 				var userSensor = await _userSensorService.AddUserSensorAsync(model.UserId, model.SensorId, model.Name, model.Description, 
-					model.Latitude, model.Longitude, model.AlarmMin, model.AlarmMax, model.PollingInterval, model.AlarmTriggered, model.IsPublic);
+					model.Latitude, model.Longitude, model.AlarmMin, model.AlarmMax, model.PollingInterval, model.AlarmTriggered, model.IsPublic, model.LastValueUser, model.Type);
 				return RedirectToLocal(returnUrl);
 			}
 

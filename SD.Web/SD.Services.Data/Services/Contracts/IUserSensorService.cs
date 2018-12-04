@@ -16,7 +16,8 @@ namespace SD.Services.Data.Services.Contracts
         Task<UserSensor> GetSensorByIdAsync(string id);
         
         Task<UserSensor> AddUserSensorAsync(string userId, string sensorId, string name, string description,
-            string latitude, string longitude, double alarmMin, double alarmMax, int pollingInterval, bool alarmTriggered, bool isPublic);
+            string latitude, string longitude, double alarmMin, double alarmMax, int pollingInterval, bool alarmTriggered, bool isPublic,
+            string lastValue, string type);
         
         Task UpdateUserSensorAsync(UserSensor userSensor);
 
