@@ -34,6 +34,9 @@ namespace SD.Services.Data.Services
 			IList<SensorData> addList = new List<SensorData>();
 			IList<Sensor> updateList = new List<Sensor>();
 
+			IDictionary<Sensor, SensorData> sensorsDictionary = new Dictionary<Sensor, SensorData>();
+			IList<Notification> notiList = new List<Notification>();
+
 			foreach (var sensor in allSensors)
 			{
 				var lastTimeStamp = sensor.LastTimeStamp;
@@ -57,7 +60,8 @@ namespace SD.Services.Data.Services
 					sensor.LastTimeStamp = newSensorData.TimeStamp;
 					sensor.LastValue = newSensorData.Value;
 
-					await CheckForAlarm(sensor, newSensorData);
+					sensorsDictionary.Add(sensor, newSensorData);
+					//await CheckForAlarm(sensor, newSensorData);
 
 					addList.Add(newSensorData);
 					deleteList.Add(oldSensorData);
@@ -66,6 +70,9 @@ namespace SD.Services.Data.Services
 				}
 			}
 
+			notiList = await CheckForAlarmNotifications(sensorsDictionary);
+			await this.dataContext.AddRangeAsync(notiList);
+
 			await this.dataContext.AddRangeAsync(addList);
 			this.dataContext.SensorData.RemoveRange(deleteList);
 			this.dataContext.UpdateRange(updateList);
@@ -73,20 +80,56 @@ namespace SD.Services.Data.Services
 			await this.dataContext.SaveChangesAsync(false);
 		}
 
-		private async Task CheckForAlarm(Sensor sensor, SensorData newSensorData)
+		private async Task<IList<Notification>> CheckForAlarmNotifications(IDictionary<Sensor, SensorData> sensorsDictionary)
 		{
-			var newValue = double.Parse(newSensorData.Value);
-			//This ToListAsync is using X.PagedList
-			var currentUserSensors = await sensor.UserSensors.ToListAsync();
-			foreach (var userSensor in currentUserSensors)
+			IList<Notification> notiList = new List<Notification>();
+
+			foreach (var kvp in sensorsDictionary)
 			{
-				if ((newValue <= userSensor.AlarmMin || newValue >= userSensor.AlarmMax) && userSensor.AlarmTriggered == true)
+				var newValue = double.Parse(kvp.Value.Value);
+
+				var currentUserSensors = await kvp.Key.UserSensors.ToListAsync();
+				foreach (var userSensor in currentUserSensors)
 				{
-					var userId = userSensor.UserId.ToString();
-					var message = userSensor.Name + " pinged, something is happening!";
-					await this.notificationService.SendNotificationAsync(message, userId);
+					if ((newValue <= userSensor.AlarmMin || newValue >= userSensor.AlarmMax) && userSensor.AlarmTriggered == true)
+					{
+						var userId = userSensor.UserId.ToString();
+						var message = userSensor.Name + " pinged, something is happening!";
+						await this.notificationService.SendNotificationAsync(message, userId);
+
+						notiList.Add(await this.CreateNotificationAsync(userId, message));
+					}
 				}
 			}
+
+			return notiList;
+
+
+			//var newValue = double.Parse(newSensorData.Value);
+			
+			//var currentUserSensors = await sensor.UserSensors.ToListAsync();
+			//foreach (var userSensor in currentUserSensors)
+			//{
+			//	if ((newValue <= userSensor.AlarmMin || newValue >= userSensor.AlarmMax) && userSensor.AlarmTriggered == true)
+			//	{
+			//		var userId = userSensor.UserId.ToString();
+			//		var message = userSensor.Name + " pinged, something is happening!";
+			//		await this.notificationService.SendNotificationAsync(message, userId);
+
+			//		await this.AddNotificationAsync(userId, message);
+			//	}
+			//}
+		}
+
+		private async Task<Notification> CreateNotificationAsync(string userId, string message)
+		{
+			Notification noti = new Notification
+			{
+				UserId = Guid.Parse(userId),
+				Message = message
+			};
+
+			return noti;
 		}
 	}
 }

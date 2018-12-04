@@ -1,3 +1,3 @@
-$(document).ready(function () {
-    demo.initDashboardPageCharts();
-});
+//$(document).ready(function () {
+//    //demo.initDashboardPageCharts();
+//});

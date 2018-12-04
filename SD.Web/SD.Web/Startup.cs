@@ -37,7 +37,7 @@ namespace SD.Web
         public void ConfigureServices(IServiceCollection services)
         {
             RegisterData(services);
-			services.AddScoped<INotificationService, NotificationService>();
+			services.AddTransient<INotificationService, NotificationService>();
 			RegisterAuthentication(services);
             
             RegisterServicesExternal(services);

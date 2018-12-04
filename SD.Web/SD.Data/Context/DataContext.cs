@@ -25,7 +25,9 @@ namespace SD.Data.Context
 
         public virtual DbSet<UserSensor> UserSensors { get; set; }
 
-        public override int SaveChanges()
+		public virtual DbSet<Notification> Notifications { get; set; }
+
+		public override int SaveChanges()
         {
             this.ApplyDeletionRules();
             this.ApplyAuditInfoRules();
