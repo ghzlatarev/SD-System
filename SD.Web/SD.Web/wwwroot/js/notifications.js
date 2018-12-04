@@ -9,15 +9,8 @@ connection.on("ReceiveNotification", function (message) {
 	var li = document.createElement("nav-item");
 	li.setAttribute('dropdown-item', true)
 	li.textContent = encodedMsg;
-	console.log('are be')
-	console.log(li);
 	document.getElementById("notificationsList").appendChild(li);
-	//if (document.getElementById("notificationsList").childElementCount > 5) {
-	//	document.getElementById("notificationsList").removeChild(document.getElementById("notificationsList").firstChild);
-	//}
-
-
-	document.getElementById("notificationsCount").innerHTML = Number(document.getElementById("notificationsList").childElementCount);
+	document.getElementById("notificationsCount").innerHTML = document.getElementById("notificationsList").childElementCount - 1;
 });
 
 connection.start().catch(function (err) {

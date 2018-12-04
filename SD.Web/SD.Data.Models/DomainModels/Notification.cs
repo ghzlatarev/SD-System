@@ -10,7 +10,9 @@ namespace SD.Data.Models.DomainModels
 	{
 		public string Message { get; set; }
 
-		public Guid UserId { get; set; }
+		public bool IsRead { get; set; }
+
+		public string UserId { get; set; }
 
 		public ApplicationUser User { get; set; }
 	}

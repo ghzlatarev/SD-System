@@ -5,15 +5,21 @@
 
 <li class="dropdown nav-item">
 	<a href="javascript:void(0)" class="dropdown-toggle nav-link" data-toggle="dropdown">
-		<i class="tim-icons icon-sound-wave"><span class="badge badge-light badge-pill" id="notificationsCount">0</span></i>
+		<i class="tim-icons icon-sound-wave"><span class="badge badge-light badge-pill" id="notificationsCount">@Model.Count()</span></i>
 		<p class="d-lg-none">
 			Notifications
 		</p>
 	</a>
 	<ul class="dropdown-menu dropdown-menu-right dropdown-navbar" id="notificationsList">
+		<li class="nav-link">
+			<a asp-area="UserRegular" asp-controller="Notification" asp-action="ReadUnread" class="nav-item dropdown-item">Remove All</a>
+
+		</li>
 		@foreach (var notification in Model)
 		{
-			<nav-item dropdown-item>@notification.Message</nav-item>
+			<li class="nav-link">
+				<nav-item dropdown-item>@notification.Message</nav-item>
+			</li>
 		}
 	</ul>
 </li>
