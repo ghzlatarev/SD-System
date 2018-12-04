@@ -48,7 +48,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                //return RedirectToAction("ListSensor", "dashboard", new { id = model.Id });
+                
                 RedirectToAction(nameof(DashboardController.ListSensor), new { id = model.Id });
             }
             return View(model);

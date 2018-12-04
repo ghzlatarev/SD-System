@@ -76,7 +76,7 @@ namespace SD.Services.Data.Services
                 AlarmMax = alarmMax,
                 IsPublic = isPublic,
                 PollingInterval = pollingInterval,
-                Coordinates = longitude + latitude,
+                Coordinates = longitude + "," + latitude,
                 Type = type,
                 LastValueUser = lastValue
                 
