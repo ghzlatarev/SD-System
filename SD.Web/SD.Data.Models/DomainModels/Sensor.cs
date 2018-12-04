@@ -10,7 +10,7 @@ namespace SD.Data.Models.DomainModels
     {
         [Required]
         [JsonProperty("sensorId")]
-        public Guid SensorId { get; set; }
+        public string SensorId { get; set; }
 
         [JsonProperty("tag")]
         public string Tag { get; set; }

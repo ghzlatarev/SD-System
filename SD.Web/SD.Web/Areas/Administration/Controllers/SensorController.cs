@@ -53,7 +53,7 @@ namespace SD.Web.Areas.Administration.Controllers
 		[HttpGet("usersensors/{id}")]
 		public async Task<IActionResult> Index(string id, int? pageNumber, int? pageSize)
 		{
-			var userSensors = await _userSensorService.GetSensorsByUserId(Guid.Parse(id), pageNumber ?? 1, pageSize ?? 10);
+			var userSensors = await _userSensorService.GetSensorsByUserId(id, pageNumber ?? 1, pageSize ?? 10);
 
 			var model = new SensorIndexViewModel(userSensors, string.Empty);
 

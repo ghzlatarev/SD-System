@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SD.Data.Migrations
 {
-    public partial class newinitial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -61,16 +61,18 @@ namespace SD.Data.Migrations
                 name: "Sensors",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: true),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
-                    SensorId = table.Column<Guid>(nullable: false),
+                    SensorId = table.Column<string>(nullable: false),
                     Tag = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     MinPollingIntervalInSeconds = table.Column<int>(nullable: false),
-                    MeasureType = table.Column<string>(nullable: true)
+                    MeasureType = table.Column<string>(nullable: true),
+                    LastTimeStamp = table.Column<DateTime>(nullable: true),
+                    LastValue = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -188,7 +190,7 @@ namespace SD.Data.Migrations
                 name: "SensorsData",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: true),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
@@ -196,7 +198,7 @@ namespace SD.Data.Migrations
                     TimeStamp = table.Column<DateTime>(nullable: true),
                     Value = table.Column<string>(nullable: true),
                     ValueType = table.Column<string>(nullable: true),
-                    SensorId = table.Column<Guid>(nullable: false)
+                    SensorId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -206,14 +208,14 @@ namespace SD.Data.Migrations
                         column: x => x.SensorId,
                         principalTable: "Sensors",
                         principalColumn: "SensorId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "UserSensors",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: true),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
@@ -222,16 +224,18 @@ namespace SD.Data.Migrations
                     Description = table.Column<string>(maxLength: 300, nullable: true),
                     Type = table.Column<string>(nullable: true),
                     UserInterval = table.Column<int>(nullable: false),
-                    LastValueUser = table.Column<int>(nullable: false),
+                    LastValueUser = table.Column<string>(nullable: true),
                     TimeStamp = table.Column<DateTime>(nullable: false),
-                    Coordinates = table.Column<string>(maxLength: 18, nullable: true),
-                    isPublic = table.Column<bool>(nullable: false),
+                    Coordinates = table.Column<string>(maxLength: 19, nullable: true),
+                    Latitude = table.Column<string>(maxLength: 9, nullable: true),
+                    Longitude = table.Column<string>(maxLength: 9, nullable: true),
+                    IsPublic = table.Column<bool>(nullable: false),
                     AlarmTriggered = table.Column<bool>(nullable: false),
-                    AlarmMin = table.Column<int>(nullable: false),
-                    AlarmMax = table.Column<int>(nullable: false),
-                    UserId = table.Column<Guid>(nullable: false),
-                    UserId1 = table.Column<string>(nullable: true),
-                    SensorId = table.Column<Guid>(nullable: false)
+                    AlarmMin = table.Column<double>(nullable: false),
+                    AlarmMax = table.Column<double>(nullable: false),
+                    PollingInterval = table.Column<int>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
+                    SensorId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -241,10 +245,10 @@ namespace SD.Data.Migrations
                         column: x => x.SensorId,
                         principalTable: "Sensors",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_UserSensors_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_UserSensors_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -320,9 +324,9 @@ namespace SD.Data.Migrations
                 column: "SensorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserSensors_UserId1",
+                name: "IX_UserSensors_UserId",
                 table: "UserSensors",
-                column: "UserId1");
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

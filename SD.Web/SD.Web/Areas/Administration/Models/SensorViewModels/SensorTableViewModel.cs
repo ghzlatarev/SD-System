@@ -16,13 +16,13 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 			this.IsPublic = userSensor.IsPublic;
 		}
 
-		public Guid Id { get; set; }
+		public string Id { get; set; }
 
 		public string Name { get; set; }
 
-		public int Latitude { get; set; }
+		public string Latitude { get; set; }
 
-		public int Longitude { get; set; }
+		public string Longitude { get; set; }
 
 		public double AlarmMax { get; set; }
 

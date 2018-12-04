@@ -131,7 +131,7 @@ namespace SD.Data.Migrations
 
             modelBuilder.Entity("SD.Data.Models.DomainModels.Notification", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime?>("CreatedOn");
@@ -157,7 +157,7 @@ namespace SD.Data.Migrations
 
             modelBuilder.Entity("SD.Data.Models.DomainModels.Sensor", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime?>("CreatedOn");
@@ -178,7 +178,8 @@ namespace SD.Data.Migrations
 
                     b.Property<DateTime?>("ModifiedOn");
 
-                    b.Property<Guid>("SensorId");
+                    b.Property<string>("SensorId")
+                        .IsRequired();
 
                     b.Property<string>("Tag");
 
@@ -192,7 +193,7 @@ namespace SD.Data.Migrations
 
             modelBuilder.Entity("SD.Data.Models.DomainModels.SensorData", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime?>("CreatedOn");
@@ -203,7 +204,7 @@ namespace SD.Data.Migrations
 
                     b.Property<DateTime?>("ModifiedOn");
 
-                    b.Property<Guid>("SensorId");
+                    b.Property<string>("SensorId");
 
                     b.Property<DateTime?>("TimeStamp");
 
@@ -220,7 +221,7 @@ namespace SD.Data.Migrations
 
             modelBuilder.Entity("SD.Data.Models.DomainModels.UserSensor", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<double>("AlarmMax");
@@ -228,6 +229,9 @@ namespace SD.Data.Migrations
                     b.Property<double>("AlarmMin");
 
                     b.Property<bool>("AlarmTriggered");
+
+                    b.Property<string>("Coordinates")
+                        .HasMaxLength(19);
 
                     b.Property<DateTime?>("CreatedOn");
 
@@ -240,11 +244,13 @@ namespace SD.Data.Migrations
 
                     b.Property<bool>("IsPublic");
 
-                    b.Property<int>("LastValueUser");
+                    b.Property<string>("LastValueUser");
 
-                    b.Property<int>("Latitude");
+                    b.Property<string>("Latitude")
+                        .HasMaxLength(9);
 
-                    b.Property<int>("Longitude");
+                    b.Property<string>("Longitude")
+                        .HasMaxLength(9);
 
                     b.Property<DateTime?>("ModifiedOn");
 
@@ -253,15 +259,13 @@ namespace SD.Data.Migrations
 
                     b.Property<int>("PollingInterval");
 
-                    b.Property<Guid>("SensorId");
+                    b.Property<string>("SensorId");
 
                     b.Property<DateTime>("TimeStamp");
 
                     b.Property<string>("Type");
 
-                    b.Property<Guid>("UserId");
-
-                    b.Property<string>("UserId1");
+                    b.Property<string>("UserId");
 
                     b.Property<int>("UserInterval");
 
@@ -269,7 +273,7 @@ namespace SD.Data.Migrations
 
                     b.HasIndex("SensorId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserSensors");
                 });
@@ -412,20 +416,18 @@ namespace SD.Data.Migrations
                     b.HasOne("SD.Data.Models.DomainModels.Sensor", "Sensor")
                         .WithMany("SensorData")
                         .HasForeignKey("SensorId")
-                        .HasPrincipalKey("SensorId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasPrincipalKey("SensorId");
                 });
 
             modelBuilder.Entity("SD.Data.Models.DomainModels.UserSensor", b =>
                 {
                     b.HasOne("SD.Data.Models.DomainModels.Sensor", "Sensor")
                         .WithMany("UserSensors")
-                        .HasForeignKey("SensorId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("SensorId");
 
                     b.HasOne("SD.Data.Models.Identity.ApplicationUser", "User")
                         .WithMany("PersonalSensors")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

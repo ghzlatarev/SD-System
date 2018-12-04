@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SD.Data.Models.DomainModels;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ namespace SD.Services.Data.Services.Contracts
     {
         Task RebaseSensorsAsync();
 
-		Task<IList<Tuple<string, string>>> GetSensorNamesIdsAsync();
-	}
+        Task<IList<Tuple<string, string>>> GetSensorNamesIdsAsync();
+
+        Task<IEnumerable<Sensor>> ListSensorsAsync();
+    }
 }

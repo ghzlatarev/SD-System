@@ -77,8 +77,21 @@ namespace SD.Services.Data.Services
 			this.dataContext.SensorData.RemoveRange(deleteList);
 			this.dataContext.UpdateRange(updateList);
 
-			await this.dataContext.SaveChangesAsync(false);
-		}
+            await this.dataContext.SaveChangesAsync(false);
+        }
+
+        
+
+        //public async Task<SensorData> GetSensorDataByIdAsync(Guid id)
+        //{
+        //    return await this.dataContext.SensorData.FirstOrDefaultAsync(se => se.SensorId == id);
+        //}
+
+        public async Task<Sensor> GetSensorsByIdAsync(string id)
+        {
+            return await this.dataContext.Sensors.Include(s => s.SensorData).FirstOrDefaultAsync(se => se.SensorId == id);
+        }
+
 
 		private async Task<IList<Notification>> CheckForAlarmNotifications(IDictionary<Sensor, SensorData> sensorsDictionary)
 		{
