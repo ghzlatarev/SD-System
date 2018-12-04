@@ -2,21 +2,6 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
 
-//function getSessionId() {
-//	var sessionId = window.sessionStorage.sessionId;
-
-//	if (!sessionId) {
-//		sessionId = window.sessionStorage.sessionId = Date.now();
-//	}
-
-//	return sessionId;
-//}
-
-//$.connection.hub.qs = { SessionId: getSessionId() };
-//$.connection.hub.start().done(function () {
-//	//connection started
-//});
-
 connection.on("ReceiveNotification", function (message) {
 
 	var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

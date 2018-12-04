@@ -9,5 +9,7 @@ namespace SD.Services.Data.Services.Contracts
 		Task SendNotificationAsync(string message, string userId);
 
 		Task<List<Notification>> GetItemsAsync(string userId);
+
+		Task<IList<Notification>> CheckAlarmNotifications(IDictionary<Sensor, SensorData> sensorsDictionary);
 	}
 }

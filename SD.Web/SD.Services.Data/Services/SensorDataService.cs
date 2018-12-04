@@ -8,7 +8,7 @@ using SD.Data.Context;
 using SD.Data.Models.DomainModels;
 using SD.Services.Data.Services.Contracts;
 using SD.Services.External;
-using X.PagedList;
+//using X.PagedList;
 
 namespace SD.Services.Data.Services
 {
@@ -35,7 +35,7 @@ namespace SD.Services.Data.Services
 			IList<Sensor> updateList = new List<Sensor>();
 
 			IDictionary<Sensor, SensorData> sensorsDictionary = new Dictionary<Sensor, SensorData>();
-			IList<Notification> notiList = new List<Notification>();
+
 
 			foreach (var sensor in allSensors)
 			{
@@ -56,93 +56,37 @@ namespace SD.Services.Data.Services
 					newSensorData.SensorId = sensor.SensorId;
 					if (newSensorData.Value.Equals("true")) { newSensorData.Value = "1"; };
 					if (newSensorData.Value.Equals("false")) { newSensorData.Value = "0"; };
-					
+
 					sensor.LastTimeStamp = newSensorData.TimeStamp;
 					sensor.LastValue = newSensorData.Value;
 
+					oldSensorData.Value = newSensorData.Value;
+					oldSensorData.TimeStamp = newSensorData.TimeStamp;
+
 					sensorsDictionary.Add(sensor, newSensorData);
-					//await CheckForAlarm(sensor, newSensorData);
-
-					addList.Add(newSensorData);
-					deleteList.Add(oldSensorData);
 					updateList.Add(sensor);
-
 				}
 			}
 
-			notiList = await CheckForAlarmNotifications(sensorsDictionary);
-			await this.dataContext.AddRangeAsync(notiList);
+			IList<Notification> notificationsList = await this.notificationService.CheckAlarmNotifications(sensorsDictionary);
+			await this.dataContext.AddRangeAsync(notificationsList);
 
-			await this.dataContext.AddRangeAsync(addList);
-			this.dataContext.SensorData.RemoveRange(deleteList);
 			this.dataContext.UpdateRange(updateList);
 
-            await this.dataContext.SaveChangesAsync(false);
-        }
-
-        
-
-        //public async Task<SensorData> GetSensorDataByIdAsync(Guid id)
-        //{
-        //    return await this.dataContext.SensorData.FirstOrDefaultAsync(se => se.SensorId == id);
-        //}
-
-        public async Task<Sensor> GetSensorsByIdAsync(string id)
-        {
-            return await this.dataContext.Sensors.Include(s => s.SensorData).FirstOrDefaultAsync(se => se.SensorId == id);
-        }
-
-
-		private async Task<IList<Notification>> CheckForAlarmNotifications(IDictionary<Sensor, SensorData> sensorsDictionary)
-		{
-			IList<Notification> notiList = new List<Notification>();
-
-			foreach (var kvp in sensorsDictionary)
-			{
-				var newValue = double.Parse(kvp.Value.Value);
-
-				var currentUserSensors = await kvp.Key.UserSensors.ToListAsync();
-				foreach (var userSensor in currentUserSensors)
-				{
-					if ((newValue <= userSensor.AlarmMin || newValue >= userSensor.AlarmMax) && userSensor.AlarmTriggered == true)
-					{
-						var userId = userSensor.UserId.ToString();
-						var message = userSensor.Name + " pinged, something is happening!";
-						await this.notificationService.SendNotificationAsync(message, userId);
-
-						notiList.Add(await this.CreateNotificationAsync(userId, message));
-					}
-				}
-			}
-
-			return notiList;
-
-
-			//var newValue = double.Parse(newSensorData.Value);
-			
-			//var currentUserSensors = await sensor.UserSensors.ToListAsync();
-			//foreach (var userSensor in currentUserSensors)
-			//{
-			//	if ((newValue <= userSensor.AlarmMin || newValue >= userSensor.AlarmMax) && userSensor.AlarmTriggered == true)
-			//	{
-			//		var userId = userSensor.UserId.ToString();
-			//		var message = userSensor.Name + " pinged, something is happening!";
-			//		await this.notificationService.SendNotificationAsync(message, userId);
-
-			//		await this.AddNotificationAsync(userId, message);
-			//	}
-			//}
+			await this.dataContext.SaveChangesAsync(false);
 		}
 
-		private async Task<Notification> CreateNotificationAsync(string userId, string message)
-		{
-			Notification noti = new Notification
-			{
-				UserId = Guid.Parse(userId),
-				Message = message
-			};
 
-			return noti;
+
+		//public async Task<SensorData> GetSensorDataByIdAsync(Guid id)
+		//{
+		//    return await this.dataContext.SensorData.FirstOrDefaultAsync(se => se.SensorId == id);
+		//}
+
+		public async Task<Sensor> GetSensorsByIdAsync(string id)
+		{
+			return await this.dataContext.Sensors.Include(s => s.SensorData)
+				.FirstOrDefaultAsync(se => se.SensorId == id);
 		}
 	}
 }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SD.Data.Migrations
 {
-    public partial class initial : Migration
+    public partial class newinitial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -187,6 +187,30 @@ namespace SD.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    CreatedOn = table.Column<DateTime>(nullable: true),
+                    ModifiedOn = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    Message = table.Column<string>(nullable: true),
+                    UserId = table.Column<Guid>(nullable: false),
+                    UserId1 = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SensorsData",
                 columns: table => new
                 {
@@ -308,6 +332,11 @@ namespace SD.Data.Migrations
                 filter: "[UserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_UserId1",
+                table: "Notifications",
+                column: "UserId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sensors_SensorId",
                 table: "Sensors",
                 column: "SensorId",
@@ -345,6 +374,9 @@ namespace SD.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "SensorsData");
