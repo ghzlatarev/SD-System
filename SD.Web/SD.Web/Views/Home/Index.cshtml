@@ -8,6 +8,9 @@
 <h2>Public sensors</h2>
 <hr />
 
+<h4>Pick a date</h4>
+<div id="calendar"></div>
+
 <div class="col-lg-8 col-md-4 col-xs-9">
 
     <div asp-validation-summary="All" class="text-danger"></div>
@@ -25,17 +28,17 @@
         <tbody>
             @foreach (var sensor in Model.userSensorViewModels)
             {
-            <tr>
-                <th>@sensor.Name</th>
-                <th>@sensor.Description</th>
-                <th>@sensor.Type</th>
-                <th>@sensor.LastValueUser</th>
-                <th>
-                    <button type="submit" class="btn btn-success">
-                        <a asp-controller="dashboard" asp-action="ListSensor" asp-area="userregular" asp-route-id="@sensor.Id">View Details</a>
-                    </button>
-                </th>
-            </tr>
+                <tr>
+                    <th>@sensor.Name</th>
+                    <th>@sensor.Description</th>
+                    <th>@sensor.Type</th>
+                    <th>@sensor.LastValueUser</th>
+                    <th>
+                        <button type="submit" class="btn btn-success">
+                            <a asp-controller="dashboard" asp-action="ListSensor" asp-area="userregular" asp-route-id="@sensor.Id">View Details</a>
+                        </button>
+                    </th>
+                </tr>
             }
         </tbody>
 
@@ -49,6 +52,12 @@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
+<script>
+    $(document).ready(function () {
+        // create Calendar from div HTML element
+        $("#calendar").kendoCalendar();
+    });
+</script>
 }
 
 

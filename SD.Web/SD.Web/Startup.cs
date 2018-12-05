@@ -100,11 +100,11 @@ namespace SD.Web
                 services.AddDbContext<DataContext>(options =>
                      options.UseSqlServer(Configuration.GetConnectionString("DevelopmentConnection")));
             }
-            else
-            {
-                services.AddDbContext<DataContext>(options =>
-                     options.UseSqlServer(Environment.GetEnvironmentVariable("AZURE_DS_DB_Connection")));
-            }
+            //else
+            //{
+            //    services.AddDbContext<DataContext>(options =>
+            //         options.UseSqlServer(Environment.GetEnvironmentVariable("AZURE_DS_DB_Connection")));
+            //}
         }
 
         private void RegisterAuthentication(IServiceCollection services)
