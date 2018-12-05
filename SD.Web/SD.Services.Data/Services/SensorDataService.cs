@@ -30,12 +30,9 @@ namespace SD.Services.Data.Services
 		public async Task GetSensorsData()
 		{
 			IList<Sensor> allSensors = await this.dataContext.Sensors.ToListAsync();
-			IList<SensorData> deleteList = new List<SensorData>();
-			IList<SensorData> addList = new List<SensorData>();
-			IList<Sensor> updateList = new List<Sensor>();
-
+			IList<SensorData> updateDataList = new List<SensorData>();
+			IList<Sensor> updateSensorsList = new List<Sensor>();
 			IDictionary<Sensor, SensorData> sensorsDictionary = new Dictionary<Sensor, SensorData>();
-
 
 			foreach (var sensor in allSensors)
 			{
@@ -59,19 +56,20 @@ namespace SD.Services.Data.Services
 
 					sensor.LastTimeStamp = newSensorData.TimeStamp;
 					sensor.LastValue = newSensorData.Value;
+					updateSensorsList.Add(sensor);
 
 					oldSensorData.Value = newSensorData.Value;
 					oldSensorData.TimeStamp = newSensorData.TimeStamp;
+					updateDataList.Add(oldSensorData);
 
 					sensorsDictionary.Add(sensor, newSensorData);
-					updateList.Add(sensor);
 				}
 			}
-
-			IList<Notification> notificationsList = await this.notificationService.CheckAlarmNotifications(sensorsDictionary);
+			var notificationsList = await this.notificationService.CheckAlarmNotifications(sensorsDictionary);
 			await this.dataContext.AddRangeAsync(notificationsList);
 
-			this.dataContext.UpdateRange(updateList);
+			this.dataContext.UpdateRange(updateSensorsList);
+			this.dataContext.UpdateRange(updateDataList);
 
 			await this.dataContext.SaveChangesAsync(false);
 		}
