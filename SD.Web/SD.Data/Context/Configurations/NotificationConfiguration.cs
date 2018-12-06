@@ -7,9 +7,9 @@ using System.Text;
 
 namespace SD.Data.Context.Configurations
 {
-	internal class NotificationConfiguration : IEntityTypeConfiguration<Notification>
+	internal class NotificationConfiguration : IEntityTypeConfiguration<Notifications>
 	{
-		public void Configure(EntityTypeBuilder<Notification> builder)
+		public void Configure(EntityTypeBuilder<Notifications> builder)
 		{
 			builder.ToTable("Sensor Notifications");
 

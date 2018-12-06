@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SD.Data.Models.DomainModels
 {
-	public class Notification : BaseEntity
+	public class Notifications : BaseEntity
 	{
 		public string Message { get; set; }
 

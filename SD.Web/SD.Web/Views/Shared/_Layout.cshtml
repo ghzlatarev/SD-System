@@ -64,10 +64,10 @@
 									</ul>
 								</li>
 							}
-							@if (User.Identity.IsAuthenticated)
+							@*@if (User.Identity.IsAuthenticated)
 							{
 								@await Component.InvokeAsync("Notifications")
-							}
+							}*@
 							<li class="dropdown nav-item">
 								@await Html.PartialAsync("_LoginPartial")
 							</li>

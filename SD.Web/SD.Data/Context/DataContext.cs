@@ -23,7 +23,7 @@ namespace SD.Data.Context
 
         public virtual DbSet<UserSensor> UserSensors { get; set; }
 
-		public virtual DbSet<Notification> Notifications { get; set; }
+		public virtual DbSet<Notifications> Notifications { get; set; }
 
 		public override int SaveChanges()
         {

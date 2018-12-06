@@ -36,6 +36,6 @@ namespace SD.Data.Models.Identity
 
 		public ICollection<UserSensor> PersonalSensors { get; set; }
 
-		public ICollection<Notification> Notifications { get; set; }
+		public ICollection<Notifications> Notifications { get; set; }
 	}
 }
