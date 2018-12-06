@@ -18,14 +18,14 @@ namespace SD.Web.Areas.UserRegular.Controllers
         private readonly ISensorDataService _sensorDataService;
         private readonly ISensorService _sensorService;
         private readonly UserManager<ApplicationUser> _userManager;
-
+ 
         public DashboardController(IUserSensorService userSensorService, UserManager<ApplicationUser> userManager, ISensorService sensorService, ISensorDataService sensorDataService)
         {
             _userSensorService = userSensorService;
             _userManager = userManager;
             _sensorService = sensorService;
             _sensorDataService = sensorDataService;
-        }
+    }
 
         [HttpGet("list-sensors")]
         public async Task<IActionResult> Index(Guid id)
@@ -48,7 +48,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                //return RedirectToAction("ListSensor", "dashboard", new { id = model.Id });
+                
                 RedirectToAction(nameof(DashboardController.ListSensor), new { id = model.Id });
             }
             return View(model);
@@ -58,7 +58,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
         public async Task<IActionResult> ListSensor(string id)
         {
             var sensor = await _userSensorService.ListSensorByIdAsync(id);
-
+            
             var model = new UserSensorViewModel(sensor)
             {
                 Name = sensor.Name,
@@ -76,11 +76,13 @@ namespace SD.Web.Areas.UserRegular.Controllers
                 User = sensor.User,
                 SensorId = sensor.SensorId,
                 Sensor = sensor.Sensor,
-                Id = sensor.Id
+                Id = sensor.Id                
             };
 
             return View(model);
         }
+
+
 
 
         [HttpGet("choose-data-source")]
@@ -128,7 +130,6 @@ namespace SD.Web.Areas.UserRegular.Controllers
                 ApiInterval = sensor.MinPollingIntervalInSeconds,
                 UserId = userId,
                 Id = sensor.Id
-
             };
 
             return View(model);
@@ -143,13 +144,33 @@ namespace SD.Web.Areas.UserRegular.Controllers
 
             if (this.ModelState.IsValid)
             {
-                //TODO: Fix string to guid transforming
-                //TODO: Fix longitude and latitude type. Right now it is int
-                await this._userSensorService.AddUserSensorAsync(model.UserId.ToString(), model.SensorId.ToString(), model.Name, model.Description,
-                    model.Coordinates.Split(',')[0], model.Coordinates.Split(',')[1], model.AlarmMin, model.AlarmMax, model.UserInterval,
-                    model.AlarmTriggered, model.IsPublic);
+                //TODO: not passing lastvalue and type
+                
+                await this._userSensorService.AddUserSensorAsync(model.UserId, model.SensorId, model.Name, model.UserDescription, model.Coordinates.Split(',')[0],
+                    model.Coordinates.Split(',')[1], model.AlarmMin, model.AlarmMax, model.UserInterval, model.AlarmTriggered, model.IsPublic,
+                    model.LastValueUser, model.Type);
             }
+
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost("update-sensor")]
+
+        public async Task<IActionResult> UpdateSensor(SensorRegistrationByUserModel model)
+        {
+            var sensor = await _userSensorService.GetSensorByIdAsync(model.SensorId);
+
+            sensor.Name = model.Name;
+            sensor.Description = model.Description;
+
+            if (this.ModelState.IsValid)
+            {
+                //TODO: not passing lastvalue and type
+
+                await this._userSensorService.UpdateUserSensorAsync(sensor);
+            }
+
+            return Json(sensor);
         }
 
 

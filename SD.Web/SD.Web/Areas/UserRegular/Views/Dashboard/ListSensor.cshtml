@@ -4,16 +4,323 @@
     ViewData["Title"] = "Sensor";
 }
 
-<h2>@Model.Name</h2>
-<h2>@Model.AlarmMin</h2>
-<h2>@Model.AlarmMax</h2>
-<h2>@Model.AlarmTriggered</h2>
-<h2>@Model.Coordinates</h2>
-<h2>@Model.Description</h2>
-<h2>@Model.Id</h2>
-<h2>@Model.IsPublic</h2>
-<h2>@Model.LastValueUser</h2>
-<h2>@Model.Type</h2>
-<h2>@Model.Name</h2>
-<h2>@Model.Name</h2>
+<h2>Sensor details</h2>
 
+<div id="map" style="height: 350px; width: auto"></div>
+<table class="table table-bordered">
+    <tr>
+        <td colspan="2"><label>Value:</label>@Model.LastValueUser</td>
+    </tr>
+    <tr>
+        <td><label>Name: </label></td>
+        <td><span contenteditable="false" class="editable">@Model.Name</span></td>
+    </tr>
+    <tr>
+        <td><label>Description: </label></td>
+        <td><span contenteditable="false" class="editable">@Model.Description</span></td>
+    </tr>
+    <tr>
+        @if (Model.IsPublic)
+        {
+            <td>Public</td>
+        }
+        else
+        {
+            <td>Private</td>
+        }
+        @if (Model.AlarmTriggered)
+        {
+            <td>Alarm On</td>
+        }
+        else
+        {
+            <td>Alarm Off</td>
+        }
+    </tr>
+    <tr>
+        <td colspan="2">@Model.Coordinates</td>
+    </tr>
+
+</table>
+
+
+
+<div class="form-row">
+    <button type="reset" class="btn btn-default editButton"><span>Edit Content</span></button>
+    <button type="reset" class="btn btn-default btn-danger"><span>Delete</span></button>
+</div>
+
+
+
+
+
+@section Scripts
+    {
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            initGoogleMaps();
+
+            $(".editButton").on('click', function () {
+                let $values = []
+                let $inputs = $('.editable');
+                console.log($inputs);
+                $inputs.each((i, e) => {
+                    $values.push(e.innerHTML)
+                })
+
+                var value = $('.editable').attr('contenteditable');
+                $('.editable').addClass("input-group-text");
+
+                $
+                if (value == 'false') {
+                    $('.editButton > span').text("Save");
+                    $('.editable').attr('contenteditable', 'true')
+                    $('.editable').addClass("input-group-text");
+                    console.log($inputs);
+                }
+                else {
+                    $(".editable").attr('contenteditable', 'false');
+                    $('.editable').removeClass("input-group-text");
+                    $('.editButton > span').text("Edit Content");
+
+                    let name = $inputs[0].innerHTML;
+                    let description = $inputs[1].innerHTML;
+
+
+                    $.post("/update-sensor", {
+                        SensorId: '@Model.Id',
+                        Name: name,
+                        Description: description,
+                        Coordinates: '@Model.Coordinates',
+                        IsPublic: '@Model.IsPublic',
+                        AlarmMin: '@Model.AlarmMin',
+                        AlarmMax: '@Model.AlarmMax',
+                        Value: '@Model.LastValueUser',
+                        PullingInterval: '@Model.UserInterval',
+                        TickOff: '@Model.AlarmTriggered',
+                        Timestamp: '@Model.TimeStamp',
+                        Type: '@Model.Type'
+                    }),
+                        function () {
+                            console.log("success")
+                        };
+
+                }
+
+            });
+
+            function initGoogleMaps() {
+                var myLatlng = new google.maps.LatLng(@Model.Coordinates.Split(',')[1], @Model.Coordinates.Split(',')[0]);
+                var mapOptions = {
+                    zoom: 13,
+                    center: myLatlng,
+                    scrollwheel: false, //we disable de scroll over the map, it is a really annoing when you scroll through page
+                    styles: [{
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#1d2c4d"
+                        }]
+                    },
+                    {
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#8ec3b9"
+                        }]
+                    },
+                    {
+                        "elementType": "labels.text.stroke",
+                        "stylers": [{
+                            "color": "#1a3646"
+                        }]
+                    },
+                    {
+                        "featureType": "administrative.country",
+                        "elementType": "geometry.stroke",
+                        "stylers": [{
+                            "color": "#4b6878"
+                        }]
+                    },
+                    {
+                        "featureType": "administrative.land_parcel",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#64779e"
+                        }]
+                    },
+                    {
+                        "featureType": "administrative.province",
+                        "elementType": "geometry.stroke",
+                        "stylers": [{
+                            "color": "#4b6878"
+                        }]
+                    },
+                    {
+                        "featureType": "landscape.man_made",
+                        "elementType": "geometry.stroke",
+                        "stylers": [{
+                            "color": "#334e87"
+                        }]
+                    },
+                    {
+                        "featureType": "landscape.natural",
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#023e58"
+                        }]
+                    },
+                    {
+                        "featureType": "poi",
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#283d6a"
+                        }]
+                    },
+                    {
+                        "featureType": "poi",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#6f9ba5"
+                        }]
+                    },
+                    {
+                        "featureType": "poi",
+                        "elementType": "labels.text.stroke",
+                        "stylers": [{
+                            "color": "#1d2c4d"
+                        }]
+                    },
+                    {
+                        "featureType": "poi.park",
+                        "elementType": "geometry.fill",
+                        "stylers": [{
+                            "color": "#023e58"
+                        }]
+                    },
+                    {
+                        "featureType": "poi.park",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#3C7680"
+                        }]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#304a7d"
+                        }]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#98a5be"
+                        }]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "labels.text.stroke",
+                        "stylers": [{
+                            "color": "#1d2c4d"
+                        }]
+                    },
+                    {
+                        "featureType": "road.highway",
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#2c6675"
+                        }]
+                    },
+                    {
+                        "featureType": "road.highway",
+                        "elementType": "geometry.fill",
+                        "stylers": [{
+                            "color": "#9d2a80"
+                        }]
+                    },
+                    {
+                        "featureType": "road.highway",
+                        "elementType": "geometry.stroke",
+                        "stylers": [{
+                            "color": "#9d2a80"
+                        }]
+                    },
+                    {
+                        "featureType": "road.highway",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#b0d5ce"
+                        }]
+                    },
+                    {
+                        "featureType": "road.highway",
+                        "elementType": "labels.text.stroke",
+                        "stylers": [{
+                            "color": "#023e58"
+                        }]
+                    },
+                    {
+                        "featureType": "transit",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#98a5be"
+                        }]
+                    },
+                    {
+                        "featureType": "transit",
+                        "elementType": "labels.text.stroke",
+                        "stylers": [{
+                            "color": "#1d2c4d"
+                        }]
+                    },
+                    {
+                        "featureType": "transit.line",
+                        "elementType": "geometry.fill",
+                        "stylers": [{
+                            "color": "#283d6a"
+                        }]
+                    },
+                    {
+                        "featureType": "transit.station",
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#3a4762"
+                        }]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "geometry",
+                        "stylers": [{
+                            "color": "#0e1626"
+                        }]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{
+                            "color": "#4e6d70"
+                        }]
+                    }
+                    ]
+                };
+
+                var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+                var marker = new google.maps.Marker({
+                    position: myLatlng,
+                    title: "Sensor"
+                });
+
+                // To add the marker to the map, call setMap();
+                marker.setMap(map);
+            }
+
+        });
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCoiGMouNF91fR1CfBO3iqfBxR-raPW7WM"></script>
+
+}

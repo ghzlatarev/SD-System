@@ -11,6 +11,11 @@ using SD.Services.Data.Services.Contracts;
 using SD.Web.Models;
 using SD.Web.Areas.UserRegular.Models;
 using SD.Web.Areas.UserRegular.Controllers;
+using Kendo.Mvc.UI;
+using SD.Data.Context;
+using Kendo.Mvc.Extensions;
+using Microsoft.EntityFrameworkCore;
+using SD.Data.Models.DomainModels;
 
 namespace SD.Web.Controllers
 {
@@ -18,38 +23,59 @@ namespace SD.Web.Controllers
     {
         private readonly ISensorDataService _service;
         private readonly IUserSensorService _userSensorService;
+        private readonly ISensorService _serviceSensor;
+        private readonly DataContext _dataContext;
 
-        public HomeController(ISensorDataService service, IUserSensorService userSensorService)
+        public HomeController(ISensorDataService service, IUserSensorService userSensorService, ISensorService serviceSensor, DataContext dataContext)
         {
             _service = service;
             _userSensorService = userSensorService;
+            _serviceSensor = serviceSensor;
+            _dataContext = dataContext;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(Guid id)
         {
-            var sensors = await _userSensorService.ListPublicSensorsAsync();
+        //    var sensors = await _userSensorService.ListPublicSensorsAsync();
 
-            var model = new UserSensorsViewModel()
-            {
-                userSensorViewModels = sensors.Select(se => new UserSensorViewModel(se))
-            };
+        //    var model = new UserSensorsViewModel()
+        //    {
+        //        userSensorViewModels = sensors.Select(se => new UserSensorViewModel(se))
+        //    };
 
-            return View(model);
+            return View();
         }
 
-       
+        public async Task<JsonResult> Get_Sensors([DataSourceRequest] DataSourceRequest request)
+        {
+            var sensors = await _userSensorService.ListPublicSensorsAsync();
 
-        //private readonly ISensorService service;
+            var result = sensors.Select(s => new UserSensorViewModel
+            {
+                Name = s.Name,
+                Description = s.Description,
+                Type = s.Type,
+                UserInterval = s.UserInterval,
+                LastValueUser = s.LastValueUser,
+                TimeStamp = s.TimeStamp,
+                Coordinates = s.Coordinates,
+                IsPublic = s.IsPublic,
+                AlarmTriggered = s.AlarmTriggered,
+                AlarmMin = s.AlarmMin,
+                AlarmMax = s.AlarmMax,
+                UserId = s.UserId,
+                SensorId = s.SensorId,
+                Id = s.Id
+            });
 
-        //public HomeController(ISensorService service)
-        //{
-        //    this._service = service;
-        //}
+            return this.Json(result.ToDataSourceResult(request));
+        }
+
 
         //public async Task<IActionResult> Index()
         //{
-        //    await this._service.RebaseSensorsAsync();
+        //    await _serviceSensor.RebaseSensorsAsync();
         //    return View();
         //}
 

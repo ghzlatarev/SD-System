@@ -62,6 +62,12 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 		[Display(Name = "Sensor ID")]
 		public string SensorId { get; set; }
 
-		public IList<Tuple<string, string>> SensorNamesIds { get; set; }
+        [Display(Name = "Value")]
+        public string LastValueUser { get; set; }
+
+        [Display(Name = "Type")]
+        public string Type { get; set; }
+
+        public IList<Tuple<string, string>> SensorNamesIds { get; set; }
 	}
 }

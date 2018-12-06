@@ -10,6 +10,10 @@ namespace SD.Web.Areas.UserRegular.Models
 {
     public class UserSensorViewModel
     {
+        public UserSensorViewModel()
+        {
+        }
+
         public UserSensorViewModel(UserSensor sensor)
         {
             Name = sensor.Name;

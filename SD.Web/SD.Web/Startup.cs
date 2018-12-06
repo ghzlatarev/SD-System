@@ -19,6 +19,7 @@ using Quartz.Spi;
 using Quartz;
 using Quartz.Impl;
 using SD.Web.Utilities.Quartz;
+using Newtonsoft.Json.Serialization;
 
 namespace SD.Web
 {
@@ -48,7 +49,8 @@ namespace SD.Web
             RegisterQuartzServices(services);
 
 			services.AddSignalR();
-		}
+            services.AddKendo();
+        }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IScheduler scheduler)
         {
@@ -220,7 +222,7 @@ namespace SD.Web
                     {
                         Duration = 30
                     });
-            });
+            }).AddJsonOptions(o => o.SerializerSettings.ContractResolver = new DefaultContractResolver()); 
         }
     }
 }
