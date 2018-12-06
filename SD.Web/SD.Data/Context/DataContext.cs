@@ -15,8 +15,6 @@ namespace SD.Data.Context
 {
     public class DataContext : IdentityDbContext<ApplicationUser>
     {
-        public DataContext() { }
-
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         public virtual DbSet<Sensor> Sensors { get; set; }

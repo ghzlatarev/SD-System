@@ -1,6 +1,5 @@
 ﻿@using SD.Web.Areas.UserRegular.Models
 
-@model UserSensorsViewModel
 @{
     ViewData["Title"] = "Index";
 }
@@ -8,10 +7,33 @@
 <h2>Public sensors</h2>
 <hr />
 
-<h4>Pick a date</h4>
-<div id="calendar"></div>
-
-<div class="col-lg-8 col-md-4 col-xs-9">
+@(Html.Kendo().Grid<UserSensorViewModel>()
+                    .Name("grid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(c => c.Name).Width(140);
+                        columns.Bound(c => c.Description).Width(190);
+                        columns.Bound(c => c.Type).Width(190);
+                        columns.Bound(c => c.LastValueUser).Width(110);
+                        columns.Bound(p => p.Id).ClientTemplate(
+                                    "<button type=\"submit\" class=\"btn btn-success\"><a href='" + "sensor?id=#= Id #'" +
+                                    ">Show Product Details</a></button>").Title("Details").Sortable(false).Filterable(false).Width(150);
+                    })
+                                                                    .HtmlAttributes(new { style = "height: 380px;" })
+                                                                    .Scrollable()
+                                                                    .Groupable()
+                                                                    .Sortable()
+                                                                    .Filterable()
+                                                                    .Pageable(pageable => pageable
+                                                                        .Refresh(true)
+                                                                        .PageSizes(true)
+                                                                        .ButtonCount(5))
+                                                                    .DataSource(dataSource => dataSource
+                                                                        .Ajax()
+                                                                        .Read(read => read.Action("Get_Sensors", "Home"))
+                                                                    )
+)
+@*<div class="col-lg-8 col-md-4 col-xs-9">
 
     <div asp-validation-summary="All" class="text-danger"></div>
     <table class="table table-bordered">
@@ -42,22 +64,17 @@
             }
         </tbody>
 
-    </table>
-    <h2>Notifications</h2>
-    <div class="col-6">
-        <ul id="notificationsList"></ul>
-    </div>
+    </table>*@
+<h2>Notifications</h2>
+<div class="col-6">
+    <ul id="notificationsList"></ul>
+</div>
 </div>
 <div class="clearfix"></div>
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
-<script>
-    $(document).ready(function () {
-        // create Calendar from div HTML element
-        $("#calendar").kendoCalendar();
-    });
-</script>
+    
 }
 
 
