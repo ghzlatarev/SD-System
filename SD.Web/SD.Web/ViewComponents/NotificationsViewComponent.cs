@@ -25,10 +25,10 @@ namespace SD.Web.ViewComponents
 		public async Task<IViewComponentResult> InvokeAsync()
 		{
 			var user = await _userManager.GetUserAsync(HttpContext.User);
-			//var userId = user.Id;
+			var userId = user.Id;
 				
-			//var items = await this.notificationService.GetItemsAsync(userId);
-			return View();
+			var items = await this.notificationService.GetItemsAsync(userId);
+			return View(items);
 		}
 	}
 }
