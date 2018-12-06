@@ -8,30 +8,30 @@
 <hr />
 
 @(Html.Kendo().Grid<UserSensorViewModel>()
-                    .Name("grid")
-                    .Columns(columns =>
-                    {
-                        columns.Bound(c => c.Name).Width(140);
-                        columns.Bound(c => c.Description).Width(190);
-                        columns.Bound(c => c.Type).Width(190);
-                        columns.Bound(c => c.LastValueUser).Width(110);
-                        columns.Bound(p => p.Id).ClientTemplate(
-                                    "<button type=\"submit\" class=\"btn btn-success\"><a href='" + "sensor?id=#= Id #'" +
-                                    ">Show Product Details</a></button>").Title("Details").Sortable(false).Filterable(false).Width(150);
-                    })
-                                                                    .HtmlAttributes(new { style = "height: 380px;" })
-                                                                    .Scrollable()
-                                                                    .Groupable()
-                                                                    .Sortable()
-                                                                    .Filterable()
-                                                                    .Pageable(pageable => pageable
-                                                                        .Refresh(true)
-                                                                        .PageSizes(true)
-                                                                        .ButtonCount(5))
-                                                                    .DataSource(dataSource => dataSource
-                                                                        .Ajax()
-                                                                        .Read(read => read.Action("Get_Sensors", "Home"))
-                                                                    )
+                        .Name("grid")
+                        .Columns(columns =>
+                        {
+                            columns.Bound(c => c.Name).Width(140);
+                            columns.Bound(c => c.Description).Width(190);
+                            columns.Bound(c => c.Type).Width(190);
+                            columns.Bound(c => c.LastValueUser).Width(110);
+                            columns.Bound(p => p.Id).ClientTemplate(
+                                        "<button type=\"submit\" class=\"btn btn-success\"><a href='" + "sensor?id=#= Id #'" +
+                                        ">Show Product Details</a></button>").Title("Details").Sortable(false).Filterable(false).Width(150);
+                        })
+                                                                        .HtmlAttributes(new { style = "height: 380px;" })
+                                                                        .Scrollable()
+                                                                        .Groupable()
+                                                                        .Sortable()
+                                                                        .Filterable()
+                                                                        .Pageable(pageable => pageable
+                                                                            .Refresh(true)
+                                                                            .PageSizes(true)
+                                                                            .ButtonCount(5))
+                                                                        .DataSource(dataSource => dataSource
+                                                                            .Ajax()
+                                                                            .Read(read => read.Action("Get_Sensors", "Home"))
+                                                                        )
 )
 @*<div class="col-lg-8 col-md-4 col-xs-9">
 
@@ -65,6 +65,28 @@
         </tbody>
 
     </table>*@
+
+@*<div id="gauge"></div>
+<script>
+    $("#gauge").kendoRadialGauge({
+        pointer: [{
+            value: 90   ,
+            color: '#ffd246',
+            length: 0.5
+        }, {
+            value: 20,
+            color: '#28b4c8',
+            length: 0.75
+        }, {
+            value: 30,
+            color: '#78d237',
+
+            // Default length
+            // length: 1
+        }]
+    });
+
+</script>*@
 <h2>Notifications</h2>
 <div class="col-6">
     <ul id="notificationsList"></ul>
@@ -74,7 +96,7 @@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
-    
+
 }
 
 
