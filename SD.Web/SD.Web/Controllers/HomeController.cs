@@ -21,17 +21,17 @@ namespace SD.Web.Controllers
 {
 	public class HomeController : Controller
 	{
-		private readonly ISensorDataService _service;
-		private readonly IUserSensorService _userSensorService;
-		private readonly ISensorService _serviceSensor;
-		private readonly DataContext _dataContext;
+		private readonly ISensorDataService sensorDataService;
+		private readonly IUserSensorService userSensorService;
+		private readonly ISensorService sensorService;
+		private readonly DataContext dataContext;
 
-		public HomeController(ISensorDataService service, IUserSensorService userSensorService, ISensorService serviceSensor, DataContext dataContext)
+		public HomeController(ISensorDataService sensorDataService, IUserSensorService userSensorService, ISensorService sensorService, DataContext dataContext)
 		{
-			_service = service;
-			_userSensorService = userSensorService;
-			_serviceSensor = serviceSensor;
-			_dataContext = dataContext;
+			this.sensorDataService = sensorDataService;
+			this.userSensorService = userSensorService;
+			this.sensorService = sensorService;
+			this.dataContext = dataContext;
 		}
 
 		[HttpGet]
@@ -42,7 +42,7 @@ namespace SD.Web.Controllers
 
 		public async Task<JsonResult> Get_Sensors([DataSourceRequest] DataSourceRequest request)
 		{
-			var sensors = await _userSensorService.ListPublicSensorsAsync();
+			var sensors = await userSensorService.ListPublicSensorsAsync();
 
 			var result = sensors.Select(s => new UserSensorViewModel
 			{
@@ -88,13 +88,6 @@ namespace SD.Web.Controllers
 		public IActionResult Error()
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-		}
-
-		public double test()
-		{
-			Random rnd = new Random();
-			double value = rnd.Next(10, 100);
-			return value;
 		}
 	}
 }

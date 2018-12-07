@@ -1,64 +1,113 @@
 ﻿@using SD.Web.Areas.UserRegular.Models
 @model UserSensorViewModel
 @{
-    ViewData["Title"] = "Sensor";
+	ViewData["Title"] = "Sensor";
 }
 
 <h2>Sensor details</h2>
 
 <div id="map" style="height: 350px; width: auto"></div>
 <table class="table table-bordered">
-    <tr>
-        <td colspan="2"><label>Value:</label>@Model.LastValueUser</td>
-    </tr>
-    <tr>
-        <td><label>Name: </label></td>
-        <td><span contenteditable="false" class="editable">@Model.Name</span></td>
-    </tr>
-    <tr>
-        <td><label>Description: </label></td>
-        <td><span contenteditable="false" class="editable">@Model.Description</span></td>
-    </tr>
-    <tr>
-        @if (Model.IsPublic)
-        {
-            <td>Public</td>
-        }
-        else
-        {
-            <td>Private</td>
-        }
-        @if (Model.AlarmTriggered)
-        {
-            <td>Alarm On</td>
-        }
-        else
-        {
-            <td>Alarm Off</td>
-        }
-    </tr>
-    <tr>
-        <td colspan="2">@Model.Coordinates</td>
-    </tr>
+	<tr>
+		<td colspan="2"><label>Value:</label>@Model.Sensor.LastValue</td>
+	</tr>
+	<tr>
+		<td><label>Name: </label></td>
+		<td><span contenteditable="false" class="editable">@Model.Name</span></td>
+	</tr>
+	<tr>
+		<td><label>Description: </label></td>
+		<td><span contenteditable="false" class="editable">@Model.Description</span></td>
+	</tr>
+	<tr>
+		@if (Model.IsPublic)
+		{
+			<td>Public</td>
+		}
+		else
+		{
+			<td>Private</td>
+		}
+		@if (Model.AlarmTriggered)
+		{
+			<td>Alarm On</td>
+		}
+		else
+		{
+			<td>Alarm Off</td>
+		}
+	</tr>
+	<tr>
+		<td colspan="2">@Model.Coordinates</td>
+	</tr>
 
 </table>
 
 
 
 <div class="form-row">
-    <button type="reset" class="btn btn-default editButton"><span>Edit Content</span></button>
-    <button type="reset" class="btn btn-default btn-danger"><span>Delete</span></button>
+	<button type="reset" class="btn btn-default editButton"><span>Edit Content</span></button>
+	<button type="reset" class="btn btn-default btn-danger"><span>Delete</span></button>
+</div>
+
+
+<style>
+        #gauge-container {
+            background: white url("@Url.Content("~/shared/dataviz/gauge/gauge-container-partial.png")") no-repeat 50% 50%;
+            width: 386px;
+            height: 386px;
+            text-align: center;
+            margin: 0 auto 30px auto;
+        }
+
+        #gauge {
+            width: 350px;
+            height: 300px;
+            margin: 0 auto;
+            border-color: transparent;
+        }
+
+        #gauge-container .k-slider {
+            margin-top: -11px;
+            width: 140px;
+        }
+</style>
+
+<div id="gauge-container">
+	@(Html.Kendo().RadialGauge()
+														.Name("gauge")
+														.Pointer(pointer => pointer.Value(double.Parse(Model.Sensor.LastValue)))
+														.Scale(scale => scale
+															.MinorUnit(5)
+															.StartAngle(-30)
+															.EndAngle(210)
+															.Max(@Model.AlarmMax + @Model.AlarmMax)
+															.Min(@Model.AlarmMin - @Model.AlarmMax)
+														)
+	)
 </div>
 
 
 
 
-
 @section Scripts
-    {
+	{
+	<script>
+		$(document).ready(setInterval(function () {
 
+			$.ajax({
+				type: "POST",
+				cache: false,
+				url: 'Dashboard/test/@Model.SensorId',
+				success: function (data) {
+					$("#gauge").data("kendoRadialGauge").value(data);
+				}
+			})
 
-    <script type="text/javascript">
+		}, (3000)));
+	</script>
+
+	<script type="text/javascript">
         $(document).ready(function () {
 
             initGoogleMaps();
@@ -320,7 +369,7 @@
 
         });
 
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCoiGMouNF91fR1CfBO3iqfBxR-raPW7WM"></script>
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCoiGMouNF91fR1CfBO3iqfBxR-raPW7WM"></script>
 
 }

@@ -13,5 +13,7 @@ namespace SD.Services.Data.Services.Contracts
         Task<IList<Tuple<string, string>>> GetSensorNamesIdsAsync();
 
         Task<IEnumerable<Sensor>> ListSensorsAsync();
-    }
+
+		Task<Sensor> GetSensorById(string sensorId);
+	}
 }

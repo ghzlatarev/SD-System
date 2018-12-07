@@ -46,5 +46,11 @@ namespace SD.Services.Data.Services
         {
             return await this.dataContext.Sensors.Where(se => se.IsDeleted == false).ToListAsync();
         }
+
+		public async Task<Sensor> GetSensorById(string sensorId)
+		{
+			return await this.dataContext.Sensors
+				.FirstOrDefaultAsync(s => s.Id.Equals(sensorId));
+		}
     }
 }

@@ -16,11 +16,13 @@ namespace SD.Services.Data.Services
     public class UserSensorService : IUserSensorService
     {
         private readonly DataContext dataContext;
+		private readonly ISensorService sensorService;
 
-        public UserSensorService(DataContext dataContext)
+        public UserSensorService(DataContext dataContext, ISensorService sensorService)
         {
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
-        }
+            this.sensorService = sensorService ?? throw new ArgumentNullException(nameof(sensorService));
+		}
 
         public async Task<IPagedList<UserSensor>> FilterUserSensorsAsync(string filter = "", int pageNumber = 1, int pageSize = 10)
         {
@@ -55,7 +57,8 @@ namespace SD.Services.Data.Services
         }
 
         public async Task<UserSensor> AddUserSensorAsync(string userId, string sensorId, string name, string description,
-            string latitude, string longitude, double alarmMin, double alarmMax, int pollingInterval, bool alarmTriggered, bool isPublic, string lastValue, string type)
+            string latitude, string longitude, double alarmMin, double alarmMax, int pollingInterval, bool alarmTriggered, 
+			bool isPublic, string lastValue, string type)
         {
             Validator.ValidateNull(name, "Sensor name cannot be null!");
 
@@ -63,6 +66,9 @@ namespace SD.Services.Data.Services
             {
                 throw new EntityAlreadyExistsException("User sensor already exists!");
             }
+
+			var sensor = this.sensorService.GetSensorById(sensorId);
+			
 
             var userSensor = new UserSensor
             {
@@ -79,7 +85,6 @@ namespace SD.Services.Data.Services
                 Coordinates = longitude + "," + latitude,
                 Type = type,
                 LastValueUser = lastValue
-                
             };
 
             userSensor.SensorId = sensorId;
@@ -97,7 +102,7 @@ namespace SD.Services.Data.Services
 
         public async Task<IEnumerable<UserSensor>> ListSensorsForUserAsync(string userId)
         {
-            return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.UserId == userId.ToString()).ToListAsync();
+            return await this.dataContext.UserSensors	.Where(se => se.IsDeleted == false && se.UserId == userId.ToString()).ToListAsync();
         }
 
         public async Task<IEnumerable<UserSensor>> ListPublicSensorsWhichDontBelongToUserAsync(string userId)
@@ -112,7 +117,9 @@ namespace SD.Services.Data.Services
 
         public async Task<UserSensor> ListSensorByIdAsync(string sensorId)
         {
-            return await this.dataContext.UserSensors.FirstOrDefaultAsync(se => se.Id == sensorId);
+            return await this.dataContext.UserSensors
+				.Include(us => us.Sensor)
+				.FirstOrDefaultAsync(se => se.Id == sensorId);
         }
     }
 }

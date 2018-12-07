@@ -90,7 +90,7 @@ namespace SD.Web.Areas.Administration.Controllers
 			ViewData["ReturnUrl"] = returnUrl;
 
             var sensor = await _sensorDataService.GetSensorsByIdAsync(model.SensorId);
-            model.LastValueUser = sensor.SensorData.Last(s => s.SensorId == model.SensorId).Value;
+            model.LastValueUser = sensor.LastValue;
 
             if (ModelState.IsValid)
 			{
@@ -134,6 +134,7 @@ namespace SD.Web.Areas.Administration.Controllers
 			userSensor.PollingInterval = model.PollingInterval;
 			userSensor.Latitude = model.Latitude;
 			userSensor.Longitude = model.Longitude;
+			userSensor.Coordinates = model.Latitude + "," + model.Longitude;
 
 			await _userSensorService.UpdateUserSensorAsync(userSensor);
 			
