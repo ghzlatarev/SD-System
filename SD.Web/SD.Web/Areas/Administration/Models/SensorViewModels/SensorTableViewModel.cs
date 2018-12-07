@@ -14,6 +14,8 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 			this.AlarmMax = userSensor.AlarmMax;
 			this.AlarmMin = userSensor.AlarmMin;
 			this.IsPublic = userSensor.IsPublic;
+			this.LastValue = double.Parse(userSensor.Sensor.LastValue);
+			this.IsState = userSensor.Sensor.IsState;
 		}
 
 		public string Id { get; set; }
@@ -31,5 +33,9 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 		public bool IsPublic { get; set; }
 
 		public bool AlarmTriggered { get; set; }
+
+		public double LastValue { get; set; }
+
+		public bool IsState { get; set; }
 	}
 }

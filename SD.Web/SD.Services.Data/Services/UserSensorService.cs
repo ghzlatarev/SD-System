@@ -32,7 +32,9 @@ namespace SD.Services.Data.Services
             Validator.ValidateMinRange(pageSize, 0, "Page size cannot be less then 0!");
 
             var query = this.dataContext.UserSensors
-                .Where(t => t.Name.Contains(filter));
+                .Where(t => t.Name.Contains(filter))
+				.Include(us => us.Sensor);
+
 
             return await query.ToPagedListAsync(pageNumber, pageSize);
         }
@@ -43,6 +45,7 @@ namespace SD.Services.Data.Services
             Validator.ValidateMinRange(pageSize, 0, "Page size cannot be less then 0!");
 
             var query = this.dataContext.UserSensors
+				.Include(us => us.Sensor)
                 .Where(us => us.UserId.Equals(userId));
 
             return await query.ToPagedListAsync(pageNumber, pageSize);
@@ -102,7 +105,7 @@ namespace SD.Services.Data.Services
 
         public async Task<IEnumerable<UserSensor>> ListSensorsForUserAsync(string userId)
         {
-            return await this.dataContext.UserSensors	.Where(se => se.IsDeleted == false && se.UserId == userId.ToString()).ToListAsync();
+            return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.UserId == userId.ToString()).ToListAsync();
         }
 
         public async Task<IEnumerable<UserSensor>> ListPublicSensorsWhichDontBelongToUserAsync(string userId)

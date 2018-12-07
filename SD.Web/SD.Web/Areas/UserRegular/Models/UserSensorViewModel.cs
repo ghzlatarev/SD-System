@@ -32,7 +32,6 @@ namespace SD.Web.Areas.UserRegular.Models
             SensorId = sensor.SensorId;
             Sensor = sensor.Sensor;
             Id = sensor.Id;
-            
         }
 
         public string Id { get; set; }

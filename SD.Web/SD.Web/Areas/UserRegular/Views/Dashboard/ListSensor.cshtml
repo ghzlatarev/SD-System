@@ -73,26 +73,32 @@
         }
 </style>
 
-<div id="gauge-container">
-	@(Html.Kendo().RadialGauge()
-														.Name("gauge")
-														.Pointer(pointer => pointer.Value(double.Parse(Model.Sensor.LastValue)))
-														.Scale(scale => scale
-															.MinorUnit(5)
-															.StartAngle(-30)
-															.EndAngle(210)
-															.Max(@Model.AlarmMax + @Model.AlarmMax)
-															.Min(@Model.AlarmMin - @Model.AlarmMax)
-														)
-	)
-</div>
+@if (Model.Sensor.IsState == false)
+{
+	<div id="gauge-container">
+		@(Html.Kendo().RadialGauge()
+																					.Name("gauge")
+																					.Pointer(pointer => pointer.Value(double.Parse(Model.Sensor.LastValue)))
+																					.Scale(scale => scale
+																						.MinorUnit(5)
+																						.StartAngle(-30)
+																						.EndAngle(210)
+																						.Max(@Model.AlarmMax + @Model.AlarmMax)
+																						.Min(@Model.AlarmMin - @Model.AlarmMax)
+																					)
+		)
+	</div>
+}
+
 
 
 
 
 @section Scripts
 	{
-	<script>
+	@if (Model.Sensor.IsState == false)
+	{
+		<script>
 		$(document).ready(setInterval(function () {
 
 			$.ajax({
@@ -105,7 +111,9 @@
 			})
 
 		}, (3000)));
-	</script>
+		</script>
+	}
+
 
 	<script type="text/javascript">
         $(document).ready(function () {
