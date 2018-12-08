@@ -1,38 +1,41 @@
 @using SD.Web.Areas.UserRegular.Models
 
 @{
-	ViewData["Title"] = "Index";
+    ViewData["Title"] = "Index";
 }
 
 <h2>Public sensors</h2>
 <hr />
-
+<div id="map" style="height: 350px; width: auto"></div>
 @(Html.Kendo().Grid<UserSensorViewModel>()
-							.Name("grid")
-							.Columns(columns =>
-							{
-								columns.Bound(c => c.Name).Width(140);
-								columns.Bound(c => c.Description).Width(190);
-								columns.Bound(c => c.Type).Width(190);
-								columns.Bound(c => c.LastValueUser).Width(110);
-								columns.Bound(p => p.Id).ClientTemplate(
-											"<button type=\"submit\" class=\"btn btn-success\"><a href='" + "sensor?id=#= Id #'" +
-											">Show Product Details</a></button>").Title("Details").Sortable(false).Filterable(false).Width(150);
-							})
-																			.HtmlAttributes(new { style = "height: 380px;" })
-																			.Scrollable()
-																			.Groupable()
-																			.Sortable()
-																			.Filterable()
-																			.Pageable(pageable => pageable
-																				.Refresh(true)
-																				.PageSizes(true)
-																				.ButtonCount(5))
-																			.DataSource(dataSource => dataSource
-																				.Ajax()
-																				.Read(read => read.Action("Get_Sensors", "Home"))
-																			)
+                                    .Name("publicSensors")
+                                    .Columns(columns =>
+                                    {
+                                        columns.Bound(c => c.Name).Width(140);
+                                        columns.Bound(c => c.Description).Width(190);
+                                        columns.Bound(c => c.Type).Width(190);
+                                        columns.Bound(c => c.LastValueUser).Width(110);
+                                        columns.Bound(p => p.Id).ClientTemplate(
+                                                    "<button type=\"submit\" class=\"btn btn-success\"><a href='" + "sensor?id=#= Id #'" +
+                                                    ">Sensor Details</a></button>").Title("Details").Sortable(false).Filterable(false).Width(150);
+                                    })
+                                                                                    .HtmlAttributes(new { style = "height: 380px;" })
+                                                                                    .Scrollable()
+                                                                                    .Groupable()
+                                                                                    .Sortable()
+                                                                                    .Filterable()
+                                                                                    .Pageable(pageable => pageable
+                                                                                        .Refresh(true)
+                                                                                        .PageSizes(true)
+                                                                                        .ButtonCount(5))
+                                                                                    .DataSource(dataSource => dataSource
+                                                                                        .Ajax()
+                                                                                        .Read(read => read.Action("Get_Sensors", "Home"))
+                                                                                    )
+    
 )
+
+
 <style>
         #gauge-container {
             background: transparent url("@Url.Content("~/shared/dataviz/gauge/gauge-container-partial.png")") no-repeat 50% 50%;
@@ -55,37 +58,293 @@
         }
 </style>
 
-<div id="gauge-container">
-	@(Html.Kendo().RadialGauge()
-								.Name("gauge")
-								.Pointer(pointer => pointer.Value(0))
-								.Scale(scale => scale
-									.MinorUnit(5)
-									.StartAngle(-30)
-									.EndAngle(210)
-									.Max(180)
-								)
-	)
-</div>
+@*<div id="gauge-container">
+    @(Html.Kendo().RadialGauge()
+                                                .Name("gauge")
+                                                .Pointer(pointer => pointer.Value(0))
+                                                .Scale(scale => scale
+                                                    .MinorUnit(5)
+                                                    .StartAngle(-30)
+                                                    .EndAngle(210)
+                                                    .Max(180)
+                                                )
+    )
+</div>*@
+
 <script>
-	$(document).ready(setInterval(function () {
+    $(document).ready(function () {
 
-		$.ajax({
-			type: "POST",
-			cache: false,
-			url: 'Home/test/',
-			success: function (data) {
-				$("#gauge").data("kendoRadialGauge").value(data);
-			}
-		})
+        //setInterval(function () {
 
-	}, 3000))
+        //    $.ajax({
+        //        type: "POST",
+        //        cache: false,
+        //        url: 'Home/test/',
+        //        success: function (data) {
+        //            $("#gauge").data("kendoRadialGauge").value(data);
+        //        }
+        //    })
+
+        //}, 3000);
+
+        initGoogleMaps();
+
+
+
+        function initGoogleMaps() {
+            var myLatlng = new google.maps.LatLng(42.669666, 23.301443);
+            var mapOptions = {
+                zoom: 13,
+                center: myLatlng,
+                scrollwheel: false, //we disable de scroll over the map, it is a really annoing when you scroll through page
+                styles: [{
+                    "elementType": "geometry",
+                    "stylers": [{
+                        "color": "#1d2c4d"
+                    }]
+                },
+                {
+                    "elementType": "labels.text.fill",
+                    "stylers": [{
+                        "color": "#8ec3b9"
+                    }]
+                },
+                {
+                    "elementType": "labels.text.stroke",
+                    "stylers": [{
+                        "color": "#1a3646"
+                    }]
+                },
+                {
+                    "featureType": "administrative.country",
+                    "elementType": "geometry.stroke",
+                    "stylers": [{
+                        "color": "#4b6878"
+                    }]
+                },
+                {
+                    "featureType": "administrative.land_parcel",
+                    "elementType": "labels.text.fill",
+                    "stylers": [{
+                        "color": "#64779e"
+                    }]
+                },
+                {
+                    "featureType": "administrative.province",
+                    "elementType": "geometry.stroke",
+                    "stylers": [{
+                        "color": "#4b6878"
+                    }]
+                },
+                {
+                    "featureType": "landscape.man_made",
+                    "elementType": "geometry.stroke",
+                    "stylers": [{
+                        "color": "#334e87"
+                    }]
+                },
+                {
+                    "featureType": "landscape.natural",
+                    "elementType": "geometry",
+                    "stylers": [{
+                        "color": "#023e58"
+                    }]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "geometry",
+                    "stylers": [{
+                        "color": "#283d6a"
+                    }]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "labels.text.fill",
+                    "stylers": [{
+                        "color": "#6f9ba5"
+                    }]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "labels.text.stroke",
+                    "stylers": [{
+                        "color": "#1d2c4d"
+                    }]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "geometry.fill",
+                    "stylers": [{
+                        "color": "#023e58"
+                    }]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "labels.text.fill",
+                    "stylers": [{
+                        "color": "#3C7680"
+                    }]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "geometry",
+                    "stylers": [{
+                        "color": "#304a7d"
+                    }]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "labels.text.fill",
+                    "stylers": [{
+                        "color": "#98a5be"
+                    }]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "labels.text.stroke",
+                    "stylers": [{
+                        "color": "#1d2c4d"
+                    }]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry",
+                    "stylers": [{
+                        "color": "#2c6675"
+                    }]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry.fill",
+                    "stylers": [{
+                        "color": "#9d2a80"
+                    }]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry.stroke",
+                    "stylers": [{
+                        "color": "#9d2a80"
+                    }]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "labels.text.fill",
+                    "stylers": [{
+                        "color": "#b0d5ce"
+                    }]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "labels.text.stroke",
+                    "stylers": [{
+                        "color": "#023e58"
+                    }]
+                },
+                {
+                    "featureType": "transit",
+                    "elementType": "labels.text.fill",
+                    "stylers": [{
+                        "color": "#98a5be"
+                    }]
+                },
+                {
+                    "featureType": "transit",
+                    "elementType": "labels.text.stroke",
+                    "stylers": [{
+                        "color": "#1d2c4d"
+                    }]
+                },
+                {
+                    "featureType": "transit.line",
+                    "elementType": "geometry.fill",
+                    "stylers": [{
+                        "color": "#283d6a"
+                    }]
+                },
+                {
+                    "featureType": "transit.station",
+                    "elementType": "geometry",
+                    "stylers": [{
+                        "color": "#3a4762"
+                    }]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "geometry",
+                    "stylers": [{
+                        "color": "#0e1626"
+                    }]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.fill",
+                    "stylers": [{
+                        "color": "#4e6d70"
+                    }]
+                }
+                ]
+            };
+
+            var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+            var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            var markers = locations.map(function (location, i) {
+                return new google.maps.Marker({
+                    position: location,
+                    label: labels[i % labels.length]
+                });
+            });
+
+            //var contentMarker = "www.google.com"
+
+            //var infowindowMaker = new google.maps.InfoWindow({
+            //    content: contentMarker
+            //})
+
+            //marker.addListener('mouseover', function () {
+            //    infowindowMaker.open(map, marker)
+            //})
+            // To add the marker to the map, call setMap();
+            //marker.setMap(map);
+
+            var locations = [
+                { lat: -31.563910, lng: 147.154312 },
+                { lat: -33.718234, lng: 150.363181 },
+                { lat: -33.727111, lng: 150.371124 },
+                { lat: -33.848588, lng: 151.209834 },
+                { lat: -33.851702, lng: 151.216968 },
+                { lat: -34.671264, lng: 150.863657 },
+                { lat: -35.304724, lng: 148.662905 },
+                { lat: -36.817685, lng: 175.699196 },
+                { lat: -36.828611, lng: 175.790222 },
+                { lat: -37.750000, lng: 145.116667 },
+                { lat: -37.759859, lng: 145.128708 },
+                { lat: -37.765015, lng: 145.133858 },
+                { lat: -37.770104, lng: 145.143299 },
+                { lat: -37.773700, lng: 145.145187 },
+                { lat: -37.774785, lng: 145.137978 },
+                { lat: -37.819616, lng: 144.968119 },
+                { lat: -38.330766, lng: 144.695692 },
+                { lat: -39.927193, lng: 175.053218 },
+                { lat: -41.330162, lng: 174.865694 },
+                { lat: -42.734358, lng: 147.439506 },
+                { lat: -42.734358, lng: 147.501315 },
+                { lat: -42.735258, lng: 147.438000 },
+                { lat: -43.999792, lng: 170.463352 }
+            ];
+        }
+        
+    });
+    
+
 </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCoiGMouNF91fR1CfBO3iqfBxR-raPW7WM"></script>
 
 
 <div class="clearfix"></div>
 
 @section Scripts {
-	@await Html.PartialAsync("_ValidationScriptsPartial")
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 
 }

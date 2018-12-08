@@ -1,6 +1,5 @@
 ﻿@using SD.Web.Areas.UserRegular.Models
 
-@model DataSourceViewModel
 @{
     ViewData["Title"] = "ChooseDataSourse";
 }
@@ -8,41 +7,65 @@
 <h2>From the table below you can select which sensor you want to register</h2>
 <hr />
 
+@(Html.Kendo().Grid<SensorAPIViewModel>()
+                                .Name("apiGrid")
+                                .Columns(columns =>
+                                {
+                                    columns.Bound(c => c.Tag).Width(140);
+                                    columns.Bound(c => c.Description).Width(190);
+                                    columns.Bound(c => c.MeasureType).Width(190);
+                                    columns.Bound(c => c.MinPollingIntervalInSeconds).Width(110);
+                                    columns.Bound(c => c.SensorId).ClientTemplate(
+                                            "<button type=\"submit\" class=\"btn btn-success\"><a href='" + "register-sensor?id=#= SensorId #'" +
+                                            ">Register</a></button>").Title("  ").Sortable(false).Filterable(false).Width(150);
+                                }) .Scrollable()
+                                   .Groupable()
+                                   .Sortable()
+                                   .Filterable()
+                                   .Pageable(pageable => pageable
+                                       .Refresh(true)
+                                       .PageSizes(true)
+                                       .ButtonCount(5))
+                                   .DataSource(dataSource => dataSource
+                                       .Ajax()
+                                       .Read(read => read.Action("Get_Api_Sensors", "dashboard"))
+                                   )
+)
 
-<div class="col-lg-8 col-md-4 col-xs-9">
-    <form asp-area="UserRegular" asp-controller="dashboard" asp-action="ChooseDataSource" method="post">
-        <div asp-validation-summary="All" class="text-danger"></div>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Tag</th>    
-                    <th>Description</th>
-                    <th>Type</th>
-                    <th>Minimal refresh interval</th>
-                    <th>Submit</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var sensor in Model.SensorApi)
-                {
+@*<div class="col-lg-8 col-md-4 col-xs-9">
+        <form asp-area="UserRegular" asp-controller="dashboard" asp-action="ChooseDataSource" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <table class="table table-bordered">
+                <thead>
                     <tr>
-                        <th>@sensor.Tag</th>
-                        <th>@sensor.Description</th>
-                        <th>@sensor.MeasureType</th>
-                        <th>@sensor.MinPollingIntervalInSeconds</th>
-                        <th>
-                            <button type="submit" class="btn btn-success">
-                                <a asp-controller="dashboard" asp-action="register" asp-area="userregular" asp-route-id="@sensor.SensorId">Choose</a>
-                            </button>
-                        </th>
-                    </tr>
-                 }
-            </tbody>
+                        <th>Tag</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Minimal refresh interval</th>
+                        <th>Submit</th>
 
-        </table>
-    </form>
-</div>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sensor in Model.SensorApi)
+                    {
+                        <tr>
+                            <th>@sensor.Tag</th>
+                            <th>@sensor.Description</th>
+                            <th>@sensor.MeasureType</th>
+                            <th>@sensor.MinPollingIntervalInSeconds</th>
+                            <th>
+                                <button type="submit" class="btn btn-success">
+                                    <a asp-controller="dashboard" asp-action="register" asp-area="userregular" asp-route-id="@sensor.SensorId">Choose</a>
+                                </button>
+                            </th>
+                        </tr>
+                     }
+                </tbody>
+
+            </table>
+        </form>
+    </div>*@
 <div class="clearfix"></div>
 
 @section Scripts {

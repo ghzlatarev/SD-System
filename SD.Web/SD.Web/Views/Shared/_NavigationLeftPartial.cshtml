@@ -1,0 +1,50 @@
+﻿<div class="sidebar" data-color="blue" data="blue">
+    <div class="sidebar-wrapper">
+        <div class="logo">
+            <a href="javascript:void(0)" class="simple-text logo-normal">
+                Smart Dormotory
+            </a>
+        </div>
+        @if (User.Identity.IsAuthenticated && User.IsInRole("User"))
+        {
+            <ul class="nav">
+                <li>
+                    <a asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="tim-icons icon-bank"></i>
+                        <p>Home</p>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="userregular" asp-controller="dashboard" asp-action="index">
+                        <i class="tim-icons icon-badge"></i>
+                        <p>List Sensors</p>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="UserRegular" asp-controller="Dashboard" asp-action="ChooseDataSource">
+                        <i class="tim-icons icon-badge"></i>
+                        <p>Register Sensor</p>
+                    </a>
+                </li>
+            </ul>
+        }
+        else if (!User.Identity.IsAuthenticated)
+        {
+
+            <ul class="nav">
+                <li>
+                    <a asp-area="Identity" asp-controller="Account" asp-action="Register">
+                        <i class="tim-icons icon-bank"></i>
+                        <p>Register</p>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="Identity" asp-controller="Account" asp-action="Login">
+                        <i class="tim-icons icon-badge"></i>
+                        <p>Sign in</p>
+                    </a>
+                </li>
+            </ul>
+        }
+    </div>
+</div>

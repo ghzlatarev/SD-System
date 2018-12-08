@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SD.Data.Models.Identity;
@@ -88,31 +90,50 @@ namespace SD.Web.Areas.UserRegular.Controllers
         [HttpGet("choose-data-source")]
         public async Task<IActionResult> ChooseDataSource(string id)
         {
+            //var sensors = await _sensorService.ListSensorsAsync();
+
+
+            //var model = new DataSourceViewModel()
+            //{
+            //    SensorApi = sensors.Select(se => new SensorAPIViewModel(se))
+            //};
+
+            return View();
+        }
+
+        [HttpPost("read-data")]
+        public async Task<JsonResult> Get_Api_Sensors([DataSourceRequest] DataSourceRequest request)
+        {
             var sensors = await _sensorService.ListSensorsAsync();
 
-
-            var model = new DataSourceViewModel()
+            var result = sensors.Select(sensor => new SensorAPIViewModel(sensor)
             {
-                SensorApi = sensors.Select(se => new SensorAPIViewModel(se))
-            };
+                SensorId = sensor.SensorId,
+                Tag = sensor.Tag,
+                Description = sensor.Description,
+                MinPollingIntervalInSeconds = sensor.MinPollingIntervalInSeconds,
+                MeasureType = sensor.MeasureType
+            });
 
-            return View(model);
+            return this.Json(result.ToDataSourceResult(request));
         }
 
-        [HttpPost("choose-data-source")]
-        [ValidateAntiForgeryToken]
-        public ActionResult ChooseDataSource(DataSourceViewModel model)
-        {
-            if (this.ModelState.IsValid)
-            {
-                //var userId = int.Parse(this.userWrapper.GetUserId(this.User));
-                //var sensor = await sensorDataService.
+        //[HttpPost("choose-data-source")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult ChooseDataSource(DataSourceViewModel model)
+        //{
+        //    if (this.ModelState.IsValid)
+        //    {
+        //        //var userId = int.Parse(this.userWrapper.GetUserId(this.User));
+        //        //var sensor = await sensorDataService.
 
-                return RedirectToAction("register", "dashboard", new { id = model.SensorApi.Select(s => s.SensorId) });
-            }
+        //        return RedirectToAction("register", "dashboard", new { id = model.SensorApi.Select(s => s.SensorId) });
+        //    }
 
-            return this.View(model);
-        }
+        //    return this.View(model);
+        //}
+
+
 
         [HttpGet("register-sensor")]
         public async Task<IActionResult> Register(string id)
