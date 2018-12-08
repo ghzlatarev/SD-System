@@ -26,12 +26,12 @@
 				<input asp-for="Longitude" class="form-control" required />
 				<span asp-validation-for="Longitude" class="text-danger"></span>
 			</div>
-			<div class="form-group">
+			<div class="form-group" id="AlMin">
 				<label asp-for="AlarmMin"></label>
 				<input asp-for="AlarmMin" class="form-control" required />
 				<span asp-validation-for="AlarmMin" class="text-danger"></span>
 			</div>
-			<div class="form-group">
+			<div class="form-group" id="AlMax">
 				<label asp-for="AlarmMax"></label>
 				<input asp-for="AlarmMax" class="form-control" required />
 				<span asp-validation-for="AlarmMax" class="text-danger"></span>
@@ -59,10 +59,12 @@
 			</div>
 
 			<div class="form-group">
-				@foreach (var kvp in Model.SensorNamesIds)
+				@foreach (var sensor in Model.Sensors)
 				{
-					<label asp-for="SensorId">@kvp.Item2</label>
-					<input type="radio" asp-for="SensorId" class="form-control" value=@kvp.Item1 />
+					<div class="col-md-8">
+						<label asp-for="SensorId">@sensor.Tag</label>
+						<input type="radio" asp-for="SensorId" class="form-control" value=@sensor.Id />
+					</div>
 				}
 				<span asp-validation-for="SensorId" class="text-danger"></span>
 			</div>
@@ -74,8 +76,14 @@
 			<button type="submit" class="btn btn-default">Register</button>
 		</form>
 	</div>
-	</div>
+</div>
 
-	@section Scripts {
-		@await Html.PartialAsync("_ValidationScriptsPartial")
-	}
+<script>
+	$('select[id=StateSensor]').change(function () {
+		$('input[name=AlMin],input[name=AlMax]').attr('disabled', $(this).val() == '0');
+	});
+</script>
+
+@section Scripts {
+	@await Html.PartialAsync("_ValidationScriptsPartial")
+}

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SD.Data.Models.DomainModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,10 +11,10 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 	{
 		public RegisterViewModel(){}
 
-		public RegisterViewModel(string userId, IList<Tuple<string, string>> sensorNamesIds)
+		public RegisterViewModel(string userId, IEnumerable<Sensor> allSensors)
 		{
 			this.UserId = userId;
-			this.SensorNamesIds = sensorNamesIds;
+			this.Sensors = allSensors;
 		}
 
 		[Required]
@@ -68,6 +69,6 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
         [Display(Name = "Type")]
         public string Type { get; set; }
 
-        public IList<Tuple<string, string>> SensorNamesIds { get; set; }
+        public IEnumerable<Sensor> Sensors { get; set; }
 	}
 }

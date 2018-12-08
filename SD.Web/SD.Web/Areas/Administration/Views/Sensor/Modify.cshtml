@@ -45,20 +45,23 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-6 pr-md-1">
-							<div class="form-group">
-								<label asp-for="AlarmMin"></label>
-								<input asp-for="AlarmMin" type="number" class="form-control" placeholder="AlarmMin" value="@Model.AlarmMin">
-								<span asp-validation-for="AlarmMin" class="text-danger"></span>
+						@if (Model.IsState == false)
+						{
+							<div class="col-md-6 pr-md-1">
+								<div class="form-group">
+									<label asp-for="AlarmMin"></label>
+									<input asp-for="AlarmMin" type="number" class="form-control" placeholder="AlarmMin" value="@Model.AlarmMin">
+									<span asp-validation-for="AlarmMin" class="text-danger"></span>
+								</div>
 							</div>
-						</div>
-						<div class="col-md-6 pl-md-1">
-							<div class="form-group">
-								<label asp-for="AlarmMax"></label>
-								<input asp-for="AlarmMax" type="number" class="form-control" placeholder="AlarmMax" value="@Model.AlarmMax">
-								<span asp-validation-for="AlarmMax" class="text-danger"></span>
+							<div class="col-md-6 pl-md-1">
+								<div class="form-group">
+									<label asp-for="AlarmMax"></label>
+									<input asp-for="AlarmMax" type="number" class="form-control" placeholder="AlarmMax" value="@Model.AlarmMax">
+									<span asp-validation-for="AlarmMax" class="text-danger"></span>
+								</div>
 							</div>
-						</div>
+						}
 						<div class="col-md-6">
 							<div class="form-group">
 								<div class="checkbox">

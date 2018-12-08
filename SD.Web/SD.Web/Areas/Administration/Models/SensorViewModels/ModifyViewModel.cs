@@ -23,6 +23,7 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 			this.AlarmMin = userSensor.AlarmMin;
 			this.AlarmMax = userSensor.AlarmMax;
 			this.Id = userSensor.Id;
+			this.IsState = userSensor.Sensor.IsState;
 		}
 
 		[Required]
@@ -66,6 +67,8 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 		[Required]
 		[Display(Name = "AlarmMax")]
 		public double AlarmMax { get; set; }
+		
+		public bool IsState { get; set; }
 
 		public IList<Tuple<string, string>> SensorNamesIds { get; set; }
 	}

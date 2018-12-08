@@ -39,16 +39,14 @@ namespace SD.Services.Data.Services
 			foreach (var userSensor in affectedSensorsList)
 			{
 				var newValue = double.Parse(userSensor.Sensor.LastValue);
-				if ((newValue <= userSensor.AlarmMin || newValue >= userSensor.AlarmMax) 
-					&& userSensor.AlarmTriggered == true)
+				bool shouldNotify = this.AccountForState(userSensor);
+				if(shouldNotify == true)
 				{
-					var userId = userSensor.UserId;
-					var message = userSensor.Name.ToUpper() + " is out of range, returning a value of "
+					string userId = userSensor.UserId;
+					string message = userSensor.Name.ToUpper() + " is out of range, returning a value of "
 															+ userSensor.Sensor.LastValue
 															+ "\n"
 															+ "---------------------------";
-
-					await this.SendNotificationAsync(message, userId);
 
 					Notifications notification = new Notifications
 					{
@@ -56,11 +54,36 @@ namespace SD.Services.Data.Services
 						Message = message
 					};
 
+					await this.SendNotificationAsync(message, userId);
 					notificationsList.Add(notification);
 				}
 			}
 
 			await this.SaveNotificationsAsync(notificationsList);
+		}
+
+		private bool AccountForState(UserSensor userSensor)
+		{
+			bool shouldNotify = false;
+			var newValue = double.Parse(userSensor.Sensor.LastValue);
+
+			if (userSensor.Sensor.IsState == true)
+			{
+				if (newValue == 1 && userSensor.AlarmTriggered == true)
+				{
+					shouldNotify = true;
+				}
+			}
+			else
+			{
+				if ((newValue <= userSensor.AlarmMin || newValue >= userSensor.AlarmMax)
+									&& userSensor.AlarmTriggered == true)
+				{
+					shouldNotify = true;
+				}
+			}
+
+			return shouldNotify;
 		}
 
 		private async Task SaveNotificationsAsync(IList<Notifications> notificationsList)

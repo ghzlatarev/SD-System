@@ -35,19 +35,12 @@ namespace SD.Services.Data.Services
             await this.dataContext.SaveChangesAsync(false);
         }
 
-        public async Task<IList<Tuple<string, string>>> GetSensorNamesIdsAsync()
-        {
-            var query = this.dataContext.Sensors.Select(s => new Tuple<string, string>(s.Id.ToString(), s.Tag));
-            var allSensorIds = await query.ToListAsync();
-            return allSensorIds;
-        }
-
         public async Task<IEnumerable<Sensor>> ListSensorsAsync()
         {
             return await this.dataContext.Sensors.Where(se => se.IsDeleted == false).ToListAsync();
         }
 
-		public async Task<Sensor> GetSensorById(string sensorId)
+		public async Task<Sensor> GetSensorByIdAsync(string sensorId)
 		{
 			return await this.dataContext.Sensors
 				.FirstOrDefaultAsync(s => s.Id.Equals(sensorId));
