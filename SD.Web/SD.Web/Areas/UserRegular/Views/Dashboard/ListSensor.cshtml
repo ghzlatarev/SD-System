@@ -45,48 +45,19 @@
 		<tr>
 			<td>
 				<p>State</p>
-				<div class="led-box" >
+				<div class="led-box">
 					<div class="led-yellow" id="led-color"></div>
-					@*@if (double.Parse(Model.Sensor.LastValue) == 1)
-		{
-		<div class="led-green" ></div>
-		}
-		else
-		{
-		<div class="led-red"></div>
-		}*@
 				</div>
-				
 			</td>
 		</tr>
 	}
 
 </table>
 
-
-
 <div class="form-row">
 	<button type="reset" class="btn btn-default editButton"><span>Edit Content</span></button>
 	<button type="reset" class="btn btn-default btn-danger"><span>Delete</span></button>
 </div>
-
-<style>
-	#gauge-container {
-		background: transparent url("../content/dataviz/gauge/gauge-container-partial.png") no-repeat 50% 50%;
-		background-color: aliceblue;
-		width: 386px;
-		height: 386px;
-		text-align: center;
-		margin: 0 auto 30px auto;
-	}
-
-	#gauge {
-		color: ivory;
-		width: 350px;
-		height: 300px;
-		margin: 0 auto;
-	}
-</style>
 
 
 
@@ -94,22 +65,18 @@
 {
 	<div id="gauge-container">
 		@(Html.Kendo().RadialGauge()
-									  .Name("gauge")
-									  .Pointer(pointer => pointer.Value(double.Parse(Model.Sensor.LastValue)))
-									  .Scale(scale => scale
-											.MinorUnit(1)
-											.StartAngle(-30)
-											.EndAngle(210)
-											.Max(@Model.AlarmMax + @Model.AlarmMax)
-											.Min(@Model.AlarmMin - @Model.AlarmMax)
-							)
+											  .Name("gauge")
+											  .Pointer(pointer => pointer.Value(double.Parse(Model.Sensor.LastValue)))
+											  .Scale(scale => scale
+													.MinorUnit(1)
+													.StartAngle(-30)
+													.EndAngle(210)
+													.Max(@Model.AlarmMax + @Model.AlarmMax)
+													.Min(@Model.AlarmMin - @Model.AlarmMax)
+									)
 		)
 	</div>
 }
-
-
-
-
 
 @section Scripts
 	{
@@ -121,7 +88,7 @@
 			$.ajax({
 				type: "POST",
 				cache: false,
-				url: 'Dashboard/test/@Model.SensorId',
+				url: 'Dashboard/value/@Model.SensorId',
 				success: function (data) {
 					$("#gauge").data("kendoRadialGauge").value(data);
 				}
@@ -138,7 +105,7 @@
 			$.ajax({
 				type: "POST",
 				cache: false,
-				url: 'Dashboard/test/@Model.SensorId',
+				url: 'Dashboard/value/@Model.SensorId',
 				success: function (data) {
 					if (data == 1) {
 						document.getElementById("led-color").setAttribute('class', 'led-green')
@@ -148,7 +115,7 @@
 						document.getElementById("led-color").setAttribute('class', 'led-red')
 						console.log(0);
 					}
-					
+
 				}
 			})
 

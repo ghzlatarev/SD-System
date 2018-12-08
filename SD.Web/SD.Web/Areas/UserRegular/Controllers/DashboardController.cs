@@ -174,14 +174,11 @@ namespace SD.Web.Areas.UserRegular.Controllers
             return Json(sensor);
         }
 
-		[HttpPost("Dashboard/test/{sensorId}")]
-		public async Task<JsonResult> test(string sensorId)
+		[HttpPost("Dashboard/value/{sensorId}")]
+		public async Task<JsonResult> GetSensorValue(string sensorId)
 		{
-			//UserSensor currentUserSensor = await this.userSensorService.ListSensorByIdAsync(userSensorId);
 			Sensor currentSensor = await this.sensorService.GetSensorById(sensorId);
 			double value = double.Parse(currentSensor.LastValue);
-			//Random rnd = new Random();
-			//double value = rnd.Next(10, 100);
 			return Json(value);
 		}
 	}
