@@ -1,4 +1,5 @@
 ﻿using SD.Data.Models.DomainModels;
+
 namespace SD.Web.Models
 {
 	public class NotificationViewModel

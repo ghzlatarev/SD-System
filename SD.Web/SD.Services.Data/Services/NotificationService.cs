@@ -11,18 +11,18 @@ namespace SD.Services.Data.Services
 {
 	public class NotificationService : INotificationService
 	{
-		private readonly IHubContext<NotificationHub> _hub;
+		private readonly IHubContext<NotificationHub> hub;
 		private readonly DataContext dataContext;
 
 		public NotificationService(IHubContext<NotificationHub> hub, DataContext dataContext)
 		{
-			_hub = hub;
+			this.hub = hub;
 			this.dataContext = dataContext;
 		}
 
 		public Task SendNotificationAsync(string message, string userId)
 		{
-			return _hub.Clients.Users(userId).SendAsync("ReceiveNotification", message);
+			return this.hub.Clients.Users(userId).SendAsync("ReceiveNotification", message);
 		}
 
 		public async Task<List<Notifications>> GetItemsAsync(string userId)
@@ -46,7 +46,10 @@ namespace SD.Services.Data.Services
 					if ((newValue <= userSensor.AlarmMin || newValue >= userSensor.AlarmMax) && userSensor.AlarmTriggered == true)
 					{
 						var userId = userSensor.UserId.ToString();
-						var message = userSensor.Name + " pinged, something is happening!";
+						var message = userSensor.Name.ToUpper() + " is out of range, returning a value of "
+																+ userSensor.Sensor.LastValue
+																+ "\n"
+																+ "---------------------------";
 						await this.SendNotificationAsync(message, userId);
 
 						Notifications notification = new Notifications

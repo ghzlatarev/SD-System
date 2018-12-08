@@ -1,5 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Identity;
-@using Microsoft.AspNetCore.Mvc;
 
 @model NotificationsViewModel
 
@@ -12,7 +11,7 @@
 	</a>
 	<ul class="dropdown-menu dropdown-menu-right dropdown-navbar" id="notificationsList">
 		<li class="nav-link">
-			<a asp-area="UserRegular" asp-controller="Notification" asp-action="ReadUnread" asp-route-returnUrl=@Context.Request.Path class="nav-item dropdown-item">Remove All</a>
+			<a asp-area="UserRegular" asp-controller="Notification" asp-action="ReadUnreadAsync" asp-route-returnUrl=@Context.Request.Path class="nav-item dropdown-item">Remove All</a>
 
 		</li>
 		@foreach (var notification in Model.NotificationsViewModels)

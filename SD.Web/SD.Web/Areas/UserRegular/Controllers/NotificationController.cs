@@ -18,7 +18,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
 			this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
 		}
 
-		public async Task<IActionResult> ReadUnread(string returnUrl)
+		public async Task<IActionResult> ReadUnreadAsync(string returnUrl)
 		{
 			var currentUser = await userManager.GetUserAsync(HttpContext.User);
 			var userId = currentUser.Id;
@@ -26,7 +26,6 @@ namespace SD.Web.Areas.UserRegular.Controllers
 			await this.notificationService.ReadUnreadAsync(userId);
 
 			return Redirect(returnUrl);
-			//return RedirectToAction("Index", "Home", new { area = "UserRegular" });
 		}
 	}
 }
