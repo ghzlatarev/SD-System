@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SD.Data.Context;
 using SD.Data.Models.DomainModels;
 using SD.Services.Data.Services.Contracts;
 using SD.Services.External;
-//using X.PagedList;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SD.Services.Data.Services
 {
@@ -22,7 +20,7 @@ namespace SD.Services.Data.Services
 		{
 			this.apiClient = aPIClient ?? throw new ArgumentNullException(nameof(aPIClient));
 			this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
-			this.notificationService = notificationService;
+			this.notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
 		}
 
 		//TODO: Handle exception coming from API. Catch and translate to business exception.
@@ -32,15 +30,13 @@ namespace SD.Services.Data.Services
 			IList<Sensor> allSensors = await this.dataContext.Sensors.ToListAsync();
 			IList<SensorData> updateDataList = new List<SensorData>();
 			IList<Sensor> updateSensorsList = new List<Sensor>();
-			IDictionary<Sensor, SensorData> sensorsDictionary = new Dictionary<Sensor, SensorData>();
+			List<UserSensor> affectedSensorsList = new List<UserSensor>();
 
 			foreach (var sensor in allSensors)
 			{
-				var lastTimeStamp = sensor.LastTimeStamp;
-				TimeSpan difference = DateTime.Now.Subtract((DateTime)lastTimeStamp);
-				var pollingInterval = sensor.MinPollingIntervalInSeconds;
+				TimeSpan difference = DateTime.Now.Subtract((DateTime)sensor.LastTimeStamp);
 
-				if (difference.TotalSeconds >= pollingInterval)
+				if (difference.TotalSeconds >= sensor.MinPollingIntervalInSeconds)
 				{
 					SensorData oldSensorData = await this.dataContext.SensorData
 					.Include(sd => sd.Sensor.UserSensors)
@@ -48,8 +44,7 @@ namespace SD.Services.Data.Services
 					.OrderByDescending(oSD => oSD.TimeStamp)
 					.FirstAsync();
 
-					SensorData newSensorData = await this.apiClient
-					.GetSensorData("sensorId?=" + sensor.SensorId);
+					SensorData newSensorData = await this.apiClient.GetSensorData("sensorId?=" + sensor.SensorId);
 					newSensorData.SensorId = sensor.SensorId;
 					if (newSensorData.Value.Equals("true")) { newSensorData.Value = "1"; };
 					if (newSensorData.Value.Equals("false")) { newSensorData.Value = "0"; };
@@ -62,24 +57,16 @@ namespace SD.Services.Data.Services
 					oldSensorData.TimeStamp = newSensorData.TimeStamp;
 					updateDataList.Add(oldSensorData);
 
-					sensorsDictionary.Add(sensor, newSensorData);
+					affectedSensorsList.AddRange(oldSensorData.Sensor.UserSensors);
 				}
 			}
-			var notificationsList = await this.notificationService.CheckAlarmNotifications(sensorsDictionary);
-			await this.dataContext.AddRangeAsync(notificationsList);
+			await this.notificationService.CheckAlarmNotificationsAsync(affectedSensorsList);
 
 			this.dataContext.UpdateRange(updateSensorsList);
 			this.dataContext.UpdateRange(updateDataList);
 
 			await this.dataContext.SaveChangesAsync(false);
 		}
-
-
-
-		//public async Task<SensorData> GetSensorDataByIdAsync(Guid id)
-		//{
-		//    return await this.dataContext.SensorData.FirstOrDefaultAsync(se => se.SensorId == id);
-		//}
 
 		public async Task<Sensor> GetSensorsByIdAsync(string id)
 		{

@@ -32,38 +32,41 @@ namespace SD.Services.Data.Services
 				.ToListAsync();
 		}
 
-		public async Task<IList<Notifications>> CheckAlarmNotifications(IDictionary<Sensor, SensorData> sensorsDictionary)
+		public async Task CheckAlarmNotificationsAsync(IList<UserSensor> affectedSensorsList)
 		{
 			IList<Notifications> notificationsList = new List<Notifications>();
 
-			foreach (var kvp in sensorsDictionary)
+			foreach (var userSensor in affectedSensorsList)
 			{
-				var newValue = double.Parse(kvp.Value.Value);
-
-				var currentUserSensors = kvp.Key.UserSensors;
-				foreach (var userSensor in currentUserSensors)
+				var newValue = double.Parse(userSensor.Sensor.LastValue);
+				if ((newValue <= userSensor.AlarmMin || newValue >= userSensor.AlarmMax) 
+					&& userSensor.AlarmTriggered == true)
 				{
-					if ((newValue <= userSensor.AlarmMin || newValue >= userSensor.AlarmMax) && userSensor.AlarmTriggered == true)
+					var userId = userSensor.UserId;
+					var message = userSensor.Name.ToUpper() + " is out of range, returning a value of "
+															+ userSensor.Sensor.LastValue
+															+ "\n"
+															+ "---------------------------";
+
+					await this.SendNotificationAsync(message, userId);
+
+					Notifications notification = new Notifications
 					{
-						var userId = userSensor.UserId.ToString();
-						var message = userSensor.Name.ToUpper() + " is out of range, returning a value of "
-																+ userSensor.Sensor.LastValue
-																+ "\n"
-																+ "---------------------------";
-						await this.SendNotificationAsync(message, userId);
+						UserId = userId,
+						Message = message
+					};
 
-						Notifications notification = new Notifications
-						{
-							UserId = userId,
-							Message = message
-						};
-
-						notificationsList.Add(notification);
-					}
+					notificationsList.Add(notification);
 				}
 			}
 
-			return notificationsList;
+			await this.SaveNotificationsAsync(notificationsList);
+		}
+
+		private async Task SaveNotificationsAsync(IList<Notifications> notificationsList)
+		{
+			await this.dataContext.AddRangeAsync(notificationsList);
+			await this.dataContext.SaveChangesAsync();
 		}
 
 		public async Task ReadUnreadAsync(string userId)
