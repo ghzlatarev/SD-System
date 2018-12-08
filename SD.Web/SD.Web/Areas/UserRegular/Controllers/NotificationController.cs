@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SD.Data.Models.Identity;
 using SD.Services.Data.Services.Contracts;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SD.Web.Areas.UserRegular.Controllers
@@ -20,14 +18,15 @@ namespace SD.Web.Areas.UserRegular.Controllers
 			this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
 		}
 
-		public async Task<IActionResult> ReadUnread()
+		public async Task<IActionResult> ReadUnread(string returnUrl)
 		{
 			var currentUser = await userManager.GetUserAsync(HttpContext.User);
 			var userId = currentUser.Id;
 
 			await this.notificationService.ReadUnreadAsync(userId);
 
-			return RedirectToAction("Index", "Home", new { area = "UserRegular" });
+			return Redirect(returnUrl);
+			//return RedirectToAction("Index", "Home", new { area = "UserRegular" });
 		}
 	}
 }
