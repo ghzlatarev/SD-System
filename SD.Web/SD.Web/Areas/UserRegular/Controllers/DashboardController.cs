@@ -174,7 +174,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
 		[HttpPost("Dashboard/value/{sensorId}")]
 		public async Task<JsonResult> GetSensorValue(string sensorId)
 		{
-			Sensor currentSensor = await this.sensorService.GetSensorById(sensorId);
+			Sensor currentSensor = await this.sensorService.GetSensorByIdAsync(sensorId);
 			double value = double.Parse(currentSensor.LastValue);
 			return Json(value);
 		}

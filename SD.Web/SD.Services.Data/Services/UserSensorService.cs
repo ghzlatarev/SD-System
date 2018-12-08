@@ -7,13 +7,12 @@ using SD.Services.Data.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using X.PagedList;
 
 namespace SD.Services.Data.Services
 {
-    public class UserSensorService : IUserSensorService
+	public class UserSensorService : IUserSensorService
     {
         private readonly DataContext dataContext;
 		private readonly ISensorService sensorService;
@@ -71,8 +70,7 @@ namespace SD.Services.Data.Services
                 throw new EntityAlreadyExistsException("User sensor already exists!");
             }
 
-			var sensor = this.sensorService.GetSensorById(sensorId);
-			
+			var sensor = this.sensorService.GetSensorByIdAsync(sensorId);
 
             var userSensor = new UserSensor
             {
