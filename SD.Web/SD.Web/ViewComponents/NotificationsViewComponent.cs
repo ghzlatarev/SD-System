@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SD.Data.Models.DomainModels;
 using SD.Data.Models.Identity;
 using SD.Services.Data.Services.Contracts;
 using SD.Web.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,7 +25,13 @@ namespace SD.Web.ViewComponents
 			var userId = user.Id;
 				
 			var items = await this.notificationService.GetItemsAsync(userId);
-			return View(items);
+
+			var model = new NotificationsViewModel()
+			{
+				NotificationsViewModels = items.Select(n => new NotificationViewModel(n))
+			};
+
+			return View(model);
 		}
 	}
 }

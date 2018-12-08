@@ -3,10 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using SD.Data.Context;
 using SD.Data.Models.DomainModels;
 using SD.Services.Data.Services.Contracts;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SD.Services.Data.Services
