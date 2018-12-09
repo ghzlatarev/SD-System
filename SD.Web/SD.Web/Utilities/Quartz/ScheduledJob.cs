@@ -26,7 +26,7 @@ namespace SD.Web.Utilities.Quartz
 		//TODO: Write exception from GetSensorsData to ErrorLog
         public async Task Execute(IJobExecutionContext context)
         {
-            await sensorDataService.GetSensorsData();
+            await this.sensorDataService.GetSensorsDataAsync();
 
             await Task.CompletedTask;
         }

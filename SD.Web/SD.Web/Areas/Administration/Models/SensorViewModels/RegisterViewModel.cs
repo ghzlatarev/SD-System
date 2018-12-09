@@ -1,9 +1,6 @@
 ﻿using SD.Data.Models.DomainModels;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SD.Web.Areas.Administration.Models.SensorViewModels
 {
@@ -11,10 +8,11 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 	{
 		public RegisterViewModel(){}
 
-		public RegisterViewModel(string userId, IEnumerable<Sensor> allSensors)
+		public RegisterViewModel(string userId, IEnumerable<Sensor> stateSensors, IEnumerable<Sensor> nonStateSensors)
 		{
 			this.UserId = userId;
-			this.Sensors = allSensors;
+			this.StateSensors = stateSensors;
+			this.NonStateSensors = nonStateSensors;
 		}
 
 		[Required]
@@ -69,6 +67,10 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
         [Display(Name = "Type")]
         public string Type { get; set; }
 
-        public IEnumerable<Sensor> Sensors { get; set; }
+		public bool IsState { get; set; }
+
+		public IEnumerable<Sensor> StateSensors { get; set; }
+
+		public IEnumerable<Sensor> NonStateSensors { get; set; }
 	}
 }

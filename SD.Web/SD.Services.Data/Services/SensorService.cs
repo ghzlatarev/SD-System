@@ -40,6 +40,20 @@ namespace SD.Services.Data.Services
             return await this.dataContext.Sensors.Where(se => se.IsDeleted == false).ToListAsync();
         }
 
+		public async Task<IEnumerable<Sensor>> ListStateSensorsAsync()
+		{
+			return await this.dataContext.Sensors
+				.Where(se => se.IsDeleted == false && se.IsState == true)
+				.ToListAsync();
+		}
+
+		public async Task<IEnumerable<Sensor>> ListNonStateSensorsAsync()
+		{
+			return await this.dataContext.Sensors
+				.Where(se => se.IsDeleted == false && se.IsState == false)
+				.ToListAsync();
+		}
+
 		public async Task<Sensor> GetSensorByIdAsync(string sensorId)
 		{
 			return await this.dataContext.Sensors

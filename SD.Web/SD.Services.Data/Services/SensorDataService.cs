@@ -25,7 +25,7 @@ namespace SD.Services.Data.Services
 
 		//TODO: Handle exception coming from API. Catch and translate to business exception.
 		//TODO: Then throw/bubble up.
-		public async Task GetSensorsData()
+		public async Task GetSensorsDataAsync()
 		{
 			IList<Sensor> allSensors = await this.dataContext.Sensors.ToListAsync();
 			IList<SensorData> updateDataList = new List<SensorData>();
@@ -66,13 +66,6 @@ namespace SD.Services.Data.Services
 			this.dataContext.UpdateRange(updateDataList);
 
 			await this.dataContext.SaveChangesAsync(false);
-		}
-
-		public async Task<Sensor> GetSensorsByIdAsync(string id)
-		{
-			return await this.dataContext.Sensors
-				.Include(s => s.SensorData)
-				.FirstOrDefaultAsync(se => se.Id == id);
 		}
 	}
 }

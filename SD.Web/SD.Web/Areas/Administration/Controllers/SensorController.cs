@@ -3,12 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using SD.Data.Models.DomainModels;
 using SD.Services.Data.Services.Contracts;
-using SD.Web.Areas.Administration.Models;
 using SD.Web.Areas.Administration.Models.SensorViewModels;
 using SD.Web.Controllers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
 
@@ -78,8 +75,9 @@ namespace SD.Web.Areas.Administration.Controllers
 		public async Task<IActionResult> Register(string userId, string returnUrl = null)
 		{
 			ViewData["ReturnUrl"] = returnUrl;
-			var allSensors = await this.sensorService.ListSensorsAsync();
-			var model = new RegisterViewModel(userId, allSensors);
+			var stateSensors = await this.sensorService.ListStateSensorsAsync();
+			var nonStateSensors = await this.sensorService.ListNonStateSensorsAsync();
+			var model = new RegisterViewModel(userId, stateSensors, nonStateSensors);
 			return View(model);
 		}
 
@@ -89,13 +87,16 @@ namespace SD.Web.Areas.Administration.Controllers
 		{
 			ViewData["ReturnUrl"] = returnUrl;
 
-            var sensor = await this.sensorDataService.GetSensorsByIdAsync(model.SensorId);
+            var sensor = await this.sensorService.GetSensorByIdAsync(model.SensorId);
             model.LastValueUser = sensor.LastValue;
+			model.IsState = sensor.IsState;
 
             if (ModelState.IsValid)
 			{
 				var userSensor = await this.userSensorService.AddUserSensorAsync(model.UserId, model.SensorId, model.Name, model.Description, 
-					model.Latitude, model.Longitude, model.AlarmMin, model.AlarmMax, model.PollingInterval, model.AlarmTriggered, model.IsPublic, model.LastValueUser, model.Type);
+					model.Latitude, model.Longitude, model.AlarmMin, model.AlarmMax, model.PollingInterval, model.AlarmTriggered, model.IsPublic, 
+					model.LastValueUser, model.Type);
+
 				return RedirectToLocal(returnUrl);
 			}
 

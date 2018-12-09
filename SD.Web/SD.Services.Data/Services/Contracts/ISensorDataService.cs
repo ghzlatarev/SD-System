@@ -1,15 +1,9 @@
-﻿using SD.Data.Models.DomainModels;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SD.Services.Data.Services.Contracts
 {
-    public interface ISensorDataService
+	public interface ISensorDataService
     {
-        Task GetSensorsData();
-        Task<Sensor> GetSensorsByIdAsync(string id);
-
+        Task GetSensorsDataAsync();
     }
 }

@@ -115,7 +115,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
         [HttpGet("register-sensor")]
         public async Task<IActionResult> Register(string id)
         {
-            var sensor = await this.sensorDataService.GetSensorsByIdAsync(id);
+            var sensor = await this.sensorService.GetSensorByIdAsync(id);
             var user = HttpContext.User;
             var userId = this.userManager.GetUserId(user);
 
@@ -137,7 +137,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(SensorRegistrationByUserModel model)
         {
-            var sensor = await this.sensorDataService.GetSensorsByIdAsync(model.SensorId);
+            var sensor = await this.sensorService.GetSensorByIdAsync(model.SensorId);
             model.LastValueUser = sensor.SensorData.Last(s => s.SensorId == model.SensorId).Value;
 
             if (this.ModelState.IsValid)
