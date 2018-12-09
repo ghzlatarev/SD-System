@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using SD.Data.Context;
 using SD.Data.Models.DomainModels;
 using SD.Services.Data.Services.Contracts;
@@ -15,19 +16,33 @@ namespace SD.Services.Data.Services
 		private readonly IApiClient apiClient;
 		private readonly DataContext dataContext;
 		private readonly INotificationService notificationService;
+		private readonly IMemoryCache memCache;
 
-		public SensorDataService(IApiClient aPIClient, DataContext dataContext, INotificationService notificationService)
+		public SensorDataService(IApiClient aPIClient, DataContext dataContext, INotificationService notificationService, IMemoryCache memCache)
 		{
 			this.apiClient = aPIClient ?? throw new ArgumentNullException(nameof(aPIClient));
 			this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
 			this.notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+			this.memCache = memCache ?? throw new ArgumentNullException(nameof(memCache));
 		}
 
 		//TODO: Handle exception coming from API. Catch and translate to business exception.
 		//TODO: Then throw/bubble up.
 		public async Task GetSensorsDataAsync()
 		{
-			IList<Sensor> allSensors = await this.dataContext.Sensors.ToListAsync();
+			if (!this.memCache.TryGetValue("ListOfSensors", out IList<Sensor> allSensors))
+			{
+				allSensors = await this.dataContext.Sensors.ToListAsync();
+
+				MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+				{
+					AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60),
+					SlidingExpiration = TimeSpan.FromSeconds(5)
+				};
+
+				this.memCache.Set("ListOfSensors", allSensors, options);
+			}
+			
 			IList<SensorData> updateDataList = new List<SensorData>();
 			IList<Sensor> updateSensorsList = new List<Sensor>();
 			List<UserSensor> affectedSensorsList = new List<UserSensor>();
