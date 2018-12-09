@@ -23,29 +23,29 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 		[StringLength(40, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
 		[Display(Name = "Name")]
 		public string Name { get; set; }
-
-		[Required]
+		
 		[StringLength(40, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
 		[Display(Name = "Description")]
 		public string Description { get; set; }
 
 		[Required]
+		[Range(1, int.MaxValue)]
 		[Display(Name = "PollingInterval")]
 		public int PollingInterval { get; set; }
 
 		[Required]
+		[Range(-90, 90)]
 		[Display(Name = "Latitude")]
-		public string Latitude { get; set; }
+		public double Latitude { get; set; }
 
 		[Required]
+		[Range(-180, 180)]
 		[Display(Name = "Longitude")]
-		public string Longitude { get; set; }
+		public double Longitude { get; set; }
 
-		[Required]
 		[Display(Name = "IsPublic")]
 		public bool IsPublic { get; set; }
-
-		[Required]
+		
 		[Display(Name = "AlarmTriggered")]
 		public bool AlarmTriggered { get; set; }
 
@@ -61,10 +61,12 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 		[Display(Name = "Sensor ID")]
 		public string SensorId { get; set; }
 
-        [Display(Name = "Value")]
+		[Required]
+		[Display(Name = "Value")]
         public string LastValueUser { get; set; }
 
-        [Display(Name = "Type")]
+		[Required]
+		[Display(Name = "Type")]
         public string Type { get; set; }
 
 		public bool IsState { get; set; }

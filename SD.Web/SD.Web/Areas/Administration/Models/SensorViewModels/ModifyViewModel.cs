@@ -14,8 +14,8 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 			this.Name = userSensor.Name;
 			this.Description = userSensor.Description;
 			this.PollingInterval = userSensor.PollingInterval;
-			this.Latitude = userSensor.Latitude;
-			this.Longitude = userSensor.Longitude;
+			this.Latitude = double.Parse(userSensor.Latitude);
+			this.Longitude = double.Parse(userSensor.Longitude);
 			this.IsPublic = userSensor.IsPublic;
 			this.AlarmTriggered = userSensor.AlarmTriggered;
 			this.AlarmMin = userSensor.AlarmMin;
@@ -32,42 +32,38 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 		[StringLength(40, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
 		[Display(Name = "Name")]
 		public string Name { get; set; }
-
-		[Required]
+		
 		[StringLength(40, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
 		[Display(Name = "Description")]
 		public string Description { get; set; }
 
 		[Required]
+		[Range(1, int.MaxValue)]
 		[Display(Name = "PollingInterval")]
 		public int PollingInterval { get; set; }
 
 		[Required]
+		[Range(-90, 90)]
 		[Display(Name = "Latitude")]
-		public string Latitude { get; set; }
+		public double Latitude { get; set; }
 
 		[Required]
+		[Range(-180, 180)]
 		[Display(Name = "Longitude")]
-		public string Longitude { get; set; }
-
-		[Required]
+		public double Longitude { get; set; }
+		
 		[Display(Name = "IsPublic")]
 		public bool IsPublic { get; set; }
-
-		[Required]
+		
 		[Display(Name = "AlarmTriggered")]
 		public bool AlarmTriggered { get; set; }
 
-		[Required]
 		[Display(Name = "AlarmMin")]
 		public double AlarmMin { get; set; }
-
-		[Required]
+		
 		[Display(Name = "AlarmMax")]
 		public double AlarmMax { get; set; }
 		
 		public bool IsState { get; set; }
-
-		public IList<Tuple<string, string>> SensorNamesIds { get; set; }
 	}
 }

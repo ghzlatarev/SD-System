@@ -93,8 +93,9 @@ namespace SD.Web.Areas.Administration.Controllers
 
             if (ModelState.IsValid)
 			{
-				var userSensor = await this.userSensorService.AddUserSensorAsync(model.UserId, model.SensorId, model.Name, model.Description, 
-					model.Latitude, model.Longitude, model.AlarmMin, model.AlarmMax, model.PollingInterval, model.AlarmTriggered, model.IsPublic, 
+				var userSensor = await this.userSensorService.AddUserSensorAsync(model.UserId, model.SensorId, 
+					model.Name, model.Description, model.Latitude.ToString(), model.Longitude.ToString(),
+					model.AlarmMin, model.AlarmMax, model.PollingInterval, model.AlarmTriggered, model.IsPublic, 
 					model.LastValueUser, model.Type);
 
 				return RedirectToLocal(returnUrl);
@@ -133,8 +134,8 @@ namespace SD.Web.Areas.Administration.Controllers
 			userSensor.AlarmMax = model.AlarmMax;
 			userSensor.IsPublic = model.IsPublic;
 			userSensor.PollingInterval = model.PollingInterval;
-			userSensor.Latitude = model.Latitude;
-			userSensor.Longitude = model.Longitude;
+			userSensor.Latitude = model.Latitude.ToString();
+			userSensor.Longitude = model.Longitude.ToString();
 			userSensor.Coordinates = model.Latitude + "," + model.Longitude;
 
 			await this.userSensorService.UpdateUserSensorAsync(userSensor);
