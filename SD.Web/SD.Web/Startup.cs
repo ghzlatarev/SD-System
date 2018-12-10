@@ -38,10 +38,9 @@ namespace SD.Web
         public void ConfigureServices(IServiceCollection services)
         {
             RegisterData(services);
-			services.AddTransient<INotificationService, NotificationService>();
 			RegisterAuthentication(services);
-            
-            RegisterServicesExternal(services);
+
+			RegisterServicesExternal(services);
             RegisterServicesData(services);
 
             RegisterInfrastructure(services);
@@ -151,17 +150,19 @@ namespace SD.Web
 
         private void RegisterServicesExternal(IServiceCollection services)
         {
-            services.AddScoped<HttpClient>();
+			services.AddTransient<INotificationService, NotificationService>();
+			services.AddScoped<HttpClient>();
             services.AddScoped<IApiClient, ApiClient>();
         }
 
         private void RegisterServicesData(IServiceCollection services)
         {
-            // Identity
+            //Identity
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<UserManager<ApplicationUser>, UserManager<ApplicationUser>>();
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
 
+			//Custom
             services.AddScoped<ISensorService, SensorService>();
             services.AddScoped<ISensorDataService, SensorDataService>();
 			services.AddScoped<IUserSensorService, UserSensorService>();

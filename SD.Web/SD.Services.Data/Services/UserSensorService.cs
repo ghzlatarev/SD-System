@@ -7,20 +7,21 @@ using SD.Services.Data.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using X.PagedList;
 
 namespace SD.Services.Data.Services
 {
-    public class UserSensorService : IUserSensorService
+	public class UserSensorService : IUserSensorService
     {
         private readonly DataContext dataContext;
+		private readonly ISensorService sensorService;
 
-        public UserSensorService(DataContext dataContext)
+        public UserSensorService(DataContext dataContext, ISensorService sensorService)
         {
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
-        }
+            this.sensorService = sensorService ?? throw new ArgumentNullException(nameof(sensorService));
+		}
 
         public async Task<IPagedList<UserSensor>> FilterUserSensorsAsync(string filter = "", int pageNumber = 1, int pageSize = 10)
         {
@@ -30,7 +31,9 @@ namespace SD.Services.Data.Services
             Validator.ValidateMinRange(pageSize, 0, "Page size cannot be less then 0!");
 
             var query = this.dataContext.UserSensors
-                .Where(t => t.Name.Contains(filter));
+                .Where(t => t.Name.Contains(filter))
+				.Include(us => us.Sensor);
+
 
             return await query.ToPagedListAsync(pageNumber, pageSize);
         }
@@ -41,6 +44,7 @@ namespace SD.Services.Data.Services
             Validator.ValidateMinRange(pageSize, 0, "Page size cannot be less then 0!");
 
             var query = this.dataContext.UserSensors
+				.Include(us => us.Sensor)
                 .Where(us => us.UserId.Equals(userId));
 
             return await query.ToPagedListAsync(pageNumber, pageSize);
@@ -48,14 +52,16 @@ namespace SD.Services.Data.Services
 
         public async Task<UserSensor> GetSensorByIdAsync(string id)
         {
-            var userSensor = await this.dataContext.UserSensors
+			var userSensor = await this.dataContext.UserSensors
+				.Include(us => us.Sensor)
                 .FirstOrDefaultAsync(us => us.Id == id);
 
             return userSensor;
         }
 
         public async Task<UserSensor> AddUserSensorAsync(string userId, string sensorId, string name, string description,
-            string latitude, string longitude, double alarmMin, double alarmMax, int pollingInterval, bool alarmTriggered, bool isPublic, string lastValue, string type)
+            string latitude, string longitude, double alarmMin, double alarmMax, int pollingInterval, bool alarmTriggered, 
+			bool isPublic, string lastValue, string type)
         {
             Validator.ValidateNull(name, "Sensor name cannot be null!");
 
@@ -63,6 +69,8 @@ namespace SD.Services.Data.Services
             {
                 throw new EntityAlreadyExistsException("User sensor already exists!");
             }
+
+			var sensor = this.sensorService.GetSensorByIdAsync(sensorId);
 
             var userSensor = new UserSensor
             {
@@ -79,7 +87,6 @@ namespace SD.Services.Data.Services
                 Coordinates = latitude + "," + longitude,
                 Type = type,
                 LastValueUser = lastValue
-                
             };
 
             userSensor.SensorId = sensorId;
@@ -112,7 +119,9 @@ namespace SD.Services.Data.Services
 
         public async Task<UserSensor> ListSensorByIdAsync(string sensorId)
         {
-            return await this.dataContext.UserSensors.FirstOrDefaultAsync(se => se.Id == sensorId);
+            return await this.dataContext.UserSensors
+				.Include(us => us.Sensor)
+				.FirstOrDefaultAsync(se => se.Id == sensorId);
         }
     }
 }

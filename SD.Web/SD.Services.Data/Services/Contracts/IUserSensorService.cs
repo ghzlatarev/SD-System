@@ -1,13 +1,11 @@
 ﻿using SD.Data.Models.DomainModels;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using X.PagedList;
 
 namespace SD.Services.Data.Services.Contracts
 {
-    public interface IUserSensorService
+	public interface IUserSensorService
     {
         Task<IPagedList<UserSensor>> FilterUserSensorsAsync(string filter = "", int pageNumber = 1, int pageSize = 10);
         
@@ -22,7 +20,6 @@ namespace SD.Services.Data.Services.Contracts
         Task UpdateUserSensorAsync(UserSensor userSensor);
 
         Task<IEnumerable<UserSensor>> ListSensorsForUserAsync(string userId);
-
 
         Task<IEnumerable<UserSensor>> ListPublicSensorsWhichDontBelongToUserAsync(string userId);
         

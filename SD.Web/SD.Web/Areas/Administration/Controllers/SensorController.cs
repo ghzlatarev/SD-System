@@ -3,12 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using SD.Data.Models.DomainModels;
 using SD.Services.Data.Services.Contracts;
-using SD.Web.Areas.Administration.Models;
 using SD.Web.Areas.Administration.Models.SensorViewModels;
 using SD.Web.Controllers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
 
@@ -18,25 +15,25 @@ namespace SD.Web.Areas.Administration.Controllers
 	[Authorize(Policy = "Admin")]
 	public class SensorController : Controller
 	{
-		private readonly IUserSensorService _userSensorService;
-		private readonly ISensorService _sensorService;
-		private readonly IMemoryCache _memoryCache;
-        private readonly ISensorDataService _sensorDataService;
+		private readonly IUserSensorService userSensorService;
+		private readonly ISensorService sensorService;
+		private readonly IMemoryCache memoryCache;
+        private readonly ISensorDataService sensorDataService;
 
         public SensorController(IUserSensorService userSensorService, ISensorService sensorService, IMemoryCache memoryCache, ISensorDataService sensorDataService)
 		{
-			_userSensorService = userSensorService ?? throw new ArgumentNullException(nameof(userSensorService));
-			_sensorService = sensorService ?? throw new ArgumentNullException(nameof(sensorService));
-			_memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-            _sensorDataService = sensorDataService ?? throw new ArgumentNullException(nameof(sensorDataService));
+			this.userSensorService = userSensorService ?? throw new ArgumentNullException(nameof(userSensorService));
+			this.sensorService = sensorService ?? throw new ArgumentNullException(nameof(sensorService));
+			this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+			this.sensorDataService = sensorDataService ?? throw new ArgumentNullException(nameof(sensorDataService));
 		}
 
 		[HttpGet("usersensors")]
 		public async Task<IActionResult> Index()
 		{
-			if (!_memoryCache.TryGetValue("ListOfUserSensors", out IPagedList<UserSensor> userSensors))
+			if (!this.memoryCache.TryGetValue("ListOfUserSensors", out IPagedList<UserSensor> userSensors))
 			{
-				userSensors = await _userSensorService.FilterUserSensorsAsync();
+				userSensors = await this.userSensorService.FilterUserSensorsAsync();
 
 				MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
 				{
@@ -44,7 +41,7 @@ namespace SD.Web.Areas.Administration.Controllers
 					SlidingExpiration = TimeSpan.FromSeconds(5)
 				};
 
-				_memoryCache.Set("ListOfUserSensors", userSensors, options);
+				this.memoryCache.Set("ListOfUserSensors", userSensors, options);
 			}
 
 			var model = new SensorIndexViewModel(userSensors);
@@ -55,7 +52,7 @@ namespace SD.Web.Areas.Administration.Controllers
 		[HttpGet("usersensors/{id}")]
 		public async Task<IActionResult> Index(string id, int? pageNumber, int? pageSize)
 		{
-			var userSensors = await _userSensorService.GetSensorsByUserId(id, pageNumber ?? 1, pageSize ?? 10);
+			var userSensors = await this.userSensorService.GetSensorsByUserId(id, pageNumber ?? 1, pageSize ?? 10);
 
 			var model = new SensorIndexViewModel(userSensors, string.Empty);
 
@@ -67,7 +64,7 @@ namespace SD.Web.Areas.Administration.Controllers
 		{
 			searchTerm = searchTerm ?? string.Empty;
 
-			var userSensors = await _userSensorService.FilterUserSensorsAsync(searchTerm, pageNumber ?? 1, pageSize ?? 10);
+			var userSensors = await this.userSensorService.FilterUserSensorsAsync(searchTerm, pageNumber ?? 1, pageSize ?? 10);
 
 			var model = new SensorIndexViewModel(userSensors, searchTerm);
 
@@ -78,8 +75,9 @@ namespace SD.Web.Areas.Administration.Controllers
 		public async Task<IActionResult> Register(string userId, string returnUrl = null)
 		{
 			ViewData["ReturnUrl"] = returnUrl;
-			var allSensorIds = await _sensorService.GetSensorNamesIdsAsync();
-			var model = new RegisterViewModel(userId, allSensorIds);
+			var stateSensors = await this.sensorService.ListStateSensorsAsync();
+			var nonStateSensors = await this.sensorService.ListNonStateSensorsAsync();
+			var model = new RegisterViewModel(userId, stateSensors, nonStateSensors);
 			return View(model);
 		}
 
@@ -89,13 +87,17 @@ namespace SD.Web.Areas.Administration.Controllers
 		{
 			ViewData["ReturnUrl"] = returnUrl;
 
-            var sensor = await _sensorDataService.GetSensorsByIdAsync(model.SensorId);
-            model.LastValueUser = sensor.SensorData.Last(s => s.SensorId == model.SensorId).Value;
+            var sensor = await this.sensorService.GetSensorByIdAsync(model.SensorId);
+            model.LastValueUser = sensor.LastValue;
+			model.IsState = sensor.IsState;
 
             if (ModelState.IsValid)
 			{
-				var userSensor = await _userSensorService.AddUserSensorAsync(model.UserId, model.SensorId, model.Name, model.Description, 
-					model.Latitude, model.Longitude, model.AlarmMin, model.AlarmMax, model.PollingInterval, model.AlarmTriggered, model.IsPublic, model.LastValueUser, model.Type);
+				var userSensor = await this.userSensorService.AddUserSensorAsync(model.UserId, model.SensorId, 
+					model.Name, model.Description, model.Latitude.ToString(), model.Longitude.ToString(),
+					model.AlarmMin, model.AlarmMax, model.PollingInterval, model.AlarmTriggered, model.IsPublic, 
+					model.LastValueUser, model.Type);
+
 				return RedirectToLocal(returnUrl);
 			}
 
@@ -105,7 +107,7 @@ namespace SD.Web.Areas.Administration.Controllers
 		[HttpGet("usersensors/modify/{id}")]
 		public async Task<IActionResult> Modify(string id)
 		{
-			var userSensor = await _userSensorService.GetSensorByIdAsync(id);
+			var userSensor = await this.userSensorService.GetSensorByIdAsync(id);
 
 			//handle null user sensor
 
@@ -123,7 +125,7 @@ namespace SD.Web.Areas.Administration.Controllers
 				return View(model);
 			}
 
-			var userSensor = await _userSensorService.GetSensorByIdAsync(model.Id.ToString());
+			var userSensor = await this.userSensorService.GetSensorByIdAsync(model.Id.ToString());
 
 			userSensor.Name = model.Name;
 			userSensor.Description = model.Description;
@@ -132,10 +134,11 @@ namespace SD.Web.Areas.Administration.Controllers
 			userSensor.AlarmMax = model.AlarmMax;
 			userSensor.IsPublic = model.IsPublic;
 			userSensor.PollingInterval = model.PollingInterval;
-			userSensor.Latitude = model.Latitude;
-			userSensor.Longitude = model.Longitude;
+			userSensor.Latitude = model.Latitude.ToString();
+			userSensor.Longitude = model.Longitude.ToString();
+			userSensor.Coordinates = model.Latitude + "," + model.Longitude;
 
-			await _userSensorService.UpdateUserSensorAsync(userSensor);
+			await this.userSensorService.UpdateUserSensorAsync(userSensor);
 			
 			return RedirectToAction(nameof(Modify));
 		}

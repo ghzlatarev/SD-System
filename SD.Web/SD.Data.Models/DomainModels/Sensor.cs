@@ -31,6 +31,9 @@ namespace SD.Data.Models.DomainModels
 		public string LastValue { get; set; }
 
 		[JsonIgnore]
+		public bool IsState { get; set; }
+
+		[JsonIgnore]
         public ICollection<SensorData> SensorData { get; set; }
 
 		[JsonIgnore]

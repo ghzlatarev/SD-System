@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using SD.Data.Context;
 using SD.Data.Models.DomainModels;
 using SD.Services.Data.Services.Contracts;
 using SD.Services.External;
-//using X.PagedList;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SD.Services.Data.Services
 {
@@ -17,30 +16,42 @@ namespace SD.Services.Data.Services
 		private readonly IApiClient apiClient;
 		private readonly DataContext dataContext;
 		private readonly INotificationService notificationService;
+		private readonly IMemoryCache memCache;
 
-		public SensorDataService(IApiClient aPIClient, DataContext dataContext, INotificationService notificationService)
+		public SensorDataService(IApiClient aPIClient, DataContext dataContext, INotificationService notificationService, IMemoryCache memCache)
 		{
 			this.apiClient = aPIClient ?? throw new ArgumentNullException(nameof(aPIClient));
 			this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
-			this.notificationService = notificationService;
+			this.notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+			this.memCache = memCache ?? throw new ArgumentNullException(nameof(memCache));
 		}
 
 		//TODO: Handle exception coming from API. Catch and translate to business exception.
 		//TODO: Then throw/bubble up.
-		public async Task GetSensorsData()
+		public async Task GetSensorsDataAsync()
 		{
-			IList<Sensor> allSensors = await this.dataContext.Sensors.ToListAsync();
+			if (!this.memCache.TryGetValue("ListOfSensors", out IList<Sensor> allSensors))
+			{
+				allSensors = await this.dataContext.Sensors.ToListAsync();
+
+				MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+				{
+					AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60),
+					SlidingExpiration = TimeSpan.FromSeconds(5)
+				};
+
+				this.memCache.Set("ListOfSensors", allSensors, options);
+			}
+			
 			IList<SensorData> updateDataList = new List<SensorData>();
 			IList<Sensor> updateSensorsList = new List<Sensor>();
-			IDictionary<Sensor, SensorData> sensorsDictionary = new Dictionary<Sensor, SensorData>();
+			List<UserSensor> affectedSensorsList = new List<UserSensor>();
 
 			foreach (var sensor in allSensors)
 			{
-				var lastTimeStamp = sensor.LastTimeStamp;
-				TimeSpan difference = DateTime.Now.Subtract((DateTime)lastTimeStamp);
-				var pollingInterval = sensor.MinPollingIntervalInSeconds;
+				TimeSpan difference = DateTime.Now.Subtract((DateTime)sensor.LastTimeStamp);
 
-				if (difference.TotalSeconds >= pollingInterval)
+				if (difference.TotalSeconds >= sensor.MinPollingIntervalInSeconds)
 				{
 					SensorData oldSensorData = await this.dataContext.SensorData
 					.Include(sd => sd.Sensor.UserSensors)
@@ -48,8 +59,7 @@ namespace SD.Services.Data.Services
 					.OrderByDescending(oSD => oSD.TimeStamp)
 					.FirstAsync();
 
-					SensorData newSensorData = await this.apiClient
-					.GetSensorData("sensorId?=" + sensor.SensorId);
+					SensorData newSensorData = await this.apiClient.GetSensorData("sensorId?=" + sensor.SensorId);
 					newSensorData.SensorId = sensor.SensorId;
 					if (newSensorData.Value.Equals("true")) { newSensorData.Value = "1"; };
 					if (newSensorData.Value.Equals("false")) { newSensorData.Value = "0"; };
@@ -62,29 +72,15 @@ namespace SD.Services.Data.Services
 					oldSensorData.TimeStamp = newSensorData.TimeStamp;
 					updateDataList.Add(oldSensorData);
 
-					sensorsDictionary.Add(sensor, newSensorData);
+					affectedSensorsList.AddRange(oldSensorData.Sensor.UserSensors);
 				}
 			}
-			var notificationsList = await this.notificationService.CheckAlarmNotifications(sensorsDictionary);
-			await this.dataContext.AddRangeAsync(notificationsList);
+			await this.notificationService.CheckAlarmNotificationsAsync(affectedSensorsList);
 
 			this.dataContext.UpdateRange(updateSensorsList);
 			this.dataContext.UpdateRange(updateDataList);
 
 			await this.dataContext.SaveChangesAsync(false);
-		}
-
-
-
-		//public async Task<SensorData> GetSensorDataByIdAsync(Guid id)
-		//{
-		//    return await this.dataContext.SensorData.FirstOrDefaultAsync(se => se.SensorId == id);
-		//}
-
-		public async Task<Sensor> GetSensorsByIdAsync(string id)
-		{
-			return await this.dataContext.Sensors.Include(s => s.SensorData)
-				.FirstOrDefaultAsync(se => se.Id == id);
 		}
 	}
 }

@@ -3,28 +3,26 @@ using Microsoft.EntityFrameworkCore;
 using SD.Data.Context;
 using SD.Data.Models.DomainModels;
 using SD.Services.Data.Services.Contracts;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SD.Services.Data.Services
 {
 	public class NotificationService : INotificationService
 	{
-		private readonly IHubContext<NotificationHub> _hub;
+		private readonly IHubContext<NotificationHub> hub;
 		private readonly DataContext dataContext;
 
 		public NotificationService(IHubContext<NotificationHub> hub, DataContext dataContext)
 		{
-			_hub = hub;
+			this.hub = hub;
 			this.dataContext = dataContext;
 		}
 
 		public Task SendNotificationAsync(string message, string userId)
 		{
-			return _hub.Clients.Users(userId).SendAsync("ReceiveNotification", message);
+			return this.hub.Clients.Users(userId).SendAsync("ReceiveNotification", message);
 		}
 
 		public async Task<List<Notifications>> GetItemsAsync(string userId)
@@ -34,35 +32,64 @@ namespace SD.Services.Data.Services
 				.ToListAsync();
 		}
 
-		public async Task<IList<Notifications>> CheckAlarmNotifications(IDictionary<Sensor, SensorData> sensorsDictionary)
+		public async Task CheckAlarmNotificationsAsync(IList<UserSensor> affectedSensorsList)
 		{
 			IList<Notifications> notificationsList = new List<Notifications>();
 
-			foreach (var kvp in sensorsDictionary)
+			foreach (var userSensor in affectedSensorsList)
 			{
-				var newValue = double.Parse(kvp.Value.Value);
-
-				var currentUserSensors = kvp.Key.UserSensors;
-				foreach (var userSensor in currentUserSensors)
+				var newValue = double.Parse(userSensor.Sensor.LastValue);
+				bool shouldNotify = this.AccountForState(userSensor);
+				if(shouldNotify == true)
 				{
-					if ((newValue <= userSensor.AlarmMin || newValue >= userSensor.AlarmMax) && userSensor.AlarmTriggered == true)
+					string userId = userSensor.UserId;
+					string message = userSensor.Name.ToUpper() + " is out of range, returning a value of "
+															+ userSensor.Sensor.LastValue
+															+ "\n"
+															+ "---------------------------";
+
+					Notifications notification = new Notifications
 					{
-						var userId = userSensor.UserId.ToString();
-						var message = userSensor.Name + " pinged, something is happening!";
-						await this.SendNotificationAsync(message, userId);
+						UserId = userId,
+						Message = message
+					};
 
-						Notifications notification = new Notifications
-						{
-							UserId = userId,
-							Message = message
-						};
-
-						notificationsList.Add(notification);
-					}
+					await this.SendNotificationAsync(message, userId);
+					notificationsList.Add(notification);
 				}
 			}
 
-			return notificationsList;
+			await this.SaveNotificationsAsync(notificationsList);
+		}
+
+		private bool AccountForState(UserSensor userSensor)
+		{
+			bool shouldNotify = false;
+			var newValue = double.Parse(userSensor.Sensor.LastValue);
+
+			if (userSensor.Sensor.IsState == true)
+			{
+				if (newValue == 1 && userSensor.AlarmTriggered == true)
+				{
+					shouldNotify = true;
+				}
+			}
+			else
+			{
+				if ((newValue <= userSensor.AlarmMin || newValue >= userSensor.AlarmMax)
+									&& userSensor.AlarmTriggered == true)
+				{
+					shouldNotify = true;
+				}
+			}
+
+			return shouldNotify;
+		}
+
+		private async Task SaveNotificationsAsync(IList<Notifications> notificationsList)
+		{
+			await this.dataContext.AddRangeAsync(notificationsList);
+			await this.dataContext.SaveChangesAsync();
 		}
 
 		public async Task ReadUnreadAsync(string userId)
