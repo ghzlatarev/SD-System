@@ -113,7 +113,7 @@
             });
 
             function initGoogleMaps() {
-                var myLatlng = new google.maps.LatLng(@Model.Coordinates.Split(',')[1], @Model.Coordinates.Split(',')[0]);
+                var myLatlng = new google.maps.LatLng(@Model.Coordinates.Split(',')[0], @Model.Coordinates.Split(',')[1]);
                 var mapOptions = {
                     zoom: 13,
                     center: myLatlng,
