@@ -102,7 +102,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
         [HttpPost("read-data")]
         public async Task<JsonResult> Get_Api_Sensors([DataSourceRequest] DataSourceRequest request)
         {
-            var sensors = await _sensorService.ListSensorsAsync();
+            var sensors = await this.sensorService.ListSensorsAsync();
 
             var result = sensors.Select(sensor => new SensorAPIViewModel(sensor)
             {
@@ -114,9 +114,6 @@ namespace SD.Web.Areas.UserRegular.Controllers
             });
 
             return this.Json(result.ToDataSourceResult(request));
-        }
-
-            return this.View(model);
         }
 
         [HttpGet("register-sensor")]
