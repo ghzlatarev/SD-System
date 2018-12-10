@@ -2,20 +2,21 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SD.Data.Context.Configurations;
-using SD.Data.Context.Configurations.Identity;
-using SD.Data.Models;
 using SD.Data.Models.Contracts;
 using SD.Data.Models.Identity;
 using SD.Data.Models.DomainModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SD.Data.Context.Configurations.Identity;
 
 namespace SD.Data.Context
 {
     public class DataContext : IdentityDbContext<ApplicationUser>
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+		public DataContext() { }
+
+		public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         public virtual DbSet<Sensor> Sensors { get; set; }
 
