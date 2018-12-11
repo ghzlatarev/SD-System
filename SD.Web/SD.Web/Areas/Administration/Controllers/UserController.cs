@@ -51,7 +51,18 @@ namespace SD.Web.Areas.Admin.Controllers
 		{
 			const string adminRole = "Administrator";
 
+			if (id == null)
+			{
+				throw new ApplicationException(string.Format("Id cannot be null."));
+			}
+
 			var user = await this.userManager.FindByIdAsync(id);
+
+			if (user == null)
+			{
+				throw new ApplicationException(string.Format("User with id {0} was not found.", id));
+			}
+
 			var addRoleResult = await this.userManager.AddToRoleAsync(user, adminRole);
 			
 			if (addRoleResult.Succeeded == true)
@@ -75,10 +86,19 @@ namespace SD.Web.Areas.Admin.Controllers
 
 			if (!await this.roleManager.RoleExistsAsync(adminRole))
 			{
-				throw new ApplicationException(string.Format("User demotion unsuccessful , {0} role does not exists.", adminRole));
+				throw new ApplicationException(string.Format("User demotion unsuccessful , {0} role does not exist.", adminRole));
 			}
 
+			if (id == null)
+			{
+				throw new ApplicationException(string.Format("Id cannot be null."));
+			}
 			var user = await this.userManager.FindByIdAsync(id);
+			if(user == null)
+			{
+				throw new ApplicationException(string.Format("User with id {0} was not found.", id));
+			}
+
 			var removeRoleResult = await this.userManager.RemoveFromRoleAsync(user, adminRole);
 
 			if (removeRoleResult.Succeeded == true)

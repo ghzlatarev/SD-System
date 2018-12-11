@@ -161,18 +161,5 @@ namespace SD.Web.Areas.Administration.Controllers
 			
 			return RedirectToAction(nameof(Modify));
 		}
-
-		[NonAction]
-		private IActionResult RedirectToLocal(string returnUrl)
-		{
-			if (Url.IsLocalUrl(returnUrl))
-			{
-				return Redirect(returnUrl);
-			}
-			else
-			{
-				return RedirectToAction(nameof(HomeController.Index), "Home");
-			}
-		}
 	}
 }
