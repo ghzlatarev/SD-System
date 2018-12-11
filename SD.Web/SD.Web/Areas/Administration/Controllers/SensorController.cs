@@ -52,7 +52,17 @@ namespace SD.Web.Areas.Administration.Controllers
 		[HttpGet("usersensors/{id}")]
 		public async Task<IActionResult> Index(string id, int? pageNumber, int? pageSize)
 		{
+			if (id == null)
+			{
+				throw new ApplicationException($"Passed ID parameter is absent.");
+			}
+
 			var userSensors = await this.userSensorService.GetSensorsByUserId(id, pageNumber ?? 1, pageSize ?? 10);
+
+			if (userSensors.Count == 0)
+			{
+				throw new ApplicationException($"Unable to find user sensors for user with ID '{id}'.");
+			}
 
 			var model = new SensorIndexViewModel(userSensors, string.Empty);
 
@@ -86,19 +96,20 @@ namespace SD.Web.Areas.Administration.Controllers
 		public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
 		{
 			ViewData["ReturnUrl"] = returnUrl;
-
-            var sensor = await this.sensorService.GetSensorByIdAsync(model.SensorId);
-            model.LastValueUser = sensor.LastValue;
-			model.IsState = sensor.IsState;
-
+			
             if (ModelState.IsValid)
 			{
+				var sensor = await this.sensorService.GetSensorByIdAsync(model.SensorId);
+				model.LastValueUser = sensor.LastValue;
+				model.IsState = sensor.IsState;
+				model.Type = sensor.MeasureType;
+
 				var userSensor = await this.userSensorService.AddUserSensorAsync(model.UserId, model.SensorId, 
 					model.Name, model.Description, model.Latitude.ToString(), model.Longitude.ToString(),
 					model.AlarmMin, model.AlarmMax, model.PollingInterval, model.AlarmTriggered, model.IsPublic, 
 					model.LastValueUser, model.Type);
 
-				return RedirectToLocal(returnUrl);
+				return RedirectToAction(nameof(HomeController.Index), "Home");
 			}
 
 			return View(model);
@@ -107,9 +118,17 @@ namespace SD.Web.Areas.Administration.Controllers
 		[HttpGet("usersensors/modify/{id}")]
 		public async Task<IActionResult> Modify(string id)
 		{
+			if (id == null)
+			{
+				throw new ApplicationException($"Passed ID parameter is absent.");
+			}
+
 			var userSensor = await this.userSensorService.GetSensorByIdAsync(id);
 
-			//handle null user sensor
+			if (userSensor == null)
+			{
+				throw new ApplicationException($"Unable to find user sensor with ID '{id}'.");
+			}
 
 			var model = new ModifyViewModel(userSensor);
 

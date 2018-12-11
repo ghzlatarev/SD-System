@@ -5,6 +5,8 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 {
 	public class SensorTableViewModel
 	{
+		public SensorTableViewModel(){}
+
 		public SensorTableViewModel(UserSensor userSensor)
 		{
 			this.Id = userSensor.Id;
