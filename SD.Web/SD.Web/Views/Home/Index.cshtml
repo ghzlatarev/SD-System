@@ -58,32 +58,15 @@
         }
 </style>
 
-@*<div id="gauge-container">
-        @(Html.Kendo().RadialGauge()
-                                                    .Name("gauge")
-                                                    .Pointer(pointer => pointer.Value(0))
-                                                    .Scale(scale => scale
-                                                        .MinorUnit(5)
-                                                        .StartAngle(-30)
-                                                        .EndAngle(210)
-                                                        .Max(180)
-                                                    )
-        )
-    </div>*@
-
 <script>
     $(document).ready(function () {
 
+        let locations = [];
+        let markers = [];
         initGoogleMaps();
 
-        let dataForSensors;
-        let locations = [];
-
-
-
-
         function initGoogleMaps() {
-            //var myLatlng = new google.maps.LatLng(locations);
+            
             var mapOptions = {
                 zoom: 8,
                 center: new google.maps.LatLng(42.674107, 23.330281),
@@ -278,8 +261,9 @@
             };
 
             var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-            const locations = [];
+           
             $("#publicSensors").data("kendoGrid").bind('dataBound', function () {
+                locations = [];
                 this._data.forEach((sensor) => {
                     locations.push({
                         Name: sensor.Name,
@@ -288,19 +272,30 @@
                     })
                 }); 
                 console.log(locations)
+                
                 updateMarkers();
             });
 
+            function resetMarkers(markers) {
+                for (var i = 0; i < markers.length; i++) {
+                    markers[i].setMap(null);
+                };
+            }
             function updateMarkers() {
-
+                resetMarkers(markers);
                 for (i = 0; i < locations.length; i++) {
                     marker = new google.maps.Marker({
                         position: new google.maps.LatLng(locations[i].Lat, locations[i].Lng),
                         map: map,
                         title: locations[i].Name
                     });
+
+                    markers.push(marker);
                 };
-            };
+
+                
+            }
+            
         }
 
     });

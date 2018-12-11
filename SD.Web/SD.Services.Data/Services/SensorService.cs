@@ -57,6 +57,7 @@ namespace SD.Services.Data.Services
 		public async Task<Sensor> GetSensorByIdAsync(string sensorId)
 		{
 			return await this.dataContext.Sensors
+                .Include(se => se.SensorData)
 				.FirstOrDefaultAsync(s => s.Id.Equals(sensorId));
 		}
     }

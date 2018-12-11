@@ -70,7 +70,7 @@ namespace SD.Services.Data.Services
                 throw new EntityAlreadyExistsException("User sensor already exists!");
             }
 
-			var sensor = this.sensorService.GetSensorByIdAsync(sensorId);
+            var sensor = this.dataContext.Sensors.FirstOrDefaultAsync(ss => ss.SensorId == sensorId).Result;
 
             var userSensor = new UserSensor
             {
@@ -86,10 +86,10 @@ namespace SD.Services.Data.Services
                 PollingInterval = pollingInterval,
                 Coordinates = latitude + "," + longitude,
                 Type = type,
-                LastValueUser = lastValue
+                LastValueUser = lastValue,
+                SensorId = sensor.Id
             };
-
-            userSensor.SensorId = sensorId;
+            
 
             await this.dataContext.UserSensors.AddAsync(userSensor);
             await this.dataContext.SaveChangesAsync();
@@ -104,7 +104,7 @@ namespace SD.Services.Data.Services
 
         public async Task<IEnumerable<UserSensor>> ListSensorsForUserAsync(string userId)
         {
-            return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.UserId == userId.ToString()).ToListAsync();
+            return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.UserId == userId).ToListAsync();
         }
 
         public async Task<IEnumerable<UserSensor>> ListPublicSensorsWhichDontBelongToUserAsync(string userId)

@@ -55,8 +55,14 @@
 </table>
 
 <div class="form-row">
-	<button type="reset" class="btn btn-default editButton"><span>Edit Content</span></button>
-	<button type="reset" class="btn btn-default btn-danger"><span>Delete</span></button>
+    <button type="reset" class="btn btn-default editButton"><span>Edit Content</span></button>
+    @if (!Model.IsPublic)
+    {
+        <button type="submit" class="btn btn-danger"><a href="/delete-sensor?id=@Model.Id">Delete</a></button>
+    }
+
+
+
 </div>
 
 

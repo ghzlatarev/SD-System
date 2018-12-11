@@ -12,14 +12,14 @@ namespace SD.Web.Areas.UserRegular.Models
     {
         public SensorAPIViewModel(Sensor sensor)
         {
-            SensorId = sensor.SensorId;
+            Id = sensor.Id;
             Tag = sensor.Tag;
             Description = sensor.Description;
             MinPollingIntervalInSeconds = sensor.MinPollingIntervalInSeconds;
             MeasureType = sensor.MeasureType;
         }
 
-        public string SensorId { get; set; }
+        public string Id { get; set; }
         [MaxLength(50)]
         public string Tag { get; set; }
         [MaxLength(500)]

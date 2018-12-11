@@ -51,7 +51,6 @@ namespace SD.Web.Areas.UserRegular.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                
                 RedirectToAction(nameof(DashboardController.ListSensor), new { id = model.Id });
             }
             return View(model);
@@ -90,7 +89,6 @@ namespace SD.Web.Areas.UserRegular.Controllers
         {
             var sensors = await this.sensorService.ListSensorsAsync();
 
-
             var model = new DataSourceViewModel()
             {
                 SensorApi = sensors.Select(se => new SensorAPIViewModel(se))
@@ -106,7 +104,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
 
             var result = sensors.Select(sensor => new SensorAPIViewModel(sensor)
             {
-                SensorId = sensor.SensorId,
+                Id = sensor.Id,
                 Tag = sensor.Tag,
                 Description = sensor.Description,
                 MinPollingIntervalInSeconds = sensor.MinPollingIntervalInSeconds,
@@ -131,7 +129,8 @@ namespace SD.Web.Areas.UserRegular.Controllers
                 Tag = sensor.Tag,
                 ApiInterval = sensor.MinPollingIntervalInSeconds,
                 UserId = userId,
-                Id = sensor.Id
+                Id = sensor.Id,
+               
             };
 
             return View(model);
@@ -139,20 +138,36 @@ namespace SD.Web.Areas.UserRegular.Controllers
 
         [HttpPost("register-sensor")]
         [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> Register(SensorRegistrationByUserModel model)
         {
-            var sensor = await this.sensorService.GetSensorByIdAsync(model.SensorId);
-            model.LastValueUser = sensor.SensorData.Last(s => s.SensorId == model.SensorId).Value;
+            var sensor = await this.sensorService.GetSensorByIdAsync(model.Id);
+            model.LastValueUser = sensor.SensorData.OrderByDescending(se => se.TimeStamp).FirstOrDefault(s => s.SensorId == model.SensorId).Value;
 
             if (this.ModelState.IsValid)
             {
-                //TODO: not passing lastvalue and type
-                
                 await this.userSensorService.AddUserSensorAsync(model.UserId, model.SensorId, model.Name, model.UserDescription, model.Coordinates.Split(',')[0],
                     model.Coordinates.Split(',')[1], model.AlarmMin, model.AlarmMax, model.UserInterval, model.AlarmTriggered, model.IsPublic,
                     model.LastValueUser, model.Type);
             }
 
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet("delete-sensor")]
+        public async Task<IActionResult> DeleteUserSensor(string Id)
+        {
+            var sensor = await this.userSensorService.GetSensorByIdAsync(Id);
+            sensor.IsDeleted = true;
+
+            var user = HttpContext.User;
+            var userId = this.userManager.GetUserId(user);
+            //TODO: Add messages if you are not eligable to edit or delete sensor
+            if (sensor.UserId == userId)
+            {
+                await this.userSensorService.UpdateUserSensorAsync(sensor);
+            }
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -164,8 +179,10 @@ namespace SD.Web.Areas.UserRegular.Controllers
 
             sensor.Name = model.Name;
             sensor.Description = model.Description;
+            var user = HttpContext.User;
+            var userId = this.userManager.GetUserId(user);
 
-            if (this.ModelState.IsValid)
+            if (this.ModelState.IsValid && sensor.UserId == userId)
             {
                 //TODO: not passing lastvalue and type
 
