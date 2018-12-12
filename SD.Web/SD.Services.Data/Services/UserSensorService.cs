@@ -31,8 +31,8 @@ namespace SD.Services.Data.Services
             Validator.ValidateMinRange(pageSize, 0, "Page size cannot be less then 0!");
 
             var query = this.dataContext.UserSensors
-                .Where(t => t.Name.Contains(filter))
-				.Include(us => us.Sensor);
+				.Include(us => us.Sensor)
+				.Where(t => t.Name.Contains(filter));
 
 
             return await query.ToPagedListAsync(pageNumber, pageSize);

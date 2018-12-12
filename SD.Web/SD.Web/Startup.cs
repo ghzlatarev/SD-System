@@ -20,6 +20,8 @@ using Quartz;
 using Quartz.Impl;
 using SD.Web.Utilities.Quartz;
 using Newtonsoft.Json.Serialization;
+using SD.Services.Data.Wrappers.Contracts;
+using SD.Services.Data.Wrappers;
 
 namespace SD.Web
 {
@@ -166,6 +168,7 @@ namespace SD.Web
             services.AddScoped<ISensorService, SensorService>();
             services.AddScoped<ISensorDataService, SensorDataService>();
 			services.AddScoped<IUserSensorService, UserSensorService>();
+			services.AddScoped<IMemoryCacheWrapper, MemoryCacheWrapper>();
 		}
 
 		private void RegisterQuartzServices(IServiceCollection services)

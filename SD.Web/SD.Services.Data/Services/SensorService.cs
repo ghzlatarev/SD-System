@@ -28,10 +28,11 @@ namespace SD.Services.Data.Services
             IEnumerable<Sensor> apiSensors = await this.apiClient.GetApiSensors();
             IList<Sensor> dbSensors = await this.dataContext.Sensors.ToListAsync();
 
-            IList<Sensor> addList = apiSensors.Where(apiS => dbSensors.Any(dbS => dbS.SensorId.Equals(apiS.SensorId)) == false).ToList();
+            IList<Sensor> addList = apiSensors
+				.Where(apiS => dbSensors.Any(dbS => dbS.SensorId.Equals(apiS.SensorId)) == false)
+				.ToList();
 
             await this.dataContext.Sensors.AddRangeAsync(addList);
-
             await this.dataContext.SaveChangesAsync(false);
         }
 

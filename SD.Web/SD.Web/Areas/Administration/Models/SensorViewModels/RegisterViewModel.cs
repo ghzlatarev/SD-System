@@ -61,11 +61,11 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 		[Display(Name = "Sensor ID")]
 		public string SensorId { get; set; }
 
-		[Required]
+		
 		[Display(Name = "Value")]
         public string LastValueUser { get; set; }
 
-		[Required]
+		
 		[Display(Name = "Type")]
         public string Type { get; set; }
 
