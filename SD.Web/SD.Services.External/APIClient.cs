@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SD.Data.Models.DomainModels;
 using SD.Data.Models.Abstract;
+using Microsoft.AspNetCore.Http;
+using System.Net;
 
 namespace SD.Services.External
 {
@@ -24,7 +26,7 @@ namespace SD.Services.External
         {
             var response = await client.GetAsync(target)
                 .ConfigureAwait(false);
-            
+			
             var entities = JsonConvert.DeserializeObject<IEnumerable<Sensor>>(await response.Content.ReadAsStringAsync());
 
             return entities;
@@ -34,10 +36,16 @@ namespace SD.Services.External
         {
             var response = await client.GetAsync(target)
                 .ConfigureAwait(false);
-
-            var entity = JsonConvert.DeserializeObject<SensorData>(await response.Content.ReadAsStringAsync());
-
-            return entity;
+			
+			if (response.StatusCode == HttpStatusCode.OK)
+			{
+				var entity = JsonConvert.DeserializeObject<SensorData>(await response.Content.ReadAsStringAsync());
+				return entity;
+			}
+			else
+			{
+				return null;
+			}	
         }
     }
 }

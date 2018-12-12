@@ -82,7 +82,7 @@ namespace SD.Web.Tests.Areas.Administration.SensorControllerTests
 		}
 
 		[TestMethod]
-		public async Task CallFilterChampionsAsync_WhenInvoked()
+		public async Task CallFilterSensorsAsync_WhenInvoked()
 		{
 			// Arrange
 			Mock<IUserSensorService> userSensorServiceMock = new Mock<IUserSensorService>();
