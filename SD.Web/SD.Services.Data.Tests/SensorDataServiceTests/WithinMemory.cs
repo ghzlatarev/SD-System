@@ -71,7 +71,6 @@ namespace SD.Services.Data.Tests.SensorDataServiceTests
 
 				apiClientMock.Verify(mock => mock.GetSensorData(It.IsAny<string>()),
 								Times.Once);
-
 			}
 		}
 
@@ -207,7 +206,7 @@ namespace SD.Services.Data.Tests.SensorDataServiceTests
 		{
 			// Arrange
 			var contextOptions = new DbContextOptionsBuilder<DataContext>()
-				.UseInMemoryDatabase(databaseName: "UpdateSensorData_WhenTimeSpanIsLessThanPollingInterval")
+				.UseInMemoryDatabase(databaseName: "UpdateSensorValues_WhenTimeSpanIsLessThanPollingInterval_AndNewDataIsOk")
 				.Options;
 
 			Sensor validSensor = new Sensor
@@ -284,7 +283,7 @@ namespace SD.Services.Data.Tests.SensorDataServiceTests
 		{
 			// Arrange
 			var contextOptions = new DbContextOptionsBuilder<DataContext>()
-				.UseInMemoryDatabase(databaseName: "UpdateSensorData_WhenTimeSpanIsLessThanPollingInterval")
+				.UseInMemoryDatabase(databaseName: "NotUpdateSensorValues_WhenTimeSpanIsLessThanPollingInterval_AndNewDataIsNot200Ok")
 				.Options;
 
 			Sensor validSensor = new Sensor
@@ -302,7 +301,8 @@ namespace SD.Services.Data.Tests.SensorDataServiceTests
 			};
 			SensorData dbSensorData = new SensorData
 			{
-				Sensor = validSensor
+				Sensor = validSensor,
+				Value = "1"
 			};
 			UserSensor dbUserSensor = new UserSensor
 			{
