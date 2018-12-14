@@ -45,6 +45,24 @@ namespace SD.Web.Areas.UserRegular.Controllers
             return View(model);
         }
 
+        [HttpGet("read-userSensors")]
+        public async Task<JsonResult> Get_userSensors([DataSourceRequest] DataSourceRequest request)
+        {
+            var user = HttpContext.User;
+            var userId = this.userManager.GetUserId(user);
+            var sensors = await this.userSensorService.ListSensorsForUserAsync(userId);
+
+            var result = sensors.Select(sensor => new UserSensorViewModel(sensor)
+            {
+                Id = sensor.Id,
+                Description = sensor.Description,
+                Type = sensor.Type,
+                LastValueUser = sensor.LastValueUser
+            });
+
+            return this.Json(result.ToDataSourceResult(request));
+        }
+
         [HttpPost("list-sensors")]
         [ValidateAntiForgeryToken]
         public IActionResult Index(UserSensorViewModel model)
@@ -120,6 +138,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
             var sensor = await this.sensorService.GetSensorByIdAsync(id);
             var user = HttpContext.User;
             var userId = this.userManager.GetUserId(user);
+            
 
             var model = new SensorRegistrationByUserModel()
             {
@@ -143,7 +162,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
         {
             var sensor = await this.sensorService.GetSensorByIdAsync(model.Id);
             model.LastValueUser = sensor.SensorData.OrderByDescending(se => se.TimeStamp).FirstOrDefault(s => s.SensorId == model.SensorId).Value;
-
+            
             if (this.ModelState.IsValid)
             {
                 await this.userSensorService.AddUserSensorAsync(model.UserId, model.SensorId, model.Name, model.UserDescription, model.Coordinates.Split(',')[0],

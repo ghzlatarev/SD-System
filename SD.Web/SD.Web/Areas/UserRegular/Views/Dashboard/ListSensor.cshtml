@@ -9,9 +9,6 @@
 <div id="map" style="height: 350px; width: auto"></div>
 <table class="table table-bordered">
 	<tr>
-		<td colspan="2"><label>Value:</label>@Model.Sensor.LastValue</td>
-	</tr>
-	<tr>
 		<td><label>Name: </label></td>
 		<td><span contenteditable="false" class="editable">@Model.Name</span></td>
 	</tr>
@@ -22,11 +19,11 @@
 	<tr>
 		@if (Model.IsPublic)
 		{
-			<td>Public</td>
+			<td>Public Sensor</td>
 		}
 		else
 		{
-			<td>Private</td>
+			<td>Private Sensor</td>
 		}
 		@if (Model.AlarmTriggered)
 		{
@@ -37,9 +34,7 @@
 			<td>Alarm Off</td>
 		}
 	</tr>
-	<tr>
-		<td colspan="2">@Model.Coordinates</td>
-	</tr>
+
 	@if (Model.Sensor.IsState == true)
 	{
 		<tr>

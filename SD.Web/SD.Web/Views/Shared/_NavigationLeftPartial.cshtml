@@ -5,7 +5,7 @@
                 Smart Dormitory
             </a>
         </div>
-        @if (User.Identity.IsAuthenticated && User.IsInRole("User"))
+        @if (User.Identity.IsAuthenticated)
         {
             <ul class="nav">
                 <li>
