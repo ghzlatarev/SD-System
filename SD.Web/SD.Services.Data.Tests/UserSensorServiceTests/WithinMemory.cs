@@ -99,7 +99,7 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(EntityAlreadyExistsException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public async Task AddUserSensorAsync_ShouldThrowArgumentNullExceptionsWhenSensorNameIsIsNull()
         {
             UserSensor userSensor = new UserSensor
@@ -115,7 +115,7 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
                 LastValueUser = "23",
                 Latitude = "42.672143",
                 Longitude = "23.292216",
-                Name = "Thermostat temp",
+                Name = null,
                 IsDeleted = false,
                 PollingInterval = 50,
                 SensorId = "81a2e1b1-ea5d-4356-8266-b6b42471653e",
@@ -144,17 +144,14 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
                 await SUT.AddUserSensorAsync(userSensor.Id, userSensor.SensorId, userSensor.Name, userSensor.Description, userSensor.Latitude,
                     userSensor.Longitude, userSensor.AlarmMin, userSensor.AlarmMax, userSensor.PollingInterval, userSensor.AlarmTriggered,
                     userSensor.IsPublic, userSensor.LastValueUser, userSensor.Type);
-
-                await SUT.AddUserSensorAsync(userSensor.Id, userSensor.SensorId, userSensor.Name, userSensor.Description, userSensor.Latitude,
-                    userSensor.Longitude, userSensor.AlarmMin, userSensor.AlarmMax, userSensor.PollingInterval, userSensor.AlarmTriggered,
-                    userSensor.IsPublic, userSensor.LastValueUser, userSensor.Type);
             }
         }
 
         [TestMethod]
-        public async Task AddUserSensorAsync_ShouldAddAValidSensorToTheDataBase()
+        [ExpectedException(typeof(EntityAlreadyExistsException))]
+        public async Task AddUserSensorAsync_ShouldThrowEntityAlreadyExistsExceptionExceptionsWhenSensorExists()
         {
-            UserSensor userSensor = new UserSensor
+            UserSensor validUserSensor = new UserSensor
             {
                 AlarmMin = 20,
                 AlarmMax = 30,
@@ -167,14 +164,110 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
                 LastValueUser = "23",
                 Latitude = "42.672143",
                 Longitude = "23.292216",
-                Name = "Thermostat temp",
+                Name = "name example",
                 IsDeleted = false,
                 PollingInterval = 50,
                 SensorId = "81a2e1b1-ea5d-4356-8266-b6b42471653e",
                 TimeStamp = DateTime.Now,
                 Type = "Celsius",
                 UserId = "81a2e1b1-ea5d-4356-8266-b6b42471665e",
-                UserInterval = 44
+                UserInterval = 44,
+                Sensor = new Sensor {
+                     Id = "81a2e1b1-ea5d-4356-8266-b6b42471653e",
+                     SensorId = "81a2e1b1-ea5d-4356-8266-b6b42471653e"
+                }
+
+            };
+
+            // Arrange
+            var contextOptions = new DbContextOptionsBuilder<DataContext>()
+                .UseInMemoryDatabase(databaseName: "AddUserSensorAsync_ShouldThrowEntityAlreadyExistsExceptionExceptionsWhenSensorExists")
+                .Options;
+
+            var result = new UserSensor();
+
+            // Act
+            using (DataContext actContext = new DataContext(contextOptions))
+            {
+                Mock<ISensorService> sensor = new Mock<ISensorService>();
+
+                await actContext.UserSensors.AddAsync(validUserSensor);
+                await actContext.SaveChangesAsync();
+
+                UserSensorService SUT = new UserSensorService(actContext, sensor.Object);
+
+                await SUT.AddUserSensorAsync(validUserSensor.Id, validUserSensor.SensorId, validUserSensor.Name, validUserSensor.Description, validUserSensor.Latitude,
+                    validUserSensor.Longitude, validUserSensor.AlarmMin, validUserSensor.AlarmMax, validUserSensor.PollingInterval, validUserSensor.AlarmTriggered,
+                    validUserSensor.IsPublic, validUserSensor.LastValueUser, validUserSensor.Type);
+
+            }
+        }
+
+        [TestMethod]
+        public async Task AddUserSensorAsync_ShouldAddAValidSensorToTheDataBase()
+        {
+            UserSensor validUserSensor = new UserSensor
+            {
+                AlarmMin = 20,
+                AlarmMax = 30,
+                AlarmTriggered = true,
+                Coordinates = "42.672143,23.292216",
+                CreatedOn = DateTime.Now,
+                Description = "Description122",
+                Id = "81a2e1b1-ea5d-4356-8266-b6b42471653e",
+                IsPublic = true,
+                LastValueUser = "23",
+                Latitude = "42.672143",
+                Longitude = "23.292216",
+                Name = "name example",
+                IsDeleted = false,
+                PollingInterval = 50,
+                SensorId = "81a2e1b1-ea5d-4356-8266-b6b42471653e",
+                TimeStamp = DateTime.Now,
+                Type = "Celsius",
+                UserId = "81a2e1b1-ea5d-4356-8266-b6b42471665e",
+                UserInterval = 44,
+                Sensor = new Sensor
+                {
+                    Id = "81a2e1b1-ea5d-4356-8266-b6b42471653e",
+                    SensorId = "81a2e1b1-ea5d-4356-8266-b6b42481653e"
+                }
+
+            };
+
+            UserSensor userSensor = new UserSensor
+            {
+                AlarmMin = 20,
+                AlarmMax = 30,
+                AlarmTriggered = true,
+                Coordinates = "42.672143,23.292216",
+                CreatedOn = DateTime.Now,
+                Description = "Description122",
+                Id = "81a2e1b1-ea5d-4356-8266-b6b42471653e",
+                IsPublic = true,
+                LastValueUser = "23",
+                Latitude = "42.672143",
+                Longitude = "23.292216",
+                Name = "name sensor",
+                IsDeleted = false,
+                PollingInterval = 50,
+                SensorId = "81a2e1b1-ea5d-4356-8266-b6b42471653f",
+                TimeStamp = DateTime.Now,
+                Type = "Celsius",
+                UserId = "81a2e1b1-ea5d-4356-8266-b6b42471665e",
+                UserInterval = 44,
+                Sensor = new Sensor
+                {
+                    Id = "81a2e1b1-ea5d-4356-8266-b6b42471663f",
+                    SensorId = "81a2e1b1-ea5d-4356-8266-b6b42471653f"
+                }
+
+            };
+
+            Sensor sensorApi = new Sensor
+            {
+                Id = "81a2e1b1-ea5d-4356-8266-b6b42471653f",
+                SensorId = "81a2e1b1-ea5d-4356-8266-b6b42471653f"
             };
 
             // Arrange
@@ -187,6 +280,8 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
             {
                 Mock<ISensorService> sensor = new Mock<ISensorService>();
 
+                await actContext.Sensors.AddAsync(sensorApi);
+                await actContext.SaveChangesAsync();
 
                 UserSensorService SUT = new UserSensorService(actContext, sensor.Object);
 
@@ -254,7 +349,7 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
 
             // Arrange
             var contextOptions = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: "UpdateUserSensorAsync_ShouldThrowArgumentNullExceptionsWhenUserSensorIsIsNull")
+                .UseInMemoryDatabase(databaseName: "UpdateUserSensorAsync_ShouldUpdateSensorInDataBase")
                 .Options;
 
 
