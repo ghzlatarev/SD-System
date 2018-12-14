@@ -27,14 +27,14 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
             var contextOptions = new DbContextOptionsBuilder<DataContext>()
                 .UseInMemoryDatabase(databaseName: "GetSensorByIdAsync_ShouldThrowArgumentNullExceptionsWhenUserSensorIsNull")
                 .Options;
-            
+
             var result = new UserSensor();
 
             // Act
             using (DataContext actContext = new DataContext(contextOptions))
             {
                 Mock<ISensorService> sensor = new Mock<ISensorService>();
-                
+
                 await actContext.SaveChangesAsync();
 
                 UserSensorService SUT = new UserSensorService(actContext, sensor.Object);
@@ -42,7 +42,7 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
                 result = await SUT.GetSensorByIdAsync("82a231b1-ea5d-4356-8266-b6b42471653e");
             }
         }
-        
+
         [TestMethod]
         public async Task GetSensorByIdAsync_ShouldReturnValidSensor()
         {
@@ -186,7 +186,7 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
             using (DataContext actContext = new DataContext(contextOptions))
             {
                 Mock<ISensorService> sensor = new Mock<ISensorService>();
-                
+
 
                 UserSensorService SUT = new UserSensorService(actContext, sensor.Object);
 
@@ -216,7 +216,7 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
                 AlarmTriggered = true,
                 Coordinates = "42.672143,23.292216",
                 CreatedOn = DateTime.Now,
-                Description = "Description122",                
+                Description = "Description122",
                 IsPublic = true,
                 LastValueUser = "23",
                 Latitude = "42.672143",
@@ -256,7 +256,7 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
             var contextOptions = new DbContextOptionsBuilder<DataContext>()
                 .UseInMemoryDatabase(databaseName: "UpdateUserSensorAsync_ShouldThrowArgumentNullExceptionsWhenUserSensorIsIsNull")
                 .Options;
-            
+
 
             // Act
             using (DataContext actContext = new DataContext(contextOptions))
@@ -268,7 +268,7 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
                 UserSensorService SUT = new UserSensorService(actContext, sensor.Object);
 
                 await SUT.UpdateUserSensorAsync(userSensorUpdated);
-                
+
             }
 
             using (DataContext assertContext = new DataContext(contextOptions))
@@ -282,18 +282,18 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task UpdateUserSensorAsync_ShouldThrowArgumentNullExceptionsWhenUserSensorIsIsNull()
         {
-          
+
 
             // Arrange
             var contextOptions = new DbContextOptionsBuilder<DataContext>()
                 .UseInMemoryDatabase(databaseName: "UpdateUserSensorAsync_ShouldThrowArgumentNullExceptionsWhenUserSensorIsIsNull")
                 .Options;
-            
+
             // Act
             using (DataContext actContext = new DataContext(contextOptions))
             {
                 Mock<ISensorService> sensor = new Mock<ISensorService>();
-                
+
                 UserSensorService SUT = new UserSensorService(actContext, sensor.Object);
 
                 await SUT.UpdateUserSensorAsync(null);
@@ -374,17 +374,17 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
                 UserId = "81a2e1b4-ea5d-4356-8266-b6b42471665e",
                 UserInterval = 44
             };
-            
-            
+
+
             using (DataContext actContext = new DataContext(contextOptions))
             {
                 await actContext.UserSensors.AddAsync(userSensorPublic);
                 await actContext.UserSensors.AddAsync(userSensorPrivate);
                 await actContext.UserSensors.AddAsync(userSensorDeleted);
                 await actContext.SaveChangesAsync();
-                
+
             }
-            
+
             using (DataContext assertContext = new DataContext(contextOptions))
             {
                 Mock<ISensorService> sensor = new Mock<ISensorService>();
@@ -543,5 +543,70 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
                 Assert.IsTrue(assertContext.UserSensors.Any(s => s.SensorId.Equals(result.SensorId)));
             }
         }
+        [TestMethod]
+        public async Task FilterUserSensorsAsync_ShouldReturnUserSensor_WhenPassedValidParameters()
+        {
+            // Arrange
+            var contextOptions = new DbContextOptionsBuilder<DataContext>()
+                .UseInMemoryDatabase(databaseName: "FilterUserSensorsAsync_ShouldReturnUserSensor_WhenPassedValidParameters")
+                .Options;
+
+            
+            string validFilter = string.Empty;
+            int validPageSize = 10;
+            int validPageNumber = 1;
+
+            UserSensor validUserSensor = new UserSensor
+            {
+                AlarmMin = 20,
+                AlarmMax = 30,
+                AlarmTriggered = true,
+                Coordinates = "42.672143,23.292216",
+                CreatedOn = DateTime.Now,
+                Description = "Description122",
+                Id = "82a2e1b1-ea5d-4356-8266-b6b42471653e",
+                IsPublic = true,
+                LastValueUser = "23",
+                Latitude = "42.672143",
+                Longitude = "23.292216",
+                Name = "Thermostat temp",
+                IsDeleted = false,
+                PollingInterval = 50,
+                SensorId = "81a2e1b1-ea5d-4356-8266-b6b42471653e",
+                TimeStamp = DateTime.Now,
+                Type = "Celsius",
+                UserId = "81a2e1b1-ea5d-4356-8266-b6b42471665e",
+                UserInterval = 44
+            };
+
+            IEnumerable<UserSensor> result = new List<UserSensor>();
+
+            // Act
+            using (DataContext actContext = new DataContext(contextOptions))
+            {
+                Mock<ISensorService> sensorServiceMock = new Mock<ISensorService>();
+
+                await actContext.UserSensors.AddAsync(validUserSensor);
+                await actContext.SaveChangesAsync();
+
+                UserSensorService SUT = new UserSensorService(
+                    actContext,
+                    sensorServiceMock.Object);
+
+                result = await SUT.FilterUserSensorsAsync(validFilter, validPageNumber, validPageSize);
+            }
+
+            // Assert
+            using (DataContext assertContext = new DataContext(contextOptions))
+            {
+                var sensor = result.ToArray()[0];
+
+                Assert.IsTrue(assertContext.UserSensors.Count().Equals(result.Count()));
+                Assert.IsTrue(assertContext.UserSensors.Any(c => c.Name.Equals(sensor.Name)));
+                Assert.IsTrue(assertContext.UserSensors.Any(c => c.Description.Equals(sensor.Description)));
+                Assert.IsTrue(assertContext.UserSensors.Any(c => c.Type.Equals(sensor.Type)));
+            }
+        }
+
     }
 }
