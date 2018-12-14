@@ -20,9 +20,7 @@ namespace SD.Services.Data.Services.Contracts
         Task UpdateUserSensorAsync(UserSensor userSensor);
 
         Task<IEnumerable<UserSensor>> ListSensorsForUserAsync(string userId);
-
-        Task<IEnumerable<UserSensor>> ListPublicSensorsWhichDontBelongToUserAsync(string userId);
-        
+                
         Task<IEnumerable<UserSensor>> ListPublicSensorsAsync();
 
         Task<UserSensor> ListSensorByIdAsync(string sensorId);

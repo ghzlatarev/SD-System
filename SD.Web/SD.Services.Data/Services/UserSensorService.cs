@@ -56,6 +56,8 @@ namespace SD.Services.Data.Services
 				.Include(us => us.Sensor)
                 .FirstOrDefaultAsync(us => us.Id == id);
 
+            Validator.ValidateNull(userSensor, "userSensor is null");
+
             return userSensor;
         }
 
@@ -98,6 +100,8 @@ namespace SD.Services.Data.Services
 
         public async Task UpdateUserSensorAsync(UserSensor userSensor)
         {
+            Validator.ValidateNull(userSensor, "userSensor is null");
+
             this.dataContext.Update(userSensor);
             await this.dataContext.SaveChangesAsync();
         }
@@ -105,11 +109,6 @@ namespace SD.Services.Data.Services
         public async Task<IEnumerable<UserSensor>> ListSensorsForUserAsync(string userId)
         {
             return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.UserId == userId).ToListAsync();
-        }
-
-        public async Task<IEnumerable<UserSensor>> ListPublicSensorsWhichDontBelongToUserAsync(string userId)
-        {
-            return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.UserId != userId.ToString() && se.IsPublic == true).ToListAsync();
         }
 
         public async Task<IEnumerable<UserSensor>> ListPublicSensorsAsync()
