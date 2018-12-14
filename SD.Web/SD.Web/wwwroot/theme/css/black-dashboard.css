@@ -92,7 +92,7 @@ body {
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #525f7f;
+  color: white;
   text-align: left;
   background-color: #1e1e2f;
 }
@@ -14430,7 +14430,7 @@ table.tablesorter thead tr .headerSortDown {
 
 .form-check.disabled .form-check-label,
 .form-check.disabled .form-check-label {
-  color: #9A9A9A;
+  color: white;
   opacity: .5;
   cursor: not-allowed;
 }

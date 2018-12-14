@@ -23,7 +23,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserInterval">Update interval (in seconds):</label>
-                <input asp-for="UserInterval" class="form-control" name ="UserInterval1"/>
+                <input asp-for="UserInterval" class="form-control" name="UserInterval"/>
                 <span asp-validation-for="UserInterval" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -76,6 +76,7 @@ $(document).ready(function () {
     if (type === match[1]) {
         $(".alarmMin").hide();
         $(".alarmMax").hide();
+            
     } else if (match[2] !== undefined && match[3] !== undefined) {
         let minAlarm = +match[2];
         let maxAlarm = +match[3];
@@ -83,7 +84,7 @@ $(document).ready(function () {
         console.log(maxAlarm);
         $("#regForm").validate({
             rules: {
-                UserInterval1: {
+                UserInterval: {
                     required: true,
                     min: @Model.ApiInterval
                 },
