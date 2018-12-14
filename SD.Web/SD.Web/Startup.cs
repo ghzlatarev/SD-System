@@ -175,7 +175,7 @@ namespace SD.Web
         {
             //Quartz
             services.Add(new ServiceDescriptor(typeof(IJob), typeof(ScheduledJob), ServiceLifetime.Transient));
-            services.AddSingleton<IJobFactory, ScheduledJobFactory>();
+            services.AddTransient<IJobFactory, ScheduledJobFactory>();
             services.AddSingleton<IJobDetail>(provider =>
             {
                 return JobBuilder.Create<ScheduledJob>()
