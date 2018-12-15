@@ -543,5 +543,93 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
                 Assert.IsTrue(assertContext.UserSensors.Any(s => s.SensorId.Equals(result.SensorId)));
             }
         }
-    }
+
+		[TestMethod]
+		public async Task DisableUserSensor_ShouldFlagUserSensorAsDeleted_WhenPassedValidParameters()
+		{
+			// Arrange
+			var contextOptions = new DbContextOptionsBuilder<DataContext>()
+				.UseInMemoryDatabase(databaseName: "DisableUserSensor_ShouldFlagUserSensorAsDeleted_WhenPassedValidParameters")
+				.Options;
+
+			Guid Id = Guid.NewGuid();
+			bool validIsDeleted = true;
+
+			UserSensor validUserSensor = new UserSensor
+			{
+				Id = Id.ToString(),
+				Name = "test"
+			};
+
+			UserSensor result = null;
+
+			// Act
+			using (DataContext actContext = new DataContext(contextOptions))
+			{
+				Mock<ISensorService> sensorServicetMock = new Mock<ISensorService>();
+
+				await actContext.AddAsync(validUserSensor);
+				await actContext.SaveChangesAsync();
+
+				UserSensorService SUT = new UserSensorService(
+					actContext,
+					sensorServicetMock.Object);
+
+				result = await SUT.DisableUserSensor(Id.ToString());
+			}
+
+			// Assert
+			using (DataContext assertContext = new DataContext(contextOptions))
+			{
+				Assert.IsNotNull(result);
+				Assert.IsNotNull(result.DeletedOn);
+				Assert.IsTrue(result.IsDeleted.Equals(validIsDeleted));
+			}
+		}
+
+		[TestMethod]
+		public async Task RestoreUserSensor_ShouldFlagChampionAsNotDeleted_WhenPassedValidParameters()
+		{
+			// Arrange
+			var contextOptions = new DbContextOptionsBuilder<DataContext>()
+				.UseInMemoryDatabase(databaseName: "RestoreUserSensor_ShouldFlagChampionAsNotDeleted_WhenPassedValidParameters")
+				.Options;
+
+			Guid Id = Guid.NewGuid();
+			bool validIsDeleted = false;
+
+			UserSensor validUserSensor = new UserSensor
+			{
+				Id = Id.ToString(),
+				Name = "testChamp",
+				DeletedOn = DateTime.UtcNow.AddHours(2),
+				IsDeleted = true
+			};
+
+			UserSensor result = null;
+
+			// Act
+			using (DataContext actContext = new DataContext(contextOptions))
+			{
+				Mock<ISensorService> sensorServiceMock = new Mock<ISensorService>();
+
+				await actContext.AddAsync(validUserSensor);
+				await actContext.SaveChangesAsync();
+
+				UserSensorService SUT = new UserSensorService(
+					actContext,
+					sensorServiceMock.Object);
+
+				result = await SUT.RestoreUserSensor(Id.ToString());
+			}
+
+			// Assert
+			using (DataContext assertContext = new DataContext(contextOptions))
+			{
+				Assert.IsNotNull(result);
+				Assert.IsNull(result.DeletedOn);
+				Assert.IsTrue(result.IsDeleted.Equals(validIsDeleted));
+			}
+		}
+	}
 }

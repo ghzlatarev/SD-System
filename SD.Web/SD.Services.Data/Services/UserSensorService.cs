@@ -122,5 +122,47 @@ namespace SD.Services.Data.Services
 				.Include(us => us.Sensor)
 				.FirstOrDefaultAsync(se => se.Id == sensorId);
         }
-    }
+
+		public async Task<UserSensor> DisableUserSensor(string userSensorId)
+		{
+			Validator.ValidateNull(userSensorId, "User sensor Id cannot be null!");
+			Validator.ValidateGuid(userSensorId, "User sensor id is not in the correct format.Unable to parse to Guid!");
+
+			UserSensor userSensor = await this.dataContext.UserSensors
+				.Include(us => us.Sensor)
+				.FirstAsync(us => us.Id.Equals(userSensorId));
+
+			if (userSensorId == null)
+			{
+				throw new EntityNotFoundException();
+			}
+
+			this.dataContext.Remove(userSensor);
+			await this.dataContext.SaveChangesAsync();
+
+			return userSensor;
+		}
+
+		public async Task<UserSensor> RestoreUserSensor(string userSensorId)
+		{
+			Validator.ValidateNull(userSensorId, "User sensor Id cannot be null!");
+			Validator.ValidateGuid(userSensorId, "User sensor id is not in the correct format.Unable to parse to Guid!");
+
+			UserSensor userSensor = await this.dataContext.UserSensors
+				.Include(us => us.Sensor)
+				.FirstAsync(us => us.Id.Equals(userSensorId));
+
+			if (userSensorId == null)
+			{
+				throw new EntityNotFoundException();
+			}
+
+			userSensor.IsDeleted = false;
+			userSensor.DeletedOn = null;
+
+			await this.dataContext.SaveChangesAsync();
+
+			return userSensor;
+		}
+	}
 }

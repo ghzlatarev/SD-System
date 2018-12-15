@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SD.Data.Models.Identity;
 using SD.Services.Data.Services.Contracts;
 using SD.Web.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,7 +31,7 @@ namespace SD.Web.ViewComponents
 			{
 				NotificationsViewModels = items.Select(n => new NotificationViewModel(n))
 			};
-
+			
 			return View(model);
 		}
 	}

@@ -24,5 +24,9 @@ namespace SD.Services.Data.Services.Contracts
         Task<IEnumerable<UserSensor>> ListPublicSensorsAsync();
 
         Task<UserSensor> ListSensorByIdAsync(string sensorId);
-    }
+
+		Task<UserSensor> DisableUserSensor(string userSensorId);
+
+		Task<UserSensor> RestoreUserSensor(string userSensorId);
+	}
 }
