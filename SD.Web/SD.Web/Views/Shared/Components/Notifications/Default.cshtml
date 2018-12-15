@@ -11,9 +11,7 @@
 	</a>
 	<ul class="dropdown-menu dropdown-menu-right dropdown-navbar" id="notificationsList">
 		<li class="button-dropdown" onclick="RemoveAllNotifications()">
-			Clear All
-			@*<a asp-area="UserRegular" asp-controller="Notification" asp-action="ReadUnreadAsync" asp-route-returnUrl=@Context.Request.Path class="nav-item dropdown-item" >Remove All</a>*@
-			@*<a class="button-container" onclick="RemoveAllNotifications()"> Clear All </a>*@
+			Clear All	
 		</li>
 		@foreach (var notification in Model.NotificationsViewModels)
 		{
