@@ -178,6 +178,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
         {
             var sensor = await this.userSensorService.GetSensorByIdAsync(Id);
             sensor.IsDeleted = true;
+            sensor.DeletedOn = DateTime.Now;
 
             var user = HttpContext.User;
             var userId = this.userManager.GetUserId(user);
@@ -198,6 +199,8 @@ namespace SD.Web.Areas.UserRegular.Controllers
 
             sensor.Name = model.Name;
             sensor.Description = model.Description;
+            sensor.ModifiedOn = DateTime.Now;
+
             var user = HttpContext.User;
             var userId = this.userManager.GetUserId(user);
 

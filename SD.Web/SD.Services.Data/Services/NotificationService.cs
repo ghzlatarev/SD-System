@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SD.Data.Context;
 using SD.Data.Models.DomainModels;
 using SD.Services.Data.Services.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,9 +17,9 @@ namespace SD.Services.Data.Services
 
 		public NotificationService(IHubContext<NotificationHub> hub, DataContext dataContext)
 		{
-			this.hub = hub;
-			this.dataContext = dataContext;
-		}
+			this.hub = hub ?? throw new ArgumentNullException(nameof(hub));
+            this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
+        }
 
 		public Task SendNotificationAsync(string message, string userId)
 		{

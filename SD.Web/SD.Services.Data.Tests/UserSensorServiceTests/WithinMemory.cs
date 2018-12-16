@@ -288,17 +288,19 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
                 await SUT.AddUserSensorAsync(userSensor.Id, userSensor.SensorId, userSensor.Name, userSensor.Description, userSensor.Latitude,
                     userSensor.Longitude, userSensor.AlarmMin, userSensor.AlarmMax, userSensor.PollingInterval, userSensor.AlarmTriggered,
                     userSensor.IsPublic, userSensor.LastValueUser, userSensor.Type);
-
-                var result = new List<UserSensor>();
-                result.Add(actContext.UserSensors.FirstOrDefault(s => s.Name == userSensor.Name));
+                
+            }
                 //Assert
                 using (DataContext assertContext = new DataContext(contextOptions))
                 {
-                    Assert.IsTrue(result[0].Name == userSensor.Name);
+                var result = new List<UserSensor>();
+                result.Add(assertContext.UserSensors.FirstOrDefault(s => s.Name == userSensor.Name));
+
+                Assert.IsTrue(result[0].Name == userSensor.Name);
                     Assert.IsTrue(result.Count == 1);
                     Assert.IsTrue(result[0].SensorId == userSensor.SensorId);
                 }
-            }
+            
         }
 
         [TestMethod]
