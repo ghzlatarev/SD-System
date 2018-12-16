@@ -640,70 +640,158 @@ namespace SD.Services.Data.Tests.UserSensorServiceTests
                 Assert.IsTrue(assertContext.UserSensors.Any(s => s.SensorId.Equals(result.SensorId)));
             }
         }
-        [TestMethod]
-        public async Task FilterUserSensorsAsync_ShouldReturnUserSensor_WhenPassedValidParameters()
-        {
-            // Arrange
-            var contextOptions = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: "FilterUserSensorsAsync_ShouldReturnUserSensor_WhenPassedValidParameters")
-                .Options;
 
-            
-            string validFilter = string.Empty;
-            int validPageSize = 10;
-            int validPageNumber = 1;
+		[TestMethod]
+		public async Task DisableUserSensor_ShouldFlagUserSensorAsDeleted_WhenPassedValidParameters()
+		{
+			// Arrange
+			var contextOptions = new DbContextOptionsBuilder<DataContext>()
+				.UseInMemoryDatabase(databaseName: "DisableUserSensor_ShouldFlagUserSensorAsDeleted_WhenPassedValidParameters")
+				.Options;
 
-            UserSensor validUserSensor = new UserSensor
-            {
-                AlarmMin = 20,
-                AlarmMax = 30,
-                AlarmTriggered = true,
-                Coordinates = "42.672143,23.292216",
-                CreatedOn = DateTime.Now,
-                Description = "Description122",
-                Id = "82a2e1b1-ea5d-4356-8266-b6b42471653e",
-                IsPublic = true,
-                LastValueUser = "23",
-                Latitude = "42.672143",
-                Longitude = "23.292216",
-                Name = "Thermostat temp",
-                IsDeleted = false,
-                PollingInterval = 50,
-                SensorId = "81a2e1b1-ea5d-4356-8266-b6b42471653e",
-                TimeStamp = DateTime.Now,
-                Type = "Celsius",
-                UserId = "81a2e1b1-ea5d-4356-8266-b6b42471665e",
-                UserInterval = 44
-            };
+			Guid Id = Guid.NewGuid();
+			bool validIsDeleted = true;
 
-            IEnumerable<UserSensor> result = new List<UserSensor>();
+			UserSensor validUserSensor = new UserSensor
+			{
+				Id = Id.ToString(),
+				Name = "test"
+			};
 
-            // Act
-            using (DataContext actContext = new DataContext(contextOptions))
-            {
-                Mock<ISensorService> sensorServiceMock = new Mock<ISensorService>();
+			UserSensor result = null;
 
-                await actContext.UserSensors.AddAsync(validUserSensor);
-                await actContext.SaveChangesAsync();
+			// Act
+			using (DataContext actContext = new DataContext(contextOptions))
+			{
+				Mock<ISensorService> sensorServicetMock = new Mock<ISensorService>();
 
-                UserSensorService SUT = new UserSensorService(
-                    actContext,
-                    sensorServiceMock.Object);
+				await actContext.AddAsync(validUserSensor);
+				await actContext.SaveChangesAsync();
 
-                result = await SUT.FilterUserSensorsAsync(validFilter, validPageNumber, validPageSize);
-            }
+				UserSensorService SUT = new UserSensorService(
+					actContext,
+					sensorServicetMock.Object);
 
-            // Assert
-            using (DataContext assertContext = new DataContext(contextOptions))
-            {
-                var sensor = result.ToArray()[0];
+				result = await SUT.DisableUserSensor(Id.ToString());
+			}
 
-                Assert.IsTrue(assertContext.UserSensors.Count().Equals(result.Count()));
-                Assert.IsTrue(assertContext.UserSensors.Any(c => c.Name.Equals(sensor.Name)));
-                Assert.IsTrue(assertContext.UserSensors.Any(c => c.Description.Equals(sensor.Description)));
-                Assert.IsTrue(assertContext.UserSensors.Any(c => c.Type.Equals(sensor.Type)));
-            }
-        }
+			// Assert
+			using (DataContext assertContext = new DataContext(contextOptions))
+			{
+				Assert.IsNotNull(result);
+				Assert.IsNotNull(result.DeletedOn);
+				Assert.IsTrue(result.IsDeleted.Equals(validIsDeleted));
+			}
+		}
 
-    }
+		[TestMethod]
+		public async Task RestoreUserSensor_ShouldFlagChampionAsNotDeleted_WhenPassedValidParameters()
+		{
+			// Arrange
+			var contextOptions = new DbContextOptionsBuilder<DataContext>()
+				.UseInMemoryDatabase(databaseName: "RestoreUserSensor_ShouldFlagChampionAsNotDeleted_WhenPassedValidParameters")
+				.Options;
+
+			Guid Id = Guid.NewGuid();
+			bool validIsDeleted = false;
+
+			UserSensor validUserSensor = new UserSensor
+			{
+				Id = Id.ToString(),
+				Name = "testChamp",
+				DeletedOn = DateTime.UtcNow.AddHours(2),
+				IsDeleted = true
+			};
+
+			UserSensor result = null;
+
+			// Act
+			using (DataContext actContext = new DataContext(contextOptions))
+			{
+				Mock<ISensorService> sensorServiceMock = new Mock<ISensorService>();
+
+				await actContext.AddAsync(validUserSensor);
+				await actContext.SaveChangesAsync();
+
+				UserSensorService SUT = new UserSensorService(
+					actContext,
+					sensorServiceMock.Object);
+
+				result = await SUT.RestoreUserSensor(Id.ToString());
+			}
+
+			// Assert
+			using (DataContext assertContext = new DataContext(contextOptions))
+			{
+				Assert.IsNotNull(result);
+				Assert.IsNull(result.DeletedOn);
+				Assert.IsTrue(result.IsDeleted.Equals(validIsDeleted));
+			}
+		}
+
+		[TestMethod]
+		public async Task FilterUserSensorsAsync_ShouldReturnUserSensor_WhenPassedValidParameters()
+		{
+			// Arrange
+			var contextOptions = new DbContextOptionsBuilder<DataContext>()
+				.UseInMemoryDatabase(databaseName: "FilterUserSensorsAsync_ShouldReturnUserSensor_WhenPassedValidParameters")
+				.Options;
+
+
+			string validFilter = string.Empty;
+			int validPageSize = 10;
+			int validPageNumber = 1;
+
+			UserSensor validUserSensor = new UserSensor
+			{
+				AlarmMin = 20,
+				AlarmMax = 30,
+				AlarmTriggered = true,
+				Coordinates = "42.672143,23.292216",
+				CreatedOn = DateTime.Now,
+				Description = "Description122",
+				Id = "82a2e1b1-ea5d-4356-8266-b6b42471653e",
+				IsPublic = true,
+				LastValueUser = "23",
+				Latitude = "42.672143",
+				Longitude = "23.292216",
+				Name = "Thermostat temp",
+				IsDeleted = false,
+				PollingInterval = 50,
+				SensorId = "81a2e1b1-ea5d-4356-8266-b6b42471653e",
+				TimeStamp = DateTime.Now,
+				Type = "Celsius",
+				UserId = "81a2e1b1-ea5d-4356-8266-b6b42471665e",
+				UserInterval = 44
+			};
+
+			IEnumerable<UserSensor> result = new List<UserSensor>();
+
+			// Act
+			using (DataContext actContext = new DataContext(contextOptions))
+			{
+				Mock<ISensorService> sensorServiceMock = new Mock<ISensorService>();
+
+				await actContext.UserSensors.AddAsync(validUserSensor);
+				await actContext.SaveChangesAsync();
+
+				UserSensorService SUT = new UserSensorService(
+					actContext,
+					sensorServiceMock.Object);
+
+				result = await SUT.FilterUserSensorsAsync(validFilter, validPageNumber, validPageSize);
+			}
+
+			// Assert
+			using (DataContext assertContext = new DataContext(contextOptions))
+			{
+				var sensor = result.ToArray()[0];
+
+				Assert.IsTrue(assertContext.UserSensors.Count().Equals(result.Count()));
+				Assert.IsTrue(assertContext.UserSensors.Any(c => c.Name.Equals(sensor.Name)));
+				Assert.IsTrue(assertContext.UserSensors.Any(c => c.Description.Equals(sensor.Description)));
+				Assert.IsTrue(assertContext.UserSensors.Any(c => c.Type.Equals(sensor.Type)));
+			}
+		}
+	}
 }

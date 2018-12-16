@@ -45,9 +45,8 @@ namespace SD.Services.Data.Services
 				{
 					string userId = userSensor.UserId;
 					string message = userSensor.Name.ToUpper() + " is out of range, returning a value of "
-															+ userSensor.Sensor.LastValue
-															+ "\n"
-															+ "---------------------------";
+															+ userSensor.Sensor.LastValue + "!"
+															+ Environment.NewLine;
 
 					Notifications notification = new Notifications
 					{

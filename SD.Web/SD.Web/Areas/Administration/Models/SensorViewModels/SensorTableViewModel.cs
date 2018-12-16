@@ -18,6 +18,7 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 			this.IsPublic = userSensor.IsPublic;
 			this.LastValue = double.Parse(userSensor.Sensor.LastValue);
 			this.IsState = userSensor.Sensor.IsState;
+			this.IsDeleted = userSensor.IsDeleted;
 		}
 
 		public string Id { get; set; }
@@ -39,5 +40,8 @@ namespace SD.Web.Areas.Administration.Models.SensorViewModels
 		public double LastValue { get; set; }
 
 		public bool IsState { get; set; }
+
+		public bool IsDeleted { get; set; }
+
 	}
 }

@@ -2,7 +2,7 @@
 
 @model NotificationsViewModel
 
-<li class="dropdown nav-item">
+<li class="dropdown nav-item" id="container">
 	<a href="javascript:void(0)" class="dropdown-toggle nav-link" data-toggle="dropdown">
 		<i class="tim-icons icon-sound-wave"><span class="badge badge-light badge-pill" id="notificationsCount">@Model.NotificationsViewModels.Count()</span></i>
 		<p class="d-lg-none">
@@ -10,9 +10,8 @@
 		</p>
 	</a>
 	<ul class="dropdown-menu dropdown-menu-right dropdown-navbar" id="notificationsList">
-		<li class="nav-link">
-			<a asp-area="UserRegular" asp-controller="Notification" asp-action="ReadUnreadAsync" asp-route-returnUrl=@Context.Request.Path class="nav-item dropdown-item">Remove All</a>
-
+		<li class="button-dropdown" onclick="RemoveAllNotifications()">
+			Clear All	
 		</li>
 		@foreach (var notification in Model.NotificationsViewModels)
 		{
@@ -22,4 +21,13 @@
 		}
 	</ul>
 </li>
+
+<script>
+	function RemoveAllNotifications()
+	{
+		var container = $("#container");
+		$.get("Notification/ReadUnreadAsync", function (data) { container.html(data); });
+	}
+	
+</script>
 

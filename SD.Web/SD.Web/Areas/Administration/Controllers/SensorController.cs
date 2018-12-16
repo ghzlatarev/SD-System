@@ -161,5 +161,45 @@ namespace SD.Web.Areas.Administration.Controllers
 			
 			return RedirectToAction(nameof(Modify));
 		}
+
+
+		[HttpGet("usersensors/disable/{id}")]
+		public async Task<IActionResult> Disable(string id)
+		{
+			if (id == null)
+			{
+				throw new ApplicationException($"Passed ID parameter is absent.");
+			}
+
+			var userSensor = await userSensorService.DisableUserSensor(id);
+			if (userSensor == null)
+			{
+				throw new ApplicationException($"Unable to find sensor with ID '{id}'.");
+			}
+			
+
+			var model = new SensorTableViewModel(userSensor);
+
+			return PartialView("_SensorTableRowPartial", model);
+		}
+
+		[HttpGet("usersensors/restore/{id}")]
+		public async Task<IActionResult> Restore(string id)
+		{
+			if (id == null)
+			{
+				throw new ApplicationException($"Passed ID parameter is absent.");
+			}
+
+			var userSensor = await userSensorService.RestoreUserSensor(id);
+			if (userSensor == null)
+			{
+				throw new ApplicationException($"Unable to find user with ID '{id}'.");
+			}
+
+			var model = new SensorTableViewModel(userSensor);
+
+			return PartialView("_SensorTableRowPartial", model);
+		}
 	}
 }

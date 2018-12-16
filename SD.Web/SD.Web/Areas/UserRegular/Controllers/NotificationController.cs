@@ -25,7 +25,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
 
 			await this.notificationService.ReadUnreadAsync(userId);
 
-			return Redirect(returnUrl);
+			return ViewComponent("Notifications");
 		}
 	}
 }
