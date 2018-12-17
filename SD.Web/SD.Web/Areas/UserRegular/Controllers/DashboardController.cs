@@ -33,46 +33,9 @@ namespace SD.Web.Areas.UserRegular.Controllers
         [HttpGet("list-sensors")]
         public async Task<IActionResult> Index(Guid id)
         {
-            var user = HttpContext.User;
-            var userId = this.userManager.GetUserId(user);
-            var sensors = await this.userSensorService.ListSensorsForUserAsync(userId);
-
-            var model = new UserSensorsViewModel()
-            {
-                userSensorViewModels = sensors.Select(se => new UserSensorViewModel(se))
-            };
-
-            return View(model);
+            return View();
         }
-
-        [HttpGet("read-userSensors")]
-        public async Task<JsonResult> Get_userSensors([DataSourceRequest] DataSourceRequest request)
-        {
-            var user = HttpContext.User;
-            var userId = this.userManager.GetUserId(user);
-            var sensors = await this.userSensorService.ListSensorsForUserAsync(userId);
-
-            var result = sensors.Select(sensor => new UserSensorViewModel(sensor)
-            {
-                Id = sensor.Id,
-                Description = sensor.Description,
-                Type = sensor.Type,
-                LastValueUser = sensor.LastValueUser
-            });
-
-            return this.Json(result.ToDataSourceResult(request));
-        }
-
-        [HttpPost("list-sensors")]
-        [ValidateAntiForgeryToken]
-        public IActionResult Index(UserSensorViewModel model)
-        {
-            if (this.ModelState.IsValid)
-            {
-                RedirectToAction(nameof(DashboardController.ListSensor), new { id = model.Id });
-            }
-            return View(model);
-        }
+       
 
         [HttpGet("sensor")]
         public async Task<IActionResult> ListSensor(string id)
@@ -206,8 +169,6 @@ namespace SD.Web.Areas.UserRegular.Controllers
 
             if (this.ModelState.IsValid && sensor.UserId == userId)
             {
-                //TODO: not passing lastvalue and type
-
                 await this.userSensorService.UpdateUserSensorAsync(sensor);
             }
 
@@ -221,5 +182,23 @@ namespace SD.Web.Areas.UserRegular.Controllers
 			double value = double.Parse(currentSensor.LastValue);
 			return Json(value);
 		}
-	}
+
+        [HttpPost("Dashboard/UserSensors")]
+        public async Task<JsonResult> Get_UserSensors([DataSourceRequest] DataSourceRequest request)
+        {
+            var user = HttpContext.User;
+            var userId = this.userManager.GetUserId(user);
+            var sensors = await this.userSensorService.ListSensorsForUserAsync(userId);
+
+            var result = sensors.Select(sensor => new UserSensorViewModel(sensor)
+            {
+                Id = sensor.Id,
+                Description = sensor.Description,
+                Type = sensor.Type,
+                LastValueUser = sensor.LastValueUser
+            });
+
+            return this.Json(result.ToDataSourceResult(request));
+        }
+    }
 }
