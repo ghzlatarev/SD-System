@@ -72,7 +72,7 @@ namespace SD.Services.Data.Services
                 throw new EntityAlreadyExistsException("User sensor already exists!");
             }
 
-            var sensor = this.dataContext.Sensors.FirstOrDefaultAsync(ss => ss.SensorId == sensorId).Result;
+            var sensor = await this.dataContext.Sensors.FirstOrDefaultAsync(ss => ss.Id == sensorId);
 
             var userSensor = new UserSensor
             {

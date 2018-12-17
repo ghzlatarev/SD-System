@@ -32,6 +32,14 @@ namespace SD.Services.Data.Services
 				.Where(apiS => dbSensors.Any(dbS => dbS.SensorId.Equals(apiS.SensorId)) == false)
 				.ToList();
 
+			foreach (var item in addList)
+			{
+				if (item.Description.Contains("true"))
+				{
+					item.IsState = true;
+				}
+			}
+
             await this.dataContext.Sensors.AddRangeAsync(addList);
             await this.dataContext.SaveChangesAsync(false);
         }

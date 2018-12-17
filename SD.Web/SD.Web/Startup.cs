@@ -106,7 +106,7 @@ namespace SD.Web
             else
             {
                 services.AddDbContext<DataContext>(options =>
-                     options.UseSqlServer(Environment.GetEnvironmentVariable("AZURE_DS_DB_Connection")));
+                     options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
             }
         }
 

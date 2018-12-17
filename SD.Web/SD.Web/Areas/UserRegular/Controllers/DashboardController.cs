@@ -211,7 +211,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
             return Json(sensor);
         }
 
-		[HttpPost("Dashboard/value/{sensorId}")]
+		[HttpGet("Dashboard/value/{sensorId}")]
 		public async Task<JsonResult> GetSensorValue(string sensorId)
 		{
 			Sensor currentSensor = await this.sensorService.GetSensorByIdAsync(sensorId);

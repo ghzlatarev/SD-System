@@ -84,27 +84,32 @@
 	@if (Model.Sensor.IsState == false)
 	{
 		<script>
-		$(document).ready(setInterval(function () {
 
-			$.ajax({
-				type: "POST",
+			setInterval(ajaxCall, @Model.UserInterval*1000);
+
+			function ajaxCall() {
+				$.ajax({
+				type: "GET",
 				cache: false,
 				url: 'Dashboard/value/@Model.SensorId',
+				timeout: 3000,
 				success: function (data) {
 					$("#gauge").data("kendoRadialGauge").value(data);
-				}
-			})
+					}
+				})
+			}
 
-		}, @Model.UserInterval*1000));
 		</script>
 	}
 	else
 	{
 		<script>
-		$(document).ready(setInterval(function () {
 
-			$.ajax({
-				type: "POST",
+			setInterval(ajaxCall1, @Model.UserInterval*1000);
+
+			function ajaxCall1() {
+				$.ajax({
+				type: "GET",
 				cache: false,
 				url: 'Dashboard/value/@Model.SensorId',
 				success: function (data) {
@@ -113,12 +118,12 @@
 					}
 					else {
 						document.getElementById("led-color").setAttribute('class', 'led-red')
+						}
+
 					}
-
-				}
-			})
-
-		}, @Model.UserInterval*1000));
+				})
+			}
+		
 		</script>
 	}
 

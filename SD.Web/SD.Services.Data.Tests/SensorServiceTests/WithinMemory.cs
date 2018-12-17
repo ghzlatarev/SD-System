@@ -217,6 +217,7 @@ namespace SD.Services.Data.Tests.SensorServiceTests
 				Id = Guid.NewGuid().ToString(),
 				SensorId = validSensorId,
 				Tag = "testTag",
+				Description = "testDescription",
 				DeletedOn = DateTime.UtcNow.AddHours(2),
 				IsDeleted = true
 			};

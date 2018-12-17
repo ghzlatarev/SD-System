@@ -27,18 +27,17 @@ namespace SD.Services.Data.Services
 			this.notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
 			this.memoryCacheWrapper = memoryCacheWrapper ?? throw new ArgumentNullException(nameof(memoryCacheWrapper)); ;
 		}
-		
+
 		public async Task GetSensorsDataAsync()
 		{
 			IEnumerable<Sensor> allSensors = await this.memoryCacheWrapper.GetOrSetCache();
-			
+
 			List<SensorData> updateDataList = new List<SensorData>();
 			List<Sensor> updateSensorsList = new List<Sensor>();
 			List<UserSensor> affectedSensorsList = new List<UserSensor>();
 
 			foreach (var sensor in allSensors)
 			{
-				//Handle null sensor.LastTimeStamp
 				TimeSpan difference = DateTime.Now.Subtract((DateTime)sensor.LastTimeStamp);
 
 				if (difference.TotalSeconds >= sensor.MinPollingIntervalInSeconds)
@@ -51,7 +50,7 @@ namespace SD.Services.Data.Services
 					.FirstAsync();
 
 					SensorData newSensorData = await this.apiClient.GetSensorData("sensorId?=" + sensor.SensorId);
-					if(newSensorData != null)
+					if (newSensorData != null)
 					{
 						newSensorData.SensorId = sensor.SensorId;
 						if (newSensorData.Value.Equals("true")) { newSensorData.Value = "1"; };
