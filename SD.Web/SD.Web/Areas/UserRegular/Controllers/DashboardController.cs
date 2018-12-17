@@ -167,7 +167,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
             var user = HttpContext.User;
             var userId = this.userManager.GetUserId(user);
 
-            if (this.ModelState.IsValid && sensor.UserId == userId)
+            if (this.ModelState.IsValid)
             {
                 await this.userSensorService.UpdateUserSensorAsync(sensor);
             }
