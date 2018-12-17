@@ -84,18 +84,23 @@
 	@if (Model.Sensor.IsState == false)
 	{
 		<script>
-		$(document).ready(setInterval(function () {
+            $(document).ready(() => {
 
-			$.ajax({
-				type: "POST",
-				cache: false,
-				url: 'Dashboard/value/@Model.SensorId',
-				success: function (data) {
-					$("#gauge").data("kendoRadialGauge").value(data);
-				}
-			})
+                const timer = setInterval(() => {
 
-		}, @Model.UserInterval*1000));
+                    fetch('Dashboard/value/@Model.SensorId', {
+                        method: "post"
+                    })
+                        .then((data) => data.json())
+                        .then((data) => {
+                        $("#gauge").data("kendoRadialGauge").value(1 * data);
+                        })
+                        .catch(console.log);
+
+                }, @Model.UserInterval === 0 ? 1000 : @Model.UserInterval * 1000);
+                   
+
+		});
 		</script>
 	}
 	else
