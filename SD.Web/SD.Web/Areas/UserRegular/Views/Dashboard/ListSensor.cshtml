@@ -85,14 +85,14 @@
 	{
 		<script>
 
-			setInterval(ajaxCall, @Model.UserInterval*1000);
+			var interval = @Model.UserInterval * 1000;
+			setInterval(ajaxCall, 30000);
 
 			function ajaxCall() {
 				$.ajax({
 				type: "GET",
 				cache: false,
 				url: 'Dashboard/value/@Model.SensorId',
-				timeout: 3000,
 				success: function (data) {
 					$("#gauge").data("kendoRadialGauge").value(data);
 					}
@@ -105,7 +105,7 @@
 	{
 		<script>
 
-			setInterval(ajaxCall1, @Model.UserInterval*1000);
+			setInterval(ajaxCall1, 30000);
 
 			function ajaxCall1() {
 				$.ajax({

@@ -128,7 +128,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
             
             if (this.ModelState.IsValid)
             {
-                await this.userSensorService.AddUserSensorAsync(model.UserId, model.SensorId, model.Name, model.UserDescription, model.Coordinates.Split(',')[0],
+                await this.userSensorService.AddUserSensorAsync(model.UserId, model.Id, model.Name, model.UserDescription, model.Coordinates.Split(',')[0],
                     model.Coordinates.Split(',')[1], model.AlarmMin, model.AlarmMax, model.UserInterval, model.AlarmTriggered, model.IsPublic,
                     model.LastValueUser, model.Type);
             }
