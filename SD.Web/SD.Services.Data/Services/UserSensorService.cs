@@ -109,12 +109,17 @@ namespace SD.Services.Data.Services
 
         public async Task<IEnumerable<UserSensor>> ListSensorsForUserAsync(string userId)
         {
-            return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.UserId == userId).ToListAsync();
+            return await this.dataContext.UserSensors
+				.Include(us => us.Sensor)
+				.Where(se => se.IsDeleted == false && se.UserId == userId)
+				.ToListAsync();
         }
 
         public async Task<IEnumerable<UserSensor>> ListPublicSensorsAsync()
         {
-            return await this.dataContext.UserSensors.Where(se => se.IsDeleted == false && se.IsPublic == true).ToListAsync();
+            return await this.dataContext.UserSensors
+				.Include(us => us.Sensor)
+				.Where(se => se.IsDeleted == false && se.IsPublic == true).ToListAsync();
         }
 
         public async Task<UserSensor> ListSensorByIdAsync(string sensorId)

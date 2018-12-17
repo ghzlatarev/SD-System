@@ -195,7 +195,7 @@ namespace SD.Web.Areas.UserRegular.Controllers
                 Id = sensor.Id,
                 Description = sensor.Description,
                 Type = sensor.Type,
-                LastValueUser = sensor.LastValueUser
+                LastValueUser = sensor.Sensor.LastValue
             });
 
             return this.Json(result.ToDataSourceResult(request));

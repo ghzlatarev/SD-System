@@ -54,7 +54,7 @@ namespace SD.Web.Controllers
 				Description = s.Description,
 				Type = s.Type,
 				UserInterval = s.UserInterval,
-				LastValueUser = s.LastValueUser,
+				LastValueUser = s.Sensor.LastValue,
 				TimeStamp = s.TimeStamp,
 				Coordinates = s.Coordinates,
 				IsPublic = s.IsPublic,
@@ -68,14 +68,6 @@ namespace SD.Web.Controllers
 
 			return this.Json(result.ToDataSourceResult(request));
 		}
-
-
-
-        //public async Task<IActionResult> Index()
-        //{
-        //    await _serviceSensor.RebaseSensorsAsync();
-        //    return View();
-        //}
 
         public IActionResult Contact()
 		{
