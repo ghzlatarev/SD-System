@@ -90,7 +90,8 @@ namespace SD.Services.Data.Services
                 Coordinates = latitude + "," + longitude,
                 Type = type,
                 LastValueUser = lastValue,
-                SensorId = sensor.Id
+                SensorId = sensor.Id,
+                UserInterval = pollingInterval
             };
             
 
