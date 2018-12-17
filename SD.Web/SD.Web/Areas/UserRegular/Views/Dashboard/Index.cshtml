@@ -1,6 +1,5 @@
 ﻿@using SD.Web.Areas.UserRegular.Models
 
-@model UserSensorsViewModel
 @{
     ViewData["Title"] = "Index";
 }
@@ -9,7 +8,7 @@
 <hr />
 
 @(Html.Kendo().Grid<UserSensorViewModel>()
-                                            .Name("privateSensors")
+                                            .Name("userSensors")
                                             .Columns(columns =>
                                             {
                                                 columns.Bound(c => c.Name).Width(140);
@@ -31,7 +30,7 @@
                                                                                                 .ButtonCount(5))
                                                                                             .DataSource(dataSource => dataSource
                                                                                                 .Ajax()
-                                                                                                .Read(read => read.Action("Get_Sensors", "Home"))
+                                                                                                .Read(read => read.Url("Dashboard/UserSensors"))
                                                                                             )
                                                                                             )
 <div class="clearfix"></div>

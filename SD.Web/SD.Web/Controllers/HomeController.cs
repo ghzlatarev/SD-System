@@ -16,6 +16,8 @@ using SD.Data.Context;
 using Kendo.Mvc.Extensions;
 using Microsoft.EntityFrameworkCore;
 using SD.Data.Models.DomainModels;
+using SD.Data.Models.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace SD.Web.Controllers
 {
@@ -25,13 +27,15 @@ namespace SD.Web.Controllers
 		private readonly IUserSensorService userSensorService;
 		private readonly ISensorService sensorService;
 		private readonly DataContext dataContext;
+        private readonly UserManager<ApplicationUser> userManager;
 
-		public HomeController(ISensorDataService sensorDataService, IUserSensorService userSensorService, ISensorService sensorService, DataContext dataContext)
+        public HomeController(ISensorDataService sensorDataService, UserManager<ApplicationUser> userManager, IUserSensorService userSensorService, ISensorService sensorService, DataContext dataContext)
 		{
 			this.sensorDataService = sensorDataService;
 			this.userSensorService = userSensorService;
 			this.sensorService = sensorService;
 			this.dataContext = dataContext;
+            this.userManager = userManager;
 		}
 
 		[HttpGet]
@@ -66,13 +70,14 @@ namespace SD.Web.Controllers
 		}
 
 
-		//public async Task<IActionResult> Index()
-		//{
-		//    await _serviceSensor.RebaseSensorsAsync();
-		//    return View();
-		//}
 
-		public IActionResult Contact()
+        //public async Task<IActionResult> Index()
+        //{
+        //    await _serviceSensor.RebaseSensorsAsync();
+        //    return View();
+        //}
+
+        public IActionResult Contact()
 		{
 			ViewData["Message"] = "Your contact page.";
 

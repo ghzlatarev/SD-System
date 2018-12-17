@@ -54,6 +54,7 @@ namespace SD.Services.Data.Services
         {
 			var userSensor = await this.dataContext.UserSensors
 				.Include(us => us.Sensor)
+                .Include(x => x.User)
                 .FirstOrDefaultAsync(us => us.Id == id);
 
             Validator.ValidateNull(userSensor, "userSensor is null");
