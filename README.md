@@ -22,5 +22,5 @@ The system contains two types of users.
 
 Standard user : Is limited to only viewing the content.
 
-Administrator user : Has access to all statistics including modifing the data.The admin also has access to most of the standard user account information including the ability to promote, demote, disable , enable or modify user credentials.
+Administrator user : Has access to all statistics including modifing the data.The admin also has access to most of the standard user account information including the ability to promote, demote, disable , enable or modify user credentials
 Moreover admins can modify, disable and enable any sensor that is registered.
